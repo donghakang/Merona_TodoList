@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">WhenYouComeMerona</string>
+    <string name="registerRecommend1">계정이 없으세요? 지금 </string>
+    <string name="registerRecommendLink">가입 </string>
+    <string name="registerRecommend2">하세요</string>
+</resources>

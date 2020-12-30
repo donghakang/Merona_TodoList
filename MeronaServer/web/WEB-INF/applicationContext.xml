@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+<context:component-scan base-package="model"/>
+
+<!-- ViewResolver -->
+<bean id="viewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+   <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+   <property name="prefix" value="/WEB-INF/view/"/>
+   <property name="suffix" value=".jsp"/>
+</bean>
+
+<!--  Connection Pool DataSource -->
+<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"
+	p:driverClassName="oracle.jdbc.driver.OracleDriver"
+	p:url="jdbc:oracle:thin:@127.0.0.1:1521:xe"
+	p:username="merona"
+	p:password="1234"/>
+
+<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate" 
+                        p:dataSource-ref="dataSource"/>
+<bean id="factory" class="org.mybatis.spring.transaction.SpringManagedTransactionFactory"/>
+
+
+	
+<!-- myBatis -->
+<bean id="mybatis" class="org.mybatis.spring.SqlSessionFactoryBean"
+	p:dataSource-ref="dataSource"
+	p:configLocation="classpath:mybatis/mybatis-config.xml"
+	p:transactionFactory-ref="factory"/>	
+	
+
+</beans>

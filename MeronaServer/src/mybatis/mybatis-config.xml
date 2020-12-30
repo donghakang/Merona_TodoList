@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	<typeAliases>
+		<typeAlias type="entity.User" alias="ob"/>
+	</typeAliases>
+	
+	<!--쿼리문 -->
+	<mappers>
+		<mapper resource="mybatis/user-mapping.xml"/>
+	</mappers>
+</configuration>
