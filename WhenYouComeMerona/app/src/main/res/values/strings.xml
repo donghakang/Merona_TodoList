@@ -4,4 +4,11 @@
     <string name="registerRecommend1">계정이 없으세요? 지금 </string>
     <string name="registerRecommendLink">가입 </string>
     <string name="registerRecommend2">하세요</string>
+
+    <string name="text_label_1">홈</string>
+    <string name="text_label_2">지도</string>
+    <string name="text_label_3">더하기</string>
+    <string name="text_label_4">알림</string>
+    <string name="text_label_5">마이페이지</string>
+
 </resources>
