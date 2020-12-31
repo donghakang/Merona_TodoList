@@ -1,10 +1,9 @@
-package com.example.whenyoucomemerona;
+package com.example.whenyoucomemerona.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -20,6 +19,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.whenyoucomemerona.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -76,7 +76,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             stringRequest.add(myReq);
         } else if (v.getId() == R.id.tv_register) {
             // TODO: 회원가입
-            Intent intent = new Intent(this, com.example.whenyoucomemerona.RegisterActivity.class);
+            Intent intent = new Intent(this, RegisterActivity.class);
             startActivity(intent);
             finish();
         }

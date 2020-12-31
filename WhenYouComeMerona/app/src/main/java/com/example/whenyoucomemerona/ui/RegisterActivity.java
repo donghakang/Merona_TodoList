@@ -1,8 +1,10 @@
-package com.example.whenyoucomemerona;
+package com.example.whenyoucomemerona.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.example.whenyoucomemerona.R;
 
 public class RegisterActivity extends AppCompatActivity {
 
