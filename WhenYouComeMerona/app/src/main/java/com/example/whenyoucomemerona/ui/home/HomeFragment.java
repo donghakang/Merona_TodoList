@@ -4,11 +4,18 @@ import androidx.fragment.app.Fragment;
 import android.os.Bundle;
 
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.whenyoucomemerona.R;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -16,6 +23,10 @@ import com.example.whenyoucomemerona.R;
  * create an instance of this fragment.
  */
 public class HomeFragment extends Fragment {
+
+    TodosAdapter adapter;
+    ArrayList<Todos> arr = new ArrayList<>();
+    ListView list;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -57,12 +68,31 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    // TODO: 나중에 필요없는 function, 테스트용.
+    public void setupArr() {
+        for (int i = 0; i < 20; i++) {
+            Todos t = new Todos();
+            t.setContent("메로나 " + i + "개 사와!");
+            arr.add(t);
+        }
+    }
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
+        list = (ListView) view.findViewById(R.id.home_list);
+
+        setupArr();
+
+        adapter = new TodosAdapter(getActivity(), arr);
+        list.setAdapter(adapter);
+
+        adapter.notifyDataSetChanged();
+
+        return view;
     }
 
-   
 }
