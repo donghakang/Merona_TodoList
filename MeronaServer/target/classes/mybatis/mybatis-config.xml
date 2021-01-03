@@ -5,10 +5,12 @@
 <configuration>
 	<typeAliases>
 		<typeAlias type="entity.User" alias="ob"/>
+		<typeAlias type="entity.Todos" alias="todos"/>
 	</typeAliases>
 	
 	<!--쿼리문 -->
 	<mappers>
 		<mapper resource="mybatis/user-mapping.xml"/>
+		<mapper resource="mybatis/todo-mapping.xml"/>
 	</mappers>
 </configuration>
