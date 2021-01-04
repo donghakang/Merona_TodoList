@@ -13,4 +13,13 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+
+    <string-array name="filter_spinner">
+        <item>등록 순</item>
+        <item>다 된 일 숨기기</item>
+        <item>내가 할 일</item>
+        <item>공유 된 일</item>
+        <item>시간 순</item>
+        <item>중요도</item>
+    </string-array>
 </resources>

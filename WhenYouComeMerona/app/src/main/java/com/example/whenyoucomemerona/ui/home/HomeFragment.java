@@ -1,8 +1,9 @@
 package com.example.whenyoucomemerona.ui.home;
 
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,7 +15,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -28,6 +31,8 @@ import com.android.volley.toolbox.Volley;
 import com.example.whenyoucomemerona.R;
 import com.example.whenyoucomemerona.ui.LoginActivity;
 import com.example.whenyoucomemerona.ui.RegisterActivity;
+import com.example.whenyoucomemerona.ui.search.SearchFragment;
+import com.example.whenyoucomemerona.url.URL;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,65 +43,43 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link HomeFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     TodosAdapter adapter;
     ArrayList<Todos> arr = new ArrayList<>();
     ListView list;
+    SwipeRefreshLayout pullToRefresh;
 
-    RecyclerView recyclerView;
+    Button btnSearchFriend;
+    Spinner filterSpinner;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    SearchFragment searchFragment;
 
     public HomeFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment HomeFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static HomeFragment newInstance(String param1, String param2) {
-        HomeFragment fragment = new HomeFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
-    // TODO: 나중에 필요없는 function, 테스트용.
-    public void setupArr() {
+
+    /*
+    Server 에서 Data 들을 가지고 온다.
+     */
+    private void refresh(ArrayList<Todos> arr) {
+        adapter = new TodosAdapter(getActivity(), arr);
+        list.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+    }
+
+    public void refreshData() {
 
         RequestQueue stringRequest = Volley.newRequestQueue(getContext());
         // TODO: login.do 로 변경한다.
-        String url = "http://172.30.1.15:8098/merona/todoList.do";
+        String url = URL.getUrl() +  "todoList.do";
 
         StringRequest myReq = new StringRequest(Request.Method.POST, url,
                 successListener, errorListener) {
@@ -117,17 +100,24 @@ public class HomeFragment extends Fragment {
     Response.Listener<String> successListener = new Response.Listener<String>() {
         @Override
         public void onResponse(String response) {
-            // TODO: 통신을 성공 할 시
+            // 통신을 성공 할 시
             try {
                 JSONObject j = new JSONObject(response);
+                // 데이터 가져오기 성공할 때,
                 if (j.optString("result").equals("ok")) {
+                    arr.clear();                    // 데이터를 가져오기전 정리한다.
                     JSONArray data = j.optJSONArray("data");
                     for (int i = 0; i < data.length(); i ++ ){
                         JSONObject item = data.getJSONObject(i);
+                        int todo_id = item.getInt("todo_id");
                         String content = item.getString("content");
-                        boolean isDone = item.getBoolean("isDone");
-                        Todos todo = new Todos(content, isDone, "");
-                        Log.d("ddddd", todo.toString());
+                        boolean done = item.getBoolean("done");
+
+                        Todos todo = new Todos();
+                        todo.setTodo_id(todo_id);
+                        todo.setContent(content);
+                        todo.setDone(done);
+
                         arr.add(todo);
                     }
                     adapter.notifyDataSetChanged();
@@ -153,26 +143,114 @@ public class HomeFragment extends Fragment {
     };
 
 
+
+    /* ----------------------------------------------------------------------------------------------------
+    * -------------------------------------------Create View----------------------------------------------
+     ---------------------------------------------------------------------------------------------------- */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-//        list = (ListView) view.findViewById(R.id.home_list);
-        recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-        setupArr();
+        list = (ListView) view.findViewById(R.id.home_list);
+        pullToRefresh = (SwipeRefreshLayout) view.findViewById(R.id.pullToRefresh);
+        filterSpinner = (Spinner) view.findViewById(R.id.filter_spinner);
+        btnSearchFriend = (Button) view.findViewById(R.id.btn_search_friend);
 
-        Log.d("dddd", arr.size()+"");
-        for (Todos t : arr) {
-            Log.d("dddddd", t.toString());
-        }
+        searchFragment = new SearchFragment();
+
+        refreshData();
+
         adapter = new TodosAdapter(getActivity(), arr);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        list.setAdapter(adapter);
 
         adapter.notifyDataSetChanged();
 
+        // Scroll Down to refresh  ------------------------------------------------
+        pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshData();
+                pullToRefresh.setRefreshing(false);
+            }
+
+        });
+
+        // 친구 찾기 버튼 설정 --------------------------------------------------------
+        btnSearchFriend.setOnClickListener(this);
+
+        // 필터 버튼 설정 ----------------------------------------------------------------
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
+                R.array.filter_spinner, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        filterSpinner.setAdapter(adapter);
+
+        filterSpinner.setOnItemSelectedListener(this);
         return view;
     }
 
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.btn_search_friend) {
+            Fragment searchFragment = new SearchFragment();
+            getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .setCustomAnimations(
+                            R.anim.slide_in,  // enter
+                            R.anim.fade_out,  // exit
+                            R.anim.fade_in,   // popEnter
+                            R.anim.slide_out  // popExit
+                    )
+                    .replace(R.id.body_rl, searchFragment)
+                    .addToBackStack(null)
+                    .commit();
+        }
+    }
+
+    // ------------------------------------------------------------------
+    // TODO: 필터
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        filterTodos(position);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {   }
+
+    private void filterTodos(int position) {
+        switch (position) {
+            case 0:
+                // 등록 순
+                refresh(arr);
+                break;
+            case 1:
+                // 다 된일 숨기기
+                ArrayList<Todos> newArr = new ArrayList<>();
+                for (Todos t : arr) {
+                    if (!t.getDone()) {
+                        newArr.add(t);
+                    }
+                }
+                refresh(newArr);
+                break;
+            case 2:
+                // 내가 할 일
+                refresh(arr);
+                break;
+            case 3:
+                // 공유 된 일
+                refresh(arr);
+                break;
+            case 4:
+                // 시간 순
+                refresh(arr);
+                break;
+            case 5:
+                // 중요도
+                refresh(arr);
+                break;
+            default:
+                break;
+        }
+    }
 }

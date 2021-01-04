@@ -1,63 +1,207 @@
 package com.example.whenyoucomemerona.ui.home;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
-import android.text.Layout;
+import android.content.DialogInterface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.whenyoucomemerona.R;
+import com.example.whenyoucomemerona.url.URL;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-public class TodosAdapter extends RecyclerView.Adapter<TodosAdapter.TodosItemHolder> {
+public class TodosAdapter extends ArrayAdapter {
 
-    ArrayList<Todos> todos;
-    Context context;
+    LayoutInflater lnf;
+    ArrayList<Todos> arr;
 
-    public TodosAdapter(Context context, ArrayList<Todos> todos) {
-        this.context = context;
-        this.todos = todos;
+    class TodosItemHolder{
+        TextView tvContent;
+        CheckBox cbIsDone;
+        TextView tvDate;
+    }
+
+    public TodosAdapter (Activity context, ArrayList<Todos> arr) {
+        super(context, R.layout.fragment_home, arr);
+        this.arr = arr;
+        lnf = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
+
+    @Override
+    public int getCount() {
+        return arr.size();
+    }
+
+    @Nullable
+    @Override
+    public Todos getItem(int position) {
+        return arr.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
 
     @NonNull
     @Override
-    public TodosItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater lnf = LayoutInflater.from(context);
-        View view = lnf.inflate(R.layout.todos_list, parent, false);
+    public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        final TodosAdapter.TodosItemHolder viewHolder;
+        if (convertView == null) {
+            convertView = lnf.inflate(R.layout.todos_list, parent, false);
+            viewHolder  = new TodosItemHolder();
 
-        return new TodosItemHolder(view);
-    }
+            viewHolder.tvContent = convertView.findViewById(R.id.tv_content);
+            viewHolder.cbIsDone  = convertView.findViewById(R.id.cb_is_done);
 
-    @Override
-    public void onBindViewHolder(@NonNull TodosItemHolder holder, int position) {
-        holder.tvContent.setText(todos.get(position).getContent());
-        holder.rbIsDone.setChecked(todos.get(position).isDone());
-    }
-
-    @Override
-    public int getItemCount() {
-        return todos.size();
-    }
-
-    public class TodosItemHolder extends RecyclerView.ViewHolder {
-        TextView tvContent;
-        RadioButton rbIsDone;
-        public TodosItemHolder(@NonNull View itemView) {
-            super(itemView);
-
-            tvContent = itemView.findViewById(R.id.tv_content);
-            rbIsDone = itemView.findViewById(R.id.rb_is_done);
+            convertView.setTag(viewHolder);
+        } else {
+            viewHolder = (TodosAdapter.TodosItemHolder) convertView.getTag();
         }
+
+        viewHolder.tvContent.setText(arr.get(position).getContent());
+        viewHolder.cbIsDone.setChecked(arr.get(position).getDone());
+
+        viewHolder.cbIsDone.setOnClickListener(new CheckBox.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(),viewHolder.cbIsDone.isChecked()+"",  Toast.LENGTH_SHORT).show();
+                boolean status = viewHolder.cbIsDone.isChecked();       // 버튼을 업데이트할때, 상태를 파악함 (true/false);
+                updateItem(position, status);
+            }
+        });
+
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                Toast.makeText(getContext(),getItem(position).getContent() + "  " + position,  Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        convertView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("타이틀 짜잔");
+                builder.setMessage("메시지가 들어갑니다");
+                builder.setPositiveButton("수정하기", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+
+                builder.setNegativeButton("삭제하기", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        AlertDialog.Builder deleteBox = new AlertDialog.Builder(getContext());
+                        deleteBox.setTitle("삭제하기");
+                        deleteBox.setMessage("정말로 삭제하시겠습니까?");
+                        deleteBox.setPositiveButton("예", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Toast.makeText(getContext(), "delete which? " +getItem(position).getContent(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+
+                        deleteBox.setNegativeButton("아니오", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {    }
+                        });
+
+                        deleteBox.create().show();
+                    }
+
+                });
+
+                builder.setNeutralButton("취소하기", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {  }
+                });
+
+                builder.create().show();
+                return true;
+            }
+        });
+        return convertView;
     }
+
+
+    private void updateItem(final int position, final boolean status) {
+        RequestQueue stringRequest = Volley.newRequestQueue(getContext());
+        String url = URL.getUrl() + "updateCheckbox.do";
+
+        StringRequest myReq = new StringRequest(Request.Method.POST, url,
+                successListener, errorListener) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("todo_id", arr.get(position).getTodo_id() + "");
+                params.put("content", arr.get(position).getContent());
+                params.put("done", status + "");
+                return params;
+            }
+        };
+
+        myReq.setRetryPolicy(new DefaultRetryPolicy(3000, 0, 1f));
+        stringRequest.add(myReq);
+    }
+
+    Response.Listener<String> successListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            // 통신을 성공 할 시
+            try {
+                JSONObject j = new JSONObject(response);
+                // 데이터 가져오기 성공할 때,
+                Log.d("eeeee", response);
+                if (j.optString("result").equals("ok")) {
+                    Toast.makeText(getContext(), "업데이트 성공", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), "업데이트 실패", Toast.LENGTH_SHORT).show();
+                }
+            } catch (JSONException e) {
+                Log.d("eeeee", "JSON에서 에러가 있습니다.");
+                e.printStackTrace();
+            }
+        }
+    };
+
+    // when obtaining data is unsuccessful.
+    Response.ErrorListener errorListener = new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            // 통신을 실패할 시
+            Log.d("eeeee", "통신 실패.");
+            Toast.makeText(getContext(), "통신이 불가능 합니다.", Toast.LENGTH_SHORT).show();
+        }
+    };
+
+
+
 }

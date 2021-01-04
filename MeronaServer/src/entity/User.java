@@ -1,19 +1,23 @@
 package entity;
 
 public class User {
+	private int user_id;
 	private String id;
 	private String password;
-
-	public User(String id, String password) {
-		super();
-		this.id = id;
-		this.password = password;
-	}
-
+	
 	public User() {
 		super();
 	}
+	
+	public int getUser_id() {
+		return user_id;
+	}
 
+	public void setUser_id(int user_id) {
+		this.user_id = user_id;
+	}
+
+	
 	public String getId() {
 		return id;
 	}

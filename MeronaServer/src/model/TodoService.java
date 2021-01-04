@@ -21,4 +21,12 @@ public class TodoService {
 	public List<Todos> getTodoList() {
 		return todoDao.getTodoList();
 	}
+
+	public boolean insertItem(Todos todo) {
+		return todoDao.insertItem(todo);
+	}
+
+	public boolean updateByCheckbox(Todos todo) {
+		return todoDao.updateByCheckbox(todo);
+	}
 }

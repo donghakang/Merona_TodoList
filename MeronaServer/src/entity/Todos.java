@@ -1,34 +1,40 @@
 package entity;
 
 public class Todos {
+	private int todo_id;
 	private String content;
-	private boolean isDone;
+	private boolean done;
 	
 	public Todos() {
 		super();
 	}
-	public Todos(String content, boolean isDone) {
-		super();
-		this.content = content;
-		this.isDone = isDone;
+	public int getTodo_id() {
+		return todo_id;
 	}
+
+	public void setTodo_id(int todo_id) {
+		this.todo_id = todo_id;
+	}
+	
 	public String getContent() {
 		return content;
 	}
 	public void setContent(String content) {
 		this.content = content;
 	}
-	public boolean isDone() {
-		return isDone;
+	public boolean getDone() {
+		return done;
 	}
-	public void setDone(boolean isDone) {
-		this.isDone = isDone;
+	public void setDone(boolean done) {
+		this.done = done;
 	}
+	
 	
 	@Override
 	public String toString() {
-		return "Todos [content=" + content + ", isDone=" + isDone + "]";
+		return "Todos [todo_id=" + todo_id + ", content=" + content + ", done=" + done + "]";
 	}
-
+	
+	
 	
 }

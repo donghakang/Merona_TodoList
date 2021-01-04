@@ -32,6 +32,28 @@ public class TodoController {
 		return "list";
 	}
 	
+	
+	//추가하기(데이터 추가)--------------------------------
+	@RequestMapping(value="/insertItem.do", method=RequestMethod.POST)
+	public String insertItem(@ModelAttribute Todos todo, Model model) {
+		
+		if(todoService.insertItem(todo)) {
+			model.addAttribute("result", true);
+						// RequestMapping("/list.do")로 이동한다. 
+		}else {
+			model.addAttribute("result", false);
+		}
+		return "insertItem";
+	}
+	
+	// 업데이트하기 (체크박스만) ----------------------------------
+	@RequestMapping(value="/updateCheckbox.do", method=RequestMethod.POST)
+	public String updateCheckbox(@ModelAttribute Todos todo, Model model) {
+		if (todoService.updateByCheckbox(todo)) model.addAttribute("result", true);
+		else model.addAttribute("result", false);
+		
+		return "updateCheckbox";
+	}
 }
 /* 
 @ModelAttribute User user는 아래와 동일

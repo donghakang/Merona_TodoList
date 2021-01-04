@@ -9,4 +9,17 @@
 			SELECT * FROM TODOS
 		]]>
 	</select>
+	
+	<insert id="insertItem" parameterType="todos">
+		<![CDATA[
+			INSERT INTO TODOS(TODO_ID, CONTENT, DONE) VALUES
+			(TODO_SEQ.NEXTVAL, #{content}, #{done})
+		]]>
+	</insert>
+	
+	<update id="updateByCheckbox" parameterType="todos">
+		<![CDATA[
+			UPDATE TODOS SET DONE=#{done} WHERE TODO_ID=#{todo_id}
+		]]>
+	</update>
 </mapper>

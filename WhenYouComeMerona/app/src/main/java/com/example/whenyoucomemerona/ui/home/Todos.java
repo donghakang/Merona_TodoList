@@ -3,20 +3,31 @@ package com.example.whenyoucomemerona.ui.home;
 import java.util.Random;
 
 public class Todos {
-    public String content;
-    public boolean isDone;
-    public String date;
+    private int todo_id;
+    private String content;
+    private boolean done;
+    private String date;
 
     public Todos() {
+        this.todo_id = 0;
         this.content = "";
-        this.isDone = false;
+        this.done = false;
         this.date = "";
     }
 
-    public Todos(String content, boolean isDone, String date) {
+    public Todos(int todo_id, String content, boolean done, String date) {
+        this.todo_id = todo_id;
         this.content = content;
-        this.isDone = isDone;
+        this.done = done;
         this.date = date;
+    }
+
+    public int getTodo_id() {
+        return todo_id;
+    }
+
+    public void setTodo_id(int todo_id) {
+        this.todo_id = todo_id;
     }
 
     public String getContent() {
@@ -27,12 +38,12 @@ public class Todos {
         this.content = content;
     }
 
-    public boolean isDone() {
-        return isDone;
+    public boolean getDone() {
+        return done;
     }
 
     public void setDone(boolean done) {
-        isDone = done;
+        this.done = done;
     }
 
     public String getDate() {
@@ -47,7 +58,7 @@ public class Todos {
     public String toString() {
         return "Todos{" +
                 "content='" + content + '\'' +
-                ", isDone=" + isDone +
+                ", done=" + done +
                 ", date='" + date + '\'' +
                 '}';
     }

@@ -32,8 +32,9 @@ if (todos != null) {
 	JSONArray data = new JSONArray();
 	for (Todos t : todos) {
 		JSONObject item = new JSONObject();
+		item.put("todo_id", t.getTodo_id());
 		item.put("content", t.getContent());
-		item.put("isDone", t.isDone());
+		item.put("done", t.getDone());
 		data.put(item);
 	}
 	
