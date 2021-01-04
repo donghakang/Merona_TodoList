@@ -29,4 +29,12 @@ public class TodoService {
 	public boolean updateByCheckbox(Todos todo) {
 		return todoDao.updateByCheckbox(todo);
 	}
+
+	public boolean editItem(Todos todo) {
+		return todoDao.editItem(todo);
+	}
+
+	public boolean deleteItem(Todos todo) {
+		return todoDao.deleteItem(todo);
+	}
 }

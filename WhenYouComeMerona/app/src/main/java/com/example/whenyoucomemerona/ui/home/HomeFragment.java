@@ -43,7 +43,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-public class HomeFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
+public class HomeFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener, AdapterView.OnItemClickListener {
 
     TodosAdapter adapter;
     ArrayList<Todos> arr = new ArrayList<>();
@@ -153,6 +153,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
 
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         list = (ListView) view.findViewById(R.id.home_list);
+        list.setItemsCanFocus(false);
         pullToRefresh = (SwipeRefreshLayout) view.findViewById(R.id.pullToRefresh);
         filterSpinner = (Spinner) view.findViewById(R.id.filter_spinner);
         btnSearchFriend = (Button) view.findViewById(R.id.btn_search_friend);
@@ -163,8 +164,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
 
         adapter = new TodosAdapter(getActivity(), arr);
         list.setAdapter(adapter);
-
         adapter.notifyDataSetChanged();
+
+        list.setOnItemClickListener(this);
 
         // Scroll Down to refresh  ------------------------------------------------
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -252,5 +254,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
             default:
                 break;
         }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Toast.makeText(getContext(), position +"   살려주세요", Toast.LENGTH_SHORT).show();
     }
 }

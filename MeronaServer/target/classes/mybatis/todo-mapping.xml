@@ -22,4 +22,17 @@
 			UPDATE TODOS SET DONE=#{done} WHERE TODO_ID=#{todo_id}
 		]]>
 	</update>
+	
+	<update id="editItem" parameterType="todos">
+		<![CDATA[
+			UPDATE TODOS SET CONTENT=#{content}, DONE=#{done} WHERE TODO_ID=#{todo_id}
+		]]>
+	</update>
+	
+	<delete id="deleteItem" parameterType="todos">
+		<![CDATA[
+			DELETE FROM TODOS WHERE TODO_ID=#{todo_id}
+		]]>
+	</delete>
+	
 </mapper>

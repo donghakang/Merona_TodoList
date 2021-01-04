@@ -7,6 +7,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-<a href="updateCheckbox.do">다음으로 </a>
+<a href="editItem.do">다음으로 </a>
 </body>
 </html>

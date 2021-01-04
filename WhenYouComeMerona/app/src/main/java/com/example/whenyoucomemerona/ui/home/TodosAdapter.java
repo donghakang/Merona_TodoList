@@ -1,5 +1,6 @@
 package com.example.whenyoucomemerona.ui.home;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -16,6 +17,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -26,6 +29,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.whenyoucomemerona.R;
+import com.example.whenyoucomemerona.ui.MainActivity;
+import com.example.whenyoucomemerona.ui.edit.EditFragment;
+import com.example.whenyoucomemerona.ui.search.SearchFragment;
 import com.example.whenyoucomemerona.url.URL;
 
 import org.json.JSONException;
@@ -39,6 +45,7 @@ public class TodosAdapter extends ArrayAdapter {
 
     LayoutInflater lnf;
     ArrayList<Todos> arr;
+    Activity ctx;
 
     class TodosItemHolder{
         TextView tvContent;
@@ -48,6 +55,7 @@ public class TodosAdapter extends ArrayAdapter {
 
     public TodosAdapter (Activity context, ArrayList<Todos> arr) {
         super(context, R.layout.fragment_home, arr);
+        this.ctx = context;
         this.arr = arr;
         lnf = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -70,7 +78,7 @@ public class TodosAdapter extends ArrayAdapter {
 
     @NonNull
     @Override
-    public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+    public View getView(final int position, @Nullable View convertView, @NonNull final ViewGroup parent) {
         final TodosAdapter.TodosItemHolder viewHolder;
         if (convertView == null) {
             convertView = lnf.inflate(R.layout.todos_list, parent, false);
@@ -110,13 +118,31 @@ public class TodosAdapter extends ArrayAdapter {
                 builder.setTitle("타이틀 짜잔");
                 builder.setMessage("메시지가 들어갑니다");
                 builder.setPositiveButton("수정하기", new DialogInterface.OnClickListener() {
+                    /**
+                     * 수정하기 버튼을 누른다.
+                     */
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
+                        Fragment editFragment = new EditFragment(getItem(position));
+                        ((AppCompatActivity) ctx).getSupportFragmentManager()
+                                .beginTransaction()
+                                .setCustomAnimations(
+                                        R.anim.slide_in,  // enter
+                                        R.anim.fade_out,  // exit
+                                        R.anim.fade_in,   // popEnter
+                                        R.anim.slide_out  // popExit
+                                )
+                                .replace(R.id.body_rl, editFragment)
+                                .addToBackStack(null)
+                                .commit();
                     }
                 });
 
+
                 builder.setNegativeButton("삭제하기", new DialogInterface.OnClickListener() {
+                    /**
+                     * 삭제하기 버튼을 누른다.
+                     */
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         AlertDialog.Builder deleteBox = new AlertDialog.Builder(getContext());
@@ -125,7 +151,53 @@ public class TodosAdapter extends ArrayAdapter {
                         deleteBox.setPositiveButton("예", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                Toast.makeText(getContext(), "delete which? " +getItem(position).getContent(), Toast.LENGTH_SHORT).show();
+                                RequestQueue stringRequest = Volley.newRequestQueue(getContext());
+                                String url = URL.getUrl() + "deleteItem.do";
+
+                                StringRequest myReq = new StringRequest(Request.Method.POST, url,
+                                new Response.Listener<String>() {
+                                    @Override
+                                    public void onResponse(String response) {
+                                        // 통신을 성공 할 시
+                                        try {
+                                            JSONObject j = new JSONObject(response);
+                                            // 데이터 가져오기 성공할 때,
+                                            Log.d("eeeee", response);
+                                            if (j.optString("result").equals("ok")) {
+                                                remove(getItem(position));
+                                                notifyDataSetChanged();
+                                                Toast.makeText(getContext(), "삭제 성공", Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                Toast.makeText(getContext(), "삭제 실패", Toast.LENGTH_SHORT).show();
+                                            }
+                                        } catch (JSONException e) {
+                                            Log.d("eeeee", "JSON에서 에러가 있습니다.");
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }, new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        // 통신을 실패할 시
+                                        Toast.makeText(getContext(), "통신이 불가능 합니다.", Toast.LENGTH_SHORT).show();
+                                    }
+                                }) {
+                                    @Override
+                                    protected Map<String, String> getParams() throws AuthFailureError {
+                                        Map<String, String> params = new HashMap<String, String>();
+                                        params.put("todo_id", getItem(position).getTodo_id()+"");
+                                        params.put("content", getItem(position).getContent());
+                                        params.put("done", getItem(position).getDone()+"");
+                                        return params;
+                                    }
+                                };
+
+                                myReq.setRetryPolicy(new DefaultRetryPolicy(3000, 0, 1f));
+                                stringRequest.add(myReq);
+
+                                // TODO: Adapter에서 HomeFragment getTodoList와 연결해야함.
+
+
                             }
                         });
 
@@ -157,7 +229,7 @@ public class TodosAdapter extends ArrayAdapter {
         String url = URL.getUrl() + "updateCheckbox.do";
 
         StringRequest myReq = new StringRequest(Request.Method.POST, url,
-                successListener, errorListener) {
+                updateSuccessListener, updateErrorListener) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<String, String>();
@@ -172,7 +244,7 @@ public class TodosAdapter extends ArrayAdapter {
         stringRequest.add(myReq);
     }
 
-    Response.Listener<String> successListener = new Response.Listener<String>() {
+    Response.Listener<String> updateSuccessListener = new Response.Listener<String>() {
         @Override
         public void onResponse(String response) {
             // 통신을 성공 할 시
@@ -193,7 +265,7 @@ public class TodosAdapter extends ArrayAdapter {
     };
 
     // when obtaining data is unsuccessful.
-    Response.ErrorListener errorListener = new Response.ErrorListener() {
+    Response.ErrorListener updateErrorListener = new Response.ErrorListener() {
         @Override
         public void onErrorResponse(VolleyError error) {
             // 통신을 실패할 시

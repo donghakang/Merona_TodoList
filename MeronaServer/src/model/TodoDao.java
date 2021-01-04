@@ -33,10 +33,19 @@ public class TodoDao {
 
 	// 체크박스 클릭시 아이템 업데이트 ------------------------------------
 	public boolean updateByCheckbox(Todos todo) {
-		System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-		System.out.println(todo);
-		System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
 		int n = factory.openSession().update("mybatis.TodoMapper.updateByCheckbox", todo);
+		return (n > 0) ? true : false;
+	}
+
+	// 수정하기 ------------------------------------------------
+	public boolean editItem(Todos todo) {
+		int n = factory.openSession().update("mybatis.TodoMapper.editItem", todo);
+		return (n > 0) ? true : false;
+	}
+
+	// 삭제하기 ------------------------------------------------
+	public boolean deleteItem(Todos todo) {
+		int n = factory.openSession().update("mybatis.TodoMapper.deleteItem", todo);
 		return (n > 0) ? true : false;
 	}
 
