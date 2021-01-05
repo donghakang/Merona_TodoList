@@ -1,9 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.RegisterActivity">
+    tools:context=".main.RegisterActivity">
+    <View
+        android:id="@+id/ellipse_1"
+        android:layout_width="220dp"
+        android:layout_height="220dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="-60dp"
+        android:layout_marginTop="-50dp"
+        android:background="@drawable/background_circle"
+        />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <View
+        android:id="@+id/ellipse_2"
+        android:layout_width="500dp"
+        android:layout_height="500dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="-200dp"
+        android:layout_marginBottom="-160dp"
+        android:background="@drawable/background_circle"
+        />
+    <View
+        android:id="@+id/ellipse_3"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="120dp"
+        android:background="@drawable/background_circle"
+        />
+
+    <EditText
+        android:id="@+id/et_registerId"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/login_edittext"
+        android:inputType="textVisiblePassword|textNoSuggestions"
+        android:hint="@string/register_id"
+        android:textColorHint="#333333"
+        android:paddingLeft="16dp" />
+
+    <EditText
+        android:id="@+id/et_registerPassword"
+        android:layout_below="@+id/et_registerId"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/login_edittext"
+        android:inputType="textVisiblePassword|textNoSuggestions"
+        android:hint="@string/register_password"
+        android:textColorHint="#333333"
+        android:paddingLeft="16dp" />
+    <EditText
+        android:id="@+id/et_registerRepassword"
+        android:layout_below="@+id/et_registerPassword"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/login_edittext"
+        android:inputType="textVisiblePassword|textNoSuggestions"
+        android:hint="@string/register_repassword"
+        android:textColorHint="#333333"
+        android:paddingLeft="16dp" />
+    <EditText
+        android:id="@+id/et_registerEmail"
+        android:layout_below="@+id/et_registerRepassword"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/login_edittext"
+        android:inputType="textEmailAddress"
+        android:hint="@string/register_email"
+        android:textColorHint="#333333"
+        android:paddingLeft="16dp" />
+
+    <Button
+        android:id="@+id/btn_register"
+        android:layout_below="@id/et_registerEmail"
+        android:layout_width="144dp"
+        android:layout_height="40dp"
+        android:text="@string/register_btn"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/login_button"/>
+
+    <TextView
+        android:id="@+id/btn_register_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/register_cancel"
+        android:layout_below="@+id/btn_register"
+        android:clickable="true"
+        android:layout_centerHorizontal="true"/>
+
+</RelativeLayout>

@@ -29,4 +29,8 @@ public class UserService {
 		
 		return userDao.loginUser(user);
 	}
+
+	public List<User> searchFriend(String username) {
+		return userDao.searchFriend(username);
+	}
 }

@@ -12,24 +12,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:windowSoftInputMode="adjustNothing">
-        <activity android:name=".ui.RegisterActivity"/>
-        <activity android:name=".ui.LoginActivity" />
-<!--        <activity android:name=".MainActivity"/>-->
-<!--        <activity android:name=".SplashActivity">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
-<!--        </activity>-->
-        <activity android:name=".ui.MainActivity">
+        <activity android:name=".main.SearchFriendAdapter"/>
+        <activity android:name=".main.RegisterActivity" />
+        <activity android:name=".main.LoginActivity" />
+        <activity android:name=".main.MainActivity" />
+        <activity android:name=".main.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.SplashActivity"/>
     </application>
 
 </manifest>

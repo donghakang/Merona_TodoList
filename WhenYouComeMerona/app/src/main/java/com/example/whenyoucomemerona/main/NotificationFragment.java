@@ -1,4 +1,4 @@
-package com.example.whenyoucomemerona.ui.notification;
+package com.example.whenyoucomemerona.main;
 
 import android.os.Bundle;
 

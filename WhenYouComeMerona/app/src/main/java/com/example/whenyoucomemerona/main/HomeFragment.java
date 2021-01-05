@@ -1,11 +1,8 @@
-package com.example.whenyoucomemerona.ui.home;
+package com.example.whenyoucomemerona.main;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 
@@ -29,9 +26,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.whenyoucomemerona.R;
-import com.example.whenyoucomemerona.ui.LoginActivity;
-import com.example.whenyoucomemerona.ui.RegisterActivity;
-import com.example.whenyoucomemerona.ui.search.SearchFragment;
+import com.example.whenyoucomemerona.entity.Todos;
 import com.example.whenyoucomemerona.url.URL;
 
 import org.json.JSONArray;
@@ -41,9 +36,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
-public class HomeFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener, AdapterView.OnItemClickListener {
+public class HomeFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     TodosAdapter adapter;
     ArrayList<Todos> arr = new ArrayList<>();
@@ -166,8 +160,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
         list.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
-        list.setOnItemClickListener(this);
-
         // Scroll Down to refresh  ------------------------------------------------
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -178,7 +170,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
 
         });
 
-        // 친구 찾기 버튼 설정 --------------------------------------------------------
+        // 친구 찾기 버튼 설정 ---------------------------∂-----------------------------
         btnSearchFriend.setOnClickListener(this);
 
         // 필터 버튼 설정 ----------------------------------------------------------------
@@ -254,10 +246,5 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
             default:
                 break;
         }
-    }
-
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Toast.makeText(getContext(), position +"   살려주세요", Toast.LENGTH_SHORT).show();
     }
 }

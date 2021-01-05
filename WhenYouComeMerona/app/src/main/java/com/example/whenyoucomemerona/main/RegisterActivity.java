@@ -1,4 +1,4 @@
-package com.example.whenyoucomemerona.ui;
+package com.example.whenyoucomemerona.main;
 
 import androidx.appcompat.app.AppCompatActivity;
 

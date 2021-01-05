@@ -12,6 +12,12 @@
     <string name="text_label_5">마이페이지</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="register_id">아이디를 입력하세요</string>
+    <string name="register_password">비밀번호를 입력하세요</string>
+    <string name="register_repassword">비밀번호를 재입력하세요</string>
+    <string name="register_email">이메일을 입력하세요</string>
+    <string name="register_btn">가입하기</string>
+    <string name="register_cancel">취소하기</string>
 
 
     <string-array name="filter_spinner">

@@ -35,5 +35,12 @@ public class UserDao {
 			return false;
 		}
 	}
+	
+	// 사용자 이름 검색 --------------------------------------------------------------
+	// 리스트 반환.
+	public List<User> searchFriend(String username) {
+		// TODO Auto-generated method stub
+		return factory.openSession().selectList("mybatis.LoginMapper.searchFriend", username);
+	}
 }
 

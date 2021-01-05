@@ -4,7 +4,7 @@
 
 <configuration>
 	<typeAliases>
-		<typeAlias type="entity.User" alias="ob"/>
+		<typeAlias type="entity.User" alias="user"/>
 		<typeAlias type="entity.Todos" alias="todos"/>
 	</typeAliases>
 	

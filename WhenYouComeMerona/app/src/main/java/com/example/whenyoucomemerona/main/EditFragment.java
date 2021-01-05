@@ -1,16 +1,16 @@
-package com.example.whenyoucomemerona.ui.add;
+package com.example.whenyoucomemerona.main;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -21,25 +21,29 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.whenyoucomemerona.R;
-import com.example.whenyoucomemerona.ui.MainActivity;
-import com.example.whenyoucomemerona.ui.home.Todos;
+import com.example.whenyoucomemerona.entity.Todos;
+import com.example.whenyoucomemerona.url.URL;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
+import static android.content.Context.INPUT_METHOD_SERVICE;
 
-public class AddFragment extends Fragment {
+public class EditFragment extends Fragment implements View.OnClickListener {
 
     EditText etContent;
-    Button   btnSubmit;
+    Button btnSubmit;
 
-    public AddFragment() {
+    Todos todo;
+
+
+    public EditFragment(Todos todo) {
+        this.todo = todo;
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,33 +54,34 @@ public class AddFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_add, container, false);
-        etContent = view.findViewById(R.id.et_content);
-        btnSubmit = view.findViewById(R.id.btn_submit);
+        View v = inflater.inflate(R.layout.fragment_edit, container, false);
+        etContent = v.findViewById(R.id.et_content);
+        btnSubmit = v.findViewById(R.id.btn_submit);
 
-        btnSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                insertItem();
-            }
-        });
+        // keyboard를 킨다.
+        etContent.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
 
-        return view;
+        btnSubmit.setOnClickListener(this);
+
+        return v;
     }
 
-    public void insertItem() {
-        RequestQueue stringRequest = Volley.newRequestQueue(getContext());
+    @Override
+    public void onClick(View v) {
+        RequestQueue stringRequest = Volley.newRequestQueue(Objects.requireNonNull(getContext()));
         // TODO: login.do 로 변경한다.
-        String url = "http://172.30.1.15:8098/merona/insertItem.do";
+        String url = URL.getUrl() + "editItem.do";
 
         StringRequest myReq = new StringRequest(Request.Method.POST, url,
                 successListener, errorListener) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<String, String>();
+                params.put("todo_id", todo.getTodo_id() + "");
                 params.put("content", etContent.getText().toString());
-                params.put("done", "false");
-//                params.put("password", password);
+                params.put("done", todo.getDone() + "");
                 return params;
             }
         };
@@ -85,7 +90,6 @@ public class AddFragment extends Fragment {
         stringRequest.add(myReq);
     }
 
-
     Response.Listener<String> successListener = new Response.Listener<String>() {
         @Override
         public void onResponse(String response) {
@@ -93,11 +97,10 @@ public class AddFragment extends Fragment {
             try {
                 JSONObject j = new JSONObject(response);
                 // 데이터 가져오기 성공할 때,
-                Log.d("eeeee", response);
                 if (j.optString("result").equals("ok")) {
-                    Toast.makeText(getContext(), "삽입하기 성공", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "수정 성공", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(getContext(), "삽입하기 실패", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "수정 실패", Toast.LENGTH_SHORT).show();
                 }
             } catch (JSONException e) {
                 Log.d("eeeee", "JSON에서 에러가 있습니다.");
@@ -111,7 +114,6 @@ public class AddFragment extends Fragment {
         @Override
         public void onErrorResponse(VolleyError error) {
             // 통신을 실패할 시
-            Log.d("eeeee", "통신 실패.");
             Toast.makeText(getContext(), "통신이 불가능 합니다.", Toast.LENGTH_SHORT).show();
         }
     };

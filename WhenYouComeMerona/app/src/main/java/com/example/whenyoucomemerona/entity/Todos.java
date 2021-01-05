@@ -1,4 +1,4 @@
-package com.example.whenyoucomemerona.ui.home;
+package com.example.whenyoucomemerona.entity;
 
 import java.util.Random;
 

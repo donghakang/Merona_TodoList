@@ -1,4 +1,4 @@
-package com.example.whenyoucomemerona.ui;
+package com.example.whenyoucomemerona.main;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -6,19 +6,17 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import androidx.fragment.app.Fragment;
-import android.content.Intent;
+
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.example.whenyoucomemerona.R;
-import com.example.whenyoucomemerona.ui.add.AddFragment;
-import com.example.whenyoucomemerona.ui.home.HomeFragment;
-import com.example.whenyoucomemerona.ui.map.MapFragment;
-import com.example.whenyoucomemerona.ui.mypage.MyPageFragment;
-import com.example.whenyoucomemerona.ui.notification.NotificationFragment;
+import com.example.whenyoucomemerona.main.AddFragment;
+import com.example.whenyoucomemerona.main.HomeFragment;
+import com.example.whenyoucomemerona.main.MapFragment;
+import com.example.whenyoucomemerona.main.MyPageFragment;
+import com.example.whenyoucomemerona.main.NotificationFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.bottomnavigation.BottomNavigationView.OnNavigationItemSelectedListener;
 
 public class MainActivity extends AppCompatActivity {
     BottomNavigationView bottomNavigation;

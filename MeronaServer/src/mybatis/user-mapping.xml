@@ -4,10 +4,17 @@
 
 
 <mapper namespace="mybatis.LoginMapper">
-	<select id="getLoginUser" parameterType="entity.User" resultType="entity.User">
+	<select id="getLoginUser" parameterType="user" resultType="user">
 		<![CDATA[
 			SELECT * FROM USERS
 			WHERE ID=#{id} AND PASSWORD=#{password}
 		]]>
+	</select>
+	
+	<select id="searchFriend" parameterType="java.lang.String" resultType="user">
+		
+		SELECT * FROM USERS
+		WHERE LOWER(ID) LIKE '%' ||  #{username} || '%'
+
 	</select>
 </mapper>

@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import entity.User;
@@ -60,6 +61,17 @@ public class UserController {
 		List<User> list = userService.listUser();
 		model.addAttribute("list", list);
 		return "list";
+								// viewName, modelName, modelObject
+								// list.jsp, request객체이름, 전달할 객체 
+	}
+	
+	// 사용자 이름 검색 --------------------------------------------------------------
+	// 리스트 반환.
+	@RequestMapping(value="/searchFriend.do", method=RequestMethod.POST)
+	public String searchFriend(@RequestParam(value="username", defaultValue="", required=false) String username, Model model) {		
+		List<User> list = userService.searchFriend(username);
+		model.addAttribute("list", list);
+		return "searchFriend";
 								// viewName, modelName, modelObject
 								// list.jsp, request객체이름, 전달할 객체 
 	}
