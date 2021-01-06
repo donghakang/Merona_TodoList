@@ -14,8 +14,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -86,7 +84,9 @@ public class RegisterActivity2 extends RegisterActivity implements View.OnClickL
             dialog.show();
         } else if (v.getId() == R.id.btn_register_back) {
             Intent intent = new Intent(this, RegisterActivity1.class);
-            ActivityOptions options = ActivityOptions.makeCustomAnimation(this, R.anim.slide_l_to_r2, R.anim.slide_r_to_l2);
+            intent.putExtra("id", id);
+            intent.putExtra("pw", pw);
+            ActivityOptions options = ActivityOptions.makeCustomAnimation(this, R.anim.slide_back1, R.anim.slide_back2);
             startActivity(intent, options.toBundle());
             finish();
         } else if (v.getId() == R.id.btn_register_submit) {
@@ -100,6 +100,16 @@ public class RegisterActivity2 extends RegisterActivity implements View.OnClickL
             }
         }
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, RegisterActivity1.class);
+        intent.putExtra("id", id);
+        intent.putExtra("pw", pw);
+        ActivityOptions options = ActivityOptions.makeCustomAnimation(this, R.anim.slide_back2, R.anim.slide_back1);
+        startActivity(intent, options.toBundle());
+        finish();
     }
 
     // 이메일 체크 ------------------------------------------------------------------------
@@ -199,7 +209,7 @@ public class RegisterActivity2 extends RegisterActivity implements View.OnClickL
 //                    Intent intent = new Intent(this, RegisterActivity2.class);
 //                    intent.putExtra("id", id);
 //                    intent.putExtra("pw", pw);
-//                    ActivityOptions options = ActivityOptions.makeCustomAnimation(this, R.anim.slide_l_to_r, R.anim.slide_r_to_l);
+//                    ActivityOptions options = ActivityOptions.makeCustomAnimation(this, R.anim.slide_next1, R.anim.slide_next2);
 //                    startActivity(intent, options.toBundle());
 //                    finish();
             } else {

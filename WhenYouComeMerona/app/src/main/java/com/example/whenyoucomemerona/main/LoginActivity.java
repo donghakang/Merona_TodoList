@@ -86,6 +86,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
             // TODO: 회원가입
             Intent intent = new Intent(this, RegisterActivity1.class);
             startActivity(intent);
+            finish();
         }
     }
 }

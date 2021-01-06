@@ -30,6 +30,9 @@ public class RegisterActivity1 extends RegisterActivity implements View.OnClickL
     Button btnRegister;
     TextView btnRegisterCancel;
 
+    String id;
+    String pw;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,6 +43,12 @@ public class RegisterActivity1 extends RegisterActivity implements View.OnClickL
         etRegisterRepassword = findViewById(R.id.et_registerRepassword);
         btnRegister = findViewById(R.id.btn_register);
         btnRegisterCancel = findViewById(R.id.btn_register_cancel);
+
+        if (getIntent().getStringExtra("id") != null && getIntent().getStringExtra("pw") != null) {
+            etRegisterId.setText(getIntent().getStringExtra("id"));
+            etRegisterPassword.setText(getIntent().getStringExtra("pw"));
+            etRegisterRepassword.setText(getIntent().getStringExtra("pw"));
+        }
 
 
         // keyboard를 킨다.
@@ -69,6 +78,13 @@ public class RegisterActivity1 extends RegisterActivity implements View.OnClickL
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
     private void checkId(String id) {
         params.clear();
         params.put("username", id);
@@ -83,11 +99,11 @@ public class RegisterActivity1 extends RegisterActivity implements View.OnClickL
             // 데이터 가져오기 성공할 때,
             if (j.optString("result").equals("ok")) {
                 String id = etRegisterId.getText().toString();
-                String pw = StaticFunction.EncBySha256(etRegisterPassword.getText().toString());
+                String pw = etRegisterPassword.getText().toString();
                 Intent intent = new Intent(this, RegisterActivity2.class);
                 intent.putExtra("id", id);
                 intent.putExtra("pw", pw);
-                ActivityOptions options = ActivityOptions.makeCustomAnimation(this, R.anim.slide_l_to_r, R.anim.slide_r_to_l);
+                ActivityOptions options = ActivityOptions.makeCustomAnimation(this, R.anim.slide_next1, R.anim.slide_next2);
                 startActivity(intent, options.toBundle());
             } else {
                 Toast.makeText(this, "이미 사용중인 아이디 입니다.", Toast.LENGTH_LONG).show();
