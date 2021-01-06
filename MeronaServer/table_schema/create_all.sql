@@ -2,12 +2,15 @@
 
 create table users (
 	user_id number,
-	id varchar(50),
-	password varchar(50)
+	id varchar(100),
+	pw varchar(100),
+	name varchar(100),
+	birth varchar(100),	
+	email varchar(100)
 );
 create sequence user_seq increment by 1 start with 1;
 
-insert into users values (user_seq.nextval, 'admin', '1234');
+-- insert into users values (user_seq.nextval, 'admin', '1234');
 
 select * from users;
 

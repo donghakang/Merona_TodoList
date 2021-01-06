@@ -26,6 +26,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.whenyoucomemerona.R;
+import com.example.whenyoucomemerona.controller.BaseFragment;
 import com.example.whenyoucomemerona.entity.Todos;
 import com.example.whenyoucomemerona.url.URL;
 
@@ -37,7 +38,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class HomeFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
+public class HomeFragment extends BaseFragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     TodosAdapter adapter;
     ArrayList<Todos> arr = new ArrayList<>();
@@ -69,78 +70,43 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
         adapter.notifyDataSetChanged();
     }
 
-    public void refreshData() {
 
-        RequestQueue stringRequest = Volley.newRequestQueue(getContext());
-        // TODO: login.do 로 변경한다.
-        String url = URL.getUrl() +  "todoList.do";
+    @Override
+    public void response(String response) {
+        // 통신을 성공 할 시
+        try {
+            JSONObject j = new JSONObject(response);
+            // 데이터 가져오기 성공할 때,
+            if (j.optString("result").equals("ok")) {
+                arr.clear();                    // 데이터를 가져오기전 정리한다.
+                JSONArray data = j.optJSONArray("data");
+                for (int i = 0; i < data.length(); i ++ ){
+                    JSONObject item = data.getJSONObject(i);
+                    int todo_id = item.getInt("todo_id");
+                    String content = item.getString("content");
+                    boolean done = item.getBoolean("done");
 
-        StringRequest myReq = new StringRequest(Request.Method.POST, url,
-                successListener, errorListener) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<String, String>();
-//                params.put("id", id);
-//                params.put("password", password);
-                return params;
+                    Todos todo = new Todos();
+                    todo.setTodo_id(todo_id);
+                    todo.setContent(content);
+                    todo.setDone(done);
+
+                    arr.add(todo);
+                }
+                adapter.notifyDataSetChanged();
+                Toast.makeText(getContext(), "리스트 불러오기 성공", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(), "리스트 불러오기 실패", Toast.LENGTH_SHORT).show();
             }
-        };
-
-        myReq.setRetryPolicy(new DefaultRetryPolicy(3000, 0, 1f));
-        stringRequest.add(myReq);
+        } catch (JSONException e) {
+            Log.d("JSON ERROR", "JSON에서 에러가 있습니다.");
+            e.printStackTrace();
+        }
     }
 
-
-    Response.Listener<String> successListener = new Response.Listener<String>() {
-        @Override
-        public void onResponse(String response) {
-            // 통신을 성공 할 시
-            try {
-                JSONObject j = new JSONObject(response);
-                // 데이터 가져오기 성공할 때,
-                if (j.optString("result").equals("ok")) {
-                    arr.clear();                    // 데이터를 가져오기전 정리한다.
-                    JSONArray data = j.optJSONArray("data");
-                    for (int i = 0; i < data.length(); i ++ ){
-                        JSONObject item = data.getJSONObject(i);
-                        int todo_id = item.getInt("todo_id");
-                        String content = item.getString("content");
-                        boolean done = item.getBoolean("done");
-
-                        Todos todo = new Todos();
-                        todo.setTodo_id(todo_id);
-                        todo.setContent(content);
-                        todo.setDone(done);
-
-                        arr.add(todo);
-                    }
-                    adapter.notifyDataSetChanged();
-                    Toast.makeText(getContext(), "리스트 불러오기 성공", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getContext(), "리스트 불러오기 실패", Toast.LENGTH_SHORT).show();
-                }
-            } catch (JSONException e) {
-                Log.d("ddddd", "JSON에서 에러가 있습니다.");
-                e.printStackTrace();
-            }
-        }
-    };
-
-    // when obtaining data is unsuccessful.
-    Response.ErrorListener errorListener = new Response.ErrorListener() {
-        @Override
-        public void onErrorResponse(VolleyError error) {
-            // 통신을 실패할 시
-            Log.d("ddddd", "통신 실패.");
-            Toast.makeText(getContext(), "통신이 불가능 합니다.", Toast.LENGTH_SHORT).show();
-        }
-    };
-
-
-
     /* ----------------------------------------------------------------------------------------------------
-    * -------------------------------------------Create View----------------------------------------------
-     ---------------------------------------------------------------------------------------------------- */
+        * -------------------------------------------Create View----------------------------------------------
+         ---------------------------------------------------------------------------------------------------- */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -154,17 +120,16 @@ public class HomeFragment extends Fragment implements View.OnClickListener, Adap
 
         searchFragment = new SearchFragment();
 
-        refreshData();
-
-        adapter = new TodosAdapter(getActivity(), arr);
-        list.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+//        refreshData();
+        request(URL.getUrl() + "todoList.do");
+        refresh(arr);
 
         // Scroll Down to refresh  ------------------------------------------------
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                refreshData();
+                request(URL.getUrl() + "todoList.do");
+                refresh(arr);
                 pullToRefresh.setRefreshing(false);
             }
 

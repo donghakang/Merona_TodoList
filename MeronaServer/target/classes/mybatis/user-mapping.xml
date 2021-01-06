@@ -7,7 +7,7 @@
 	<select id="getLoginUser" parameterType="user" resultType="user">
 		<![CDATA[
 			SELECT * FROM USERS
-			WHERE ID=#{id} AND PASSWORD=#{password}
+			WHERE ID=#{id} AND PW=#{pw}
 		]]>
 	</select>
 	
@@ -17,4 +17,26 @@
 		WHERE LOWER(ID) LIKE '%' ||  #{username} || '%'
 
 	</select>
+	
+	<select id="checkId" parameterType="java.lang.String" resultType="user">
+		<![CDATA[
+			SELECT * FROM USERS
+			WHERE ID=#{username}
+		]]>
+	</select>
+	
+	<select id="checkEmail" parameterType="java.lang.String" resultType="user">
+		<![CDATA[
+			SELECT * FROM USERS
+			WHERE EMAIL=#{email}
+		]]>
+	</select>
+	
+	<insert id="registerUser" parameterType="user">
+		<![CDATA[
+			INSERT INTO USERS(USER_ID, ID, PW, NAME, BIRTH, EMAIL)
+			VALUES (USER_SEQ.NEXTVAL, #{id}, #{pw}, #{name}, #{birth}, #{email})
+		]]>
+	</insert>
+	
 </mapper>

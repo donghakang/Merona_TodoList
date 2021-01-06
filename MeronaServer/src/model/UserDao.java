@@ -16,15 +16,27 @@ public class UserDao {
 	@Autowired
 	private SqlSessionFactory factory;
 	
-	public boolean insertUser(User user) {
-		int n=factory.openSession().insert("my.userMapper.insertUser",user);
-		return (n > 0)?true:false;
-	}
-	//--------------------------------------------------------
-	public List<User> listUser() {
-		return factory.openSession().selectList("my.userMapper.listUser");
+	// 회원가입시, 사용자 이름 가능여부 --------------------------------------------------------------
+	public int checkId(String username) {
+		List<User> list = factory.openSession().selectList("mybatis.LoginMapper.checkId", username);
+		return list.size();
 	}
 	
+	// 회원가입시, 사용자 이메일 가능여부 --------------------------------------------------------------
+	public int checkEmail(String email) {
+		List<User> list = factory.openSession().selectList("mybatis.LoginMapper.checkEmail", email);
+		return list.size();
+	}
+ 
+	// 회원가입 ----------------------------------------------------------------------------------
+	public boolean register(User user) {
+		int n = factory.openSession().insert("mybatis.LoginMapper.registerUser",user);
+		return (n > 0)?true:false;
+	}
+	
+	
+	
+	// 로그인 !
 	public boolean loginUser(User user) {
 		User loginUser = factory.openSession().selectOne("mybatis.LoginMapper.getLoginUser",user);
 		// TODO: 리턴 값을 User 로 교체한다.
@@ -36,11 +48,17 @@ public class UserDao {
 		}
 	}
 	
-	// 사용자 이름 검색 --------------------------------------------------------------
+	// 사용자 이름 검색 --------------------------------------------------------------------------- 
 	// 리스트 반환.
 	public List<User> searchFriend(String username) {
 		// TODO Auto-generated method stub
 		return factory.openSession().selectList("mybatis.LoginMapper.searchFriend", username);
 	}
+
+
+	
+	
+	
+	
 }
 

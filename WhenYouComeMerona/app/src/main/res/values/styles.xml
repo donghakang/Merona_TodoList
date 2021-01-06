@@ -4,7 +4,6 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
 
-
     </style>
 
 </resources>

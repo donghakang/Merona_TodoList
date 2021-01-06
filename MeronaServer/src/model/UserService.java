@@ -17,13 +17,6 @@ public class UserService {
 		this.userDao = userDao;
 	}
 
-	public boolean insertUser(User user) {
-		return userDao.insertUser(user);
-	}
-
-	public List<User> listUser() {
-		return userDao.listUser();
-	}
 
 	public boolean loginUser(User user) {
 		
@@ -32,5 +25,17 @@ public class UserService {
 
 	public List<User> searchFriend(String username) {
 		return userDao.searchFriend(username);
+	}
+
+	public int checkId(String username) {
+		return userDao.checkId(username);
+	}
+
+	public int checkEmail(String email) {
+		return userDao.checkEmail(email);
+	}
+
+	public boolean register(User user) {
+		return userDao.register(user);
 	}
 }

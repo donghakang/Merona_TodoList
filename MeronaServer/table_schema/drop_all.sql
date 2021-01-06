@@ -1,6 +1,8 @@
-
+--
 drop table users;
-drop table todos;
-
 drop sequence user_seq;
+
+
+
+drop table todos;
 drop sequence todo_seq;

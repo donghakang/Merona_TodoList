@@ -18,6 +18,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.whenyoucomemerona.R;
+import com.example.whenyoucomemerona.controller.BaseActivity;
 import com.example.whenyoucomemerona.url.URL;
 
 import org.json.JSONException;
@@ -26,7 +27,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
-public class SplashActivity extends AppCompatActivity {
+public class SplashActivity extends BaseActivity {
 
     private static int SPLASH_TIME_OUT = 3000;
     private String auto_id;
@@ -39,83 +40,56 @@ public class SplashActivity extends AppCompatActivity {
 
         SharedPreferences auto = getSharedPreferences("auto", Activity.MODE_PRIVATE);
         auto_id = auto.getString("auto_id",null);
-        auto_password = auto.getString("auto_password",null);
+        auto_password = auto.getString("auto_pw",null);
 
         new Handler().postDelayed(new Runnable() {
 
             @Override
             public void run() {
+//                // TODO: Uncomment
+//                if (auto_id != null && auto_password != null) {
+//                    // 자동 로그인
+//                    params.clear();
+//                    params.put("id", auto_id);
+//                    params.put("password", auto_password);
+//                    request(URL.getUrl() + "login.do");
+//
+//                } else {
+//                    Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
+//                    startActivity(intent);
+//
+//                    finish();
+//                }
+                Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
+                startActivity(intent);
 
-                if (auto_id != null && auto_password != null) {
-                    // 자동 로그인
-                    checkLoginStatus(auto_id, auto_password);
-                } else {
-                    Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
-                    startActivity(intent);
-
-                    finish();
-                }
+                finish();
 
             }
         }, SPLASH_TIME_OUT);
     }
 
-    public void checkLoginStatus(final String _id, final String _password) {
-        RequestQueue stringRequest = Volley.newRequestQueue(this);
-        // TODO: login.do 로 변경한다.
-        String url = URL.getUrl() +  "login.do";
+    @Override
+    public void response(String response) {
+        // TODO: 통신을 성공 할 시
+        try {
+            JSONObject j = new JSONObject(response);
+            if (j.optString("result").equals("ok")) {
 
-        StringRequest myReq = new StringRequest(Request.Method.POST, url,
-                successListener, errorListener) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("id", _id);
-                params.put("password", _password);
-                return params;
+                Toast.makeText(SplashActivity.this, "로그인 성공", Toast.LENGTH_SHORT).show();
+
+                Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+
+            } else {
+                Toast.makeText(SplashActivity.this, "로그인 실패", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
             }
-        };
-
-        myReq.setRetryPolicy(new DefaultRetryPolicy(3000, 0, 1f));
-        stringRequest.add(myReq);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
-
-
-    Response.Listener<String> successListener = new Response.Listener<String>() {
-        @Override
-        public void onResponse(String response) {
-            // TODO: 통신을 성공 할 시
-            try {
-                JSONObject j = new JSONObject(response);
-                if (j.optString("result").equals("ok")) {
-
-                    Toast.makeText(SplashActivity.this, "로그인 성공", Toast.LENGTH_SHORT).show();
-
-                    Intent intent = new Intent(SplashActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    finish();
-
-                } else {
-                    Toast.makeText(SplashActivity.this, "로그인 실패", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
-                    startActivity(intent);
-                    finish();
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-    };
-
-    // when obtaining data is unsuccessful.
-    Response.ErrorListener errorListener = new Response.ErrorListener() {
-        @Override
-        public void onErrorResponse(VolleyError error) {
-            // 통신을 실패할 시
-            Toast.makeText(SplashActivity.this, "통신이 불가능 합니다.", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
-            startActivity(intent);
-            finish();
-        }
-    };
 }

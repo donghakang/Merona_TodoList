@@ -21,6 +21,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.whenyoucomemerona.R;
+import com.example.whenyoucomemerona.controller.BaseFragment;
 import com.example.whenyoucomemerona.entity.Todos;
 import com.example.whenyoucomemerona.url.URL;
 
@@ -33,7 +34,7 @@ import java.util.Objects;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
-public class EditFragment extends Fragment implements View.OnClickListener {
+public class EditFragment extends BaseFragment implements View.OnClickListener {
 
     EditText etContent;
     Button btnSubmit;
@@ -70,51 +71,27 @@ public class EditFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        RequestQueue stringRequest = Volley.newRequestQueue(Objects.requireNonNull(getContext()));
-        // TODO: login.do 로 변경한다.
-        String url = URL.getUrl() + "editItem.do";
-
-        StringRequest myReq = new StringRequest(Request.Method.POST, url,
-                successListener, errorListener) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("todo_id", todo.getTodo_id() + "");
-                params.put("content", etContent.getText().toString());
-                params.put("done", todo.getDone() + "");
-                return params;
-            }
-        };
-
-        myReq.setRetryPolicy(new DefaultRetryPolicy(3000, 0, 1f));
-        stringRequest.add(myReq);
+        params.clear();
+        params.put("todo_id", todo.getTodo_id() + "");
+        params.put("content", etContent.getText().toString());
+        params.put("done", todo.getDone() + "");
+        request(URL.getUrl() + "editItem.do");
     }
 
-    Response.Listener<String> successListener = new Response.Listener<String>() {
-        @Override
-        public void onResponse(String response) {
-            // 통신을 성공 할 시
-            try {
-                JSONObject j = new JSONObject(response);
-                // 데이터 가져오기 성공할 때,
-                if (j.optString("result").equals("ok")) {
-                    Toast.makeText(getContext(), "수정 성공", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getContext(), "수정 실패", Toast.LENGTH_SHORT).show();
-                }
-            } catch (JSONException e) {
-                Log.d("eeeee", "JSON에서 에러가 있습니다.");
-                e.printStackTrace();
+    @Override
+    public void response(String response) {
+        // 통신을 성공 할 시
+        try {
+            JSONObject j = new JSONObject(response);
+            // 데이터 가져오기 성공할 때,
+            if (j.optString("result").equals("ok")) {
+                Toast.makeText(getContext(), "수정 성공", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(), "수정 실패", Toast.LENGTH_SHORT).show();
             }
+        } catch (JSONException e) {
+            Log.d("eeeee", "JSON에서 에러가 있습니다.");
+            e.printStackTrace();
         }
-    };
-
-    // when obtaining data is unsuccessful.
-    Response.ErrorListener errorListener = new Response.ErrorListener() {
-        @Override
-        public void onErrorResponse(VolleyError error) {
-            // 통신을 실패할 시
-            Toast.makeText(getContext(), "통신이 불가능 합니다.", Toast.LENGTH_SHORT).show();
-        }
-    };
+    }
 }

@@ -18,6 +18,11 @@
     <string name="register_email">이메일을 입력하세요</string>
     <string name="register_btn">가입하기</string>
     <string name="register_cancel">취소하기</string>
+    <string name="register_btn_next">다음으로</string>
+    <string name="register_birth">생년월일을 선택하세요</string>
+    <string name="register_submit">가입하기</string>
+    <string name="register_back">뒤로가기</string>
+    <string name="register_name">이름을 입력하세요</string>
 
 
     <string-array name="filter_spinner">
