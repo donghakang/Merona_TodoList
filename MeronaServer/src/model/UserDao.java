@@ -51,8 +51,12 @@ public class UserDao {
 	// 사용자 이름 검색 --------------------------------------------------------------------------- 
 	// 리스트 반환.
 	public List<User> searchFriend(String username) {
-		// TODO Auto-generated method stub
 		return factory.openSession().selectList("mybatis.LoginMapper.searchFriend", username);
+	}
+
+	// 마이페이지 출력 --------------------------------------------------------------
+	public User myPageUser(User user) {
+		return factory.openSession().selectOne("mybatis.LoginMapper.getLoginUser", user);
 	}
 
 

@@ -39,4 +39,11 @@
 		]]>
 	</insert>
 	
+	
+	<select id="myPageUser" parameterType="user" resultType="user">
+		<![CDATA[
+			SELECT * FROM USERS
+			WHERE ID=#{id} AND PW=#{pw}
+		]]>
+	</select>
 </mapper>

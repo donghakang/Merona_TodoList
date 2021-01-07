@@ -1,5 +1,7 @@
 package com.example.whenyoucomemerona.controller;
 
+import android.content.pm.PackageInfo;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -33,4 +35,5 @@ public class StaticFunction {
         }
         return retVal;
     }
+
 }

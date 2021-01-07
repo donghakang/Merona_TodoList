@@ -28,12 +28,6 @@ public class BaseActivity extends AppCompatActivity {
     public Map<String, String> params = new HashMap<String, String>();
 
 
-
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
     Response.ErrorListener errorListener = new Response.ErrorListener() {
         @Override
         public void onErrorResponse(VolleyError error) {
@@ -52,7 +46,7 @@ public class BaseActivity extends AppCompatActivity {
 
     public void request(String url) {
         RequestQueue stringRequest = Volley.newRequestQueue(this);
-        StringRequest myReq = new StringRequest(Request.Method.POST, url,
+        StringRequest myReq = new StringRequest(Request.Method.POST, URL.getUrl() + url,
                 successListener, errorListener) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {

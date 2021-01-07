@@ -3,6 +3,7 @@
     package="com.example.whenyoucomemerona">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <application
         android:allowBackup="true"
@@ -12,10 +13,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:windowSoftInputMode="adjustNothing">
-        <activity android:name=".main.RegisterActivity1"/>
-        <activity android:name=".main.RegisterActivity2"/>
+        <activity android:name=".main.RegisterActivity1"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
+        <activity android:name=".main.RegisterActivity2"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
         <activity android:name=".main.RegisterActivity" />
-        <activity android:name=".main.LoginActivity" />
+        <activity android:name=".main.LoginActivity"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
         <activity android:name=".main.MainActivity" />
         <activity android:name=".main.SplashActivity">
             <intent-filter>
@@ -24,6 +31,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <meta-data android:name="com.kakao.sdk.AppKey" android:value="d91b15f487701dcd1cfcb3c740e9b510"/>
     </application>
 
 </manifest>

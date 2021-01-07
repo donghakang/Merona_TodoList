@@ -82,7 +82,7 @@ public class SearchFragment extends BaseFragment implements View.OnClickListener
 
                 params.clear();
                 params.put("username", username);
-                request(URL.getUrl() + "searchFriend.do");
+                request("searchFriend.do");
 
                 InputMethodManager imm = (InputMethodManager) getContext().getSystemService(INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);

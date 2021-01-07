@@ -21,6 +21,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.whenyoucomemerona.R;
+import com.example.whenyoucomemerona.controller.BaseFragment;
+import com.example.whenyoucomemerona.url.URL;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,7 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class AddFragment extends Fragment {
+public class AddFragment extends BaseFragment {
 
     EditText etContent;
     Button   btnSubmit;
@@ -62,54 +64,28 @@ public class AddFragment extends Fragment {
     }
 
     public void insertItem() {
-        RequestQueue stringRequest = Volley.newRequestQueue(getContext());
-        // TODO: login.do 로 변경한다.
-        String url = "http://172.30.1.15:8098/merona/insertItem.do";
+        params.clear();
+        params.put("content", etContent.getText().toString());
+        params.put("done", "false");
 
-        StringRequest myReq = new StringRequest(Request.Method.POST, url,
-                successListener, errorListener) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("content", etContent.getText().toString());
-                params.put("done", "false");
-//                params.put("password", password);
-                return params;
-            }
-        };
-
-        myReq.setRetryPolicy(new DefaultRetryPolicy(3000, 0, 1f));
-        stringRequest.add(myReq);
+        request("insertItem.do");
     }
 
 
-    Response.Listener<String> successListener = new Response.Listener<String>() {
-        @Override
-        public void onResponse(String response) {
-            // 통신을 성공 할 시
-            try {
-                JSONObject j = new JSONObject(response);
-                // 데이터 가져오기 성공할 때,
-                Log.d("eeeee", response);
-                if (j.optString("result").equals("ok")) {
-                    Toast.makeText(getContext(), "삽입하기 성공", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(getContext(), "삽입하기 실패", Toast.LENGTH_SHORT).show();
-                }
-            } catch (JSONException e) {
-                Log.d("eeeee", "JSON에서 에러가 있습니다.");
-                e.printStackTrace();
+    @Override
+    public void response(String response) {
+        // 통신을 성공 할 시
+        try {
+            JSONObject j = new JSONObject(response);
+            // 데이터 가져오기 성공할 때,
+            if (j.optString("result").equals("ok")) {
+                Toast.makeText(getContext(), "삽입하기 성공", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(), "삽입하기 실패", Toast.LENGTH_SHORT).show();
             }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-    };
+    }
 
-    // when obtaining data is unsuccessful.
-    Response.ErrorListener errorListener = new Response.ErrorListener() {
-        @Override
-        public void onErrorResponse(VolleyError error) {
-            // 통신을 실패할 시
-            Log.d("eeeee", "통신 실패.");
-            Toast.makeText(getContext(), "통신이 불가능 합니다.", Toast.LENGTH_SHORT).show();
-        }
-    };
 }

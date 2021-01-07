@@ -75,7 +75,7 @@ public class EditFragment extends BaseFragment implements View.OnClickListener {
         params.put("todo_id", todo.getTodo_id() + "");
         params.put("content", etContent.getText().toString());
         params.put("done", todo.getDone() + "");
-        request(URL.getUrl() + "editItem.do");
+        request("editItem.do");
     }
 
     @Override

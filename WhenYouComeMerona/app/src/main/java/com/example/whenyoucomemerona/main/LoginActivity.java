@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.example.whenyoucomemerona.R;
 import com.example.whenyoucomemerona.controller.BaseActivity;
+import com.example.whenyoucomemerona.controller.StaticFunction;
 import com.example.whenyoucomemerona.url.URL;
 
 import org.json.JSONException;
@@ -79,8 +80,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
             params.clear();
             params.put("id", id);
-            params.put("pw", password);
-            request(URL.getUrl() +  "login.do");
+            params.put("pw", StaticFunction.EncBySha256(password));
+            request("login.do");
 
         } else if (v.getId() == R.id.tv_register) {
             // TODO: 회원가입

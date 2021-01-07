@@ -5,8 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Base64;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -24,6 +29,8 @@ import com.example.whenyoucomemerona.url.URL;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,10 +40,30 @@ public class SplashActivity extends BaseActivity {
     private String auto_id;
     private String auto_password;
 
+
+    private void getAppKeyHash() {
+        try {
+            PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md;
+                md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                String something = new String(Base64.encode(md.digest(), 0));
+                Log.d("Hash key", something);
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            Log.e("name not found", e.toString());
+        }
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
+        getAppKeyHash();
 
         SharedPreferences auto = getSharedPreferences("auto", Activity.MODE_PRIVATE);
         auto_id = auto.getString("auto_id",null);
@@ -46,20 +73,19 @@ public class SplashActivity extends BaseActivity {
 
             @Override
             public void run() {
-//                // TODO: Uncomment
-//                if (auto_id != null && auto_password != null) {
-//                    // 자동 로그인
-//                    params.clear();
-//                    params.put("id", auto_id);
-//                    params.put("password", auto_password);
-//                    request(URL.getUrl() + "login.do");
-//
-//                } else {
-//                    Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
-//                    startActivity(intent);
-//
-//                    finish();
-//                }
+                if (auto_id != null && auto_password != null) {
+                    // 자동 로그인
+                    params.clear();
+                    params.put("id", auto_id);
+                    params.put("pw", auto_password);
+                    request("login.do");
+
+                } else {
+                    Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
+                    startActivity(intent);
+
+                    finish();
+                }
                 Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
                 startActivity(intent);
 

@@ -18,9 +18,7 @@ public class RegisterActivity extends BaseActivity {
     }
 
     private boolean isTextEqual(EditText et1, EditText et2) {
-        Log.d("eeeee", et1.getText().toString());
-        Log.d("eeeee", et2.getText().toString());
-        Log.d("eeeee", (et1.getText().toString().equals(et2.getText().toString())) + "");
+
         return et1.getText().toString().equals(et2.getText().toString());
     }
 

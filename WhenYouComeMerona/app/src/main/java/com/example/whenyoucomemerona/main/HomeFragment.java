@@ -121,14 +121,14 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
         searchFragment = new SearchFragment();
 
 //        refreshData();
-        request(URL.getUrl() + "todoList.do");
+        request("todoList.do");
         refresh(arr);
 
         // Scroll Down to refresh  ------------------------------------------------
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                request(URL.getUrl() + "todoList.do");
+                request("todoList.do");
                 refresh(arr);
                 pullToRefresh.setRefreshing(false);
             }

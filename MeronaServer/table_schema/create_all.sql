@@ -6,7 +6,7 @@ create table users (
 	pw varchar(100),
 	name varchar(100),
 	birth varchar(100),	
-	email varchar(100)
+	email varchar(100),	
 );
 create sequence user_seq increment by 1 start with 1;
 
@@ -34,3 +34,13 @@ insert into todos values (todo_seq.nextval, '찰떡 붕어빵 사오기', 1);
 insert into todos values (todo_seq.nextval, '비비빅 사오기', 1);
 
 select * from todos;
+
+
+
+create table t2( col_name varchar2(10) );
+insert into t2(col_name) values('hsaJDadkD');
+ALTER TABLE t2 ADD (col_name4 varchar(100)); --virtual column
+
+delete from users where id='admin';
+
+Select * from T2;

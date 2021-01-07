@@ -148,9 +148,9 @@ public class TodosAdapter extends ArrayAdapter {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 RequestQueue stringRequest = Volley.newRequestQueue(getContext());
-                                String url = URL.getUrl() + "deleteItem.do";
+                                String url = "deleteItem.do";
 
-                                StringRequest myReq = new StringRequest(Request.Method.POST, url,
+                                StringRequest myReq = new StringRequest(Request.Method.POST, URL.getUrl() + url,
                                 new Response.Listener<String>() {
                                     @Override
                                     public void onResponse(String response) {
@@ -222,9 +222,9 @@ public class TodosAdapter extends ArrayAdapter {
 
     private void updateItem(final int position, final boolean status) {
         RequestQueue stringRequest = Volley.newRequestQueue(getContext());
-        String url = URL.getUrl() + "updateCheckbox.do";
+        String url = "updateCheckbox.do";
 
-        StringRequest myReq = new StringRequest(Request.Method.POST, url,
+        StringRequest myReq = new StringRequest(Request.Method.POST, URL.getUrl() + url,
                 updateSuccessListener, updateErrorListener) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {

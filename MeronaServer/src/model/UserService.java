@@ -38,4 +38,9 @@ public class UserService {
 	public boolean register(User user) {
 		return userDao.register(user);
 	}
+
+
+	public User myPageUser(User user) {
+		return userDao.myPageUser(user);
+	}
 }

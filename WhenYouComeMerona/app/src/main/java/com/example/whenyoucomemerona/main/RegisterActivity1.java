@@ -88,7 +88,7 @@ public class RegisterActivity1 extends RegisterActivity implements View.OnClickL
     private void checkId(String id) {
         params.clear();
         params.put("username", id);
-        request(URL.getUrl() + "checkId.do");
+        request("checkId.do");
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.example.whenyoucomemerona.main;
 import android.app.ActivityOptions;
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.UriMatcher;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -90,10 +91,6 @@ public class RegisterActivity2 extends RegisterActivity implements View.OnClickL
             startActivity(intent, options.toBundle());
             finish();
         } else if (v.getId() == R.id.btn_register_submit) {
-            params.clear();
-            params.put("username", id);
-            request(URL.getUrl() + "checkId.do");
-
             if (checkRegister2(etName, etBirth, etEmail)) {
                 String email = etEmail.getText().toString();
                 checkEmail(email);
@@ -114,10 +111,10 @@ public class RegisterActivity2 extends RegisterActivity implements View.OnClickL
 
     // 이메일 체크 ------------------------------------------------------------------------
     private void checkEmail(final String email) {
-        String url = URL.getUrl() + "checkEmail.do";
+        String url = "checkEmail.do";
 
         RequestQueue stringRequest = Volley.newRequestQueue(this);
-        StringRequest myReq = new StringRequest(Request.Method.POST, url,
+        StringRequest myReq = new StringRequest(Request.Method.POST, URL.getUrl() + url,
                 emailSuccessListener, emailErrorListener) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
@@ -145,8 +142,6 @@ public class RegisterActivity2 extends RegisterActivity implements View.OnClickL
                 JSONObject j = new JSONObject(response);
                 // 데이터 가져오기 성공할 때,
                 if (j.optString("result").equals("ok")) {
-                    Toast.makeText(getApplicationContext(), "OKAY EMAIL", Toast.LENGTH_SHORT).show();
-
                     register();
                 } else {
                     Toast.makeText(getApplicationContext(), "이미 사용중인 이메일 입니다.", Toast.LENGTH_LONG).show();
@@ -194,7 +189,7 @@ public class RegisterActivity2 extends RegisterActivity implements View.OnClickL
         params.put("name", name);
         params.put("birth", birth);
         params.put("email", email);
-        request(URL.getUrl() + "register.do");
+        request("register.do");
     }
 
     @Override
