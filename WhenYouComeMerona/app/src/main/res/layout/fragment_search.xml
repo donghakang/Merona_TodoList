@@ -15,7 +15,7 @@
 
         <RelativeLayout
             android:id="@+id/rl_search_bar"
-            android:layout_toLeftOf="@id/btn_search_submit"
+            android:layout_toStartOf="@id/btn_search_submit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <EditText
@@ -23,9 +23,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:background="@drawable/login_edittext"
-                android:hint="닉네임으로 검색"
+                android:hint="@string/search_nickname"
                 android:textColorHint="#333333"
-                android:paddingLeft="16dp" />
+                android:paddingStart="16dp"
+                android:inputType="textEmailAddress" />
 
             <Button
                 android:id="@+id/btn_search_clear"

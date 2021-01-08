@@ -64,8 +64,6 @@ public class TodoController {
 		return JSONController.jsonTemplate(todoService.deleteItem(todo));
 	}
 	
-	
-
 }
 /* 
 @ModelAttribute User user는 아래와 동일

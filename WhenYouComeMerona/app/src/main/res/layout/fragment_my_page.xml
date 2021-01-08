@@ -5,135 +5,153 @@
     android:layout_height="match_parent"
     tools:context=".main.MyPageFragment">
 
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:layout_centerInParent="true"
+        android:visibility="invisible"
+        android:indeterminateDrawable="@drawable/progressbar"/>
+
     <RelativeLayout
-        android:id="@+id/my_page_rl"
+        android:id="@+id/my_page"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginEnd="12dp">
-        <View
-            android:id="@+id/my_profile"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:background="@drawable/baseline_account_circle_24"/>
+        android:layout_height="match_parent">
         <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/my_profile"
-            android:layout_toStartOf="@+id/my_setting"
-            android:layout_marginStart="8dp"
-            android:layout_centerVertical="true">
-            <TextView
-                android:id="@+id/my_id"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:textColor="#333333"
-                android:text="아이디가 들어갑니다."/>
-            <TextView
-                android:id="@+id/my_email"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/my_id"
-                android:text="whenyoucommerona@gmail.com"
-                android:textColor="#aaaaaa"/>
-            <Button
-                android:id="@+id/my_friend"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginTop="12dp"
-                android:layout_below="@id/my_email"/>
-        </RelativeLayout>
-        <Button
-            android:id="@+id/my_setting"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="20dp"
-            android:background="@drawable/baseline_more_horiz_24"/>
-
-    </RelativeLayout>
-
-    <View
-        android:id="@+id/my_line1"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/colorPrimary"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="12dp"
-        android:layout_marginLeft="12dp"
-        android:layout_below="@id/my_page_rl"/>
-    
-    <RelativeLayout
-        android:id="@+id/my_page_level_rl"
-        android:layout_below="@id/my_line1"
-        android:layout_marginTop="20dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <View
-            android:id="@+id/my_level"
-            android:layout_marginStart="12dp"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:background="@drawable/baseline_account_circle_24"/>
-
-        <RelativeLayout
+            android:id="@+id/my_page_rl"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
+            android:layout_marginTop="28dp"
             android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp"
-            android:layout_toRightOf="@id/my_level">
+            android:layout_marginEnd="12dp">
+            <View
+                android:id="@+id/my_profile"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@drawable/baseline_account_circle_24"/>
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/my_profile"
+                android:layout_toStartOf="@+id/my_setting"
+                android:layout_marginStart="8dp"
+                android:layout_centerVertical="true">
+                <TextView
+                    android:id="@+id/my_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:textColor="#333333"
+                    android:text="아이디가 들어갑니다."/>
+                <TextView
+                    android:id="@+id/my_email"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/my_id"
+                    android:text="whenyoucommerona@gmail.com"
+                    android:textColor="#aaaaaa"/>
+                <Button
+                    android:id="@+id/my_friend"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_below="@id/my_email"/>
+            </RelativeLayout>
+            <Spinner
+                android:id="@+id/my_setting"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="20dp"
+                android:background="@drawable/baseline_more_horiz_24"/>
+
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/my_line1"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorPrimary"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginLeft="12dp"
+            android:layout_below="@id/my_page_rl"/>
+
+        <RelativeLayout
+            android:id="@+id/my_page_level_rl"
+            android:layout_below="@id/my_line1"
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <View
+                android:id="@+id/my_level"
+                android:layout_marginStart="12dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:background="@drawable/baseline_account_circle_24"/>
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:layout_marginStart="12dp"
-                android:layout_marginEnd="12dp">
-                <View
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:layout_alignParentStart="true"
-                    android:background="@drawable/baseline_account_circle_24"/>
-                <View
-                    android:layout_centerInParent="true"
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:background="@drawable/baseline_account_circle_24"/>
-                <View
-                    android:layout_width="64dp"
-                    android:layout_height="64dp"
-                    android:layout_alignParentEnd="true"
-                    android:background="@drawable/baseline_account_circle_24"/>
+                android:layout_marginEnd="12dp"
+                android:layout_toRightOf="@id/my_level">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginEnd="12dp">
+                    <View
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:layout_alignParentStart="true"
+                        android:background="@drawable/baseline_account_circle_24"/>
+                    <View
+                        android:layout_centerInParent="true"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:background="@drawable/baseline_account_circle_24"/>
+                    <View
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:layout_alignParentEnd="true"
+                        android:background="@drawable/baseline_account_circle_24"/>
 
+                </RelativeLayout>
             </RelativeLayout>
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/my_line2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorPrimary"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginLeft="12dp"
+            android:layout_below="@id/my_page_level_rl"/>
+
+
+        <RelativeLayout
+            android:id="@+id/my_page_list_rl"
+            android:layout_marginTop="20dp"
+            android:layout_below="@id/my_line2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
         </RelativeLayout>
     </RelativeLayout>
 
-    <View
-        android:id="@+id/my_line2"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/colorPrimary"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="12dp"
-        android:layout_marginLeft="12dp"
-        android:layout_below="@id/my_page_level_rl"/>
 
 
-    <RelativeLayout
-        android:id="@+id/my_page_list_rl"
-        android:layout_marginTop="20dp"
-        android:layout_below="@id/my_line2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <ListView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
 
-    </RelativeLayout>
+
 
 </RelativeLayout>

@@ -13,7 +13,6 @@ import android.widget.Toast;
 import com.example.whenyoucomemerona.R;
 import com.example.whenyoucomemerona.controller.BaseActivity;
 import com.example.whenyoucomemerona.controller.StaticFunction;
-import com.example.whenyoucomemerona.url.URL;
 
 import org.json.JSONException;
 import org.json.JSONObject;

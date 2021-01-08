@@ -17,26 +17,15 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.whenyoucomemerona.R;
 import com.example.whenyoucomemerona.controller.BaseFragment;
 import com.example.whenyoucomemerona.entity.Todos;
-import com.example.whenyoucomemerona.url.URL;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class HomeFragment extends BaseFragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
@@ -107,12 +96,26 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
     /* ----------------------------------------------------------------------------------------------------
         * -------------------------------------------Create View----------------------------------------------
          ---------------------------------------------------------------------------------------------------- */
+
+    @Override
+    public void loadStart() {
+        super.loadStart();
+        list.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void loadEnd() {
+        super.loadEnd();
+        list.setVisibility(View.VISIBLE);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         list = (ListView) view.findViewById(R.id.home_list);
+
         list.setItemsCanFocus(false);
         pullToRefresh = (SwipeRefreshLayout) view.findViewById(R.id.pullToRefresh);
         filterSpinner = (Spinner) view.findViewById(R.id.filter_spinner);
@@ -120,7 +123,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
 
         searchFragment = new SearchFragment();
 
-//        refreshData();
         request("todoList.do");
         refresh(arr);
 
@@ -145,6 +147,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
         filterSpinner.setAdapter(adapter);
 
         filterSpinner.setOnItemSelectedListener(this);
+
+
         return view;
     }
 

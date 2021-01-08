@@ -1,15 +1,9 @@
 package com.example.whenyoucomemerona.main;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.os.Bundle;
-import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.whenyoucomemerona.R;
 import com.example.whenyoucomemerona.controller.BaseActivity;
-import com.example.whenyoucomemerona.url.URL;
 
 public class RegisterActivity extends BaseActivity {
 

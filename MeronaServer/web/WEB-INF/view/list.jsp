@@ -28,7 +28,6 @@ if (todos != null) {
 	* result: ok
 	* data : json array of results
 	*/
-	
 	JSONArray data = new JSONArray();
 	for (Todos t : todos) {
 		JSONObject item = new JSONObject();

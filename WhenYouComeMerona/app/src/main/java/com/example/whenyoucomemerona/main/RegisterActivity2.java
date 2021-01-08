@@ -1,13 +1,16 @@
 package com.example.whenyoucomemerona.main;
 
 import android.app.ActivityOptions;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.UriMatcher;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -25,7 +28,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.whenyoucomemerona.R;
 import com.example.whenyoucomemerona.controller.StaticFunction;
-import com.example.whenyoucomemerona.url.URL;
+import com.example.whenyoucomemerona.model.URL;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,6 +47,8 @@ public class RegisterActivity2 extends RegisterActivity implements View.OnClickL
     String pw;
     String name, email, birth;
 
+    AlertDialog.Builder builder;
+    DatePicker datePicker;
     final Calendar cal = Calendar.getInstance();
 
     @Override
@@ -62,6 +67,7 @@ public class RegisterActivity2 extends RegisterActivity implements View.OnClickL
         etEmail = findViewById(R.id.et_registerEmail);
         btnSubmit = findViewById(R.id.btn_register_submit);
         btnBack = findViewById(R.id.btn_register_back);
+        datePicker = findViewById(R.id.register_date_picker);
 
         etBirth.setOnClickListener(this);
         btnSubmit.setOnClickListener(this);
@@ -72,17 +78,27 @@ public class RegisterActivity2 extends RegisterActivity implements View.OnClickL
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.et_registerBirth) {
-            int yy = cal.get(Calendar.YEAR);
-            int mm = cal.get(Calendar.MONTH);
-            int dd = cal.get(Calendar.DAY_OF_MONTH);
+            builder = new AlertDialog.Builder(this);
+            LayoutInflater lnf = getLayoutInflater();
+            final View view = lnf.inflate(R.layout.register_date, null);
+            builder.setView(view);
 
-            DatePickerDialog dialog = new DatePickerDialog(
-                    this,
-                    android.R.style.Theme_Holo_Light_Dialog_MinWidth,
-                    dateSetListener,
-                    yy, mm, dd);
-            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            int yy = cal.get(cal.YEAR);
+            int mm = cal.get(cal.MONTH);
+            int dd = cal.get(cal.DAY_OF_MONTH);
+
+            builder.setNegativeButton("취소", null);
+            builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // TODO: 확인
+                }
+            });
+
+            AlertDialog dialog = builder.create();
             dialog.show();
+
+
         } else if (v.getId() == R.id.btn_register_back) {
             Intent intent = new Intent(this, RegisterActivity1.class);
             intent.putExtra("id", id);

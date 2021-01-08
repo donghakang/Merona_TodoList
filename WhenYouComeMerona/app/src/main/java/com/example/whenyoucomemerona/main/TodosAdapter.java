@@ -28,7 +28,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.whenyoucomemerona.R;
 import com.example.whenyoucomemerona.entity.Todos;
-import com.example.whenyoucomemerona.url.URL;
+import com.example.whenyoucomemerona.model.URL;
 
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -2,6 +2,8 @@ package com.example.whenyoucomemerona.controller;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -14,14 +16,27 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.whenyoucomemerona.url.URL;
+import com.example.whenyoucomemerona.R;
+import com.example.whenyoucomemerona.main.MapFragment;
+import com.example.whenyoucomemerona.model.URL;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class BaseFragment extends Fragment {
     public Map<String, String> params = new HashMap<String, String>();
+    public ProgressBar progressBar;
+    // Progress Bar
 
+    public void loadStart() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    public void loadEnd() {
+        progressBar.setVisibility(View.INVISIBLE);
+    }
+
+    // 통신
     Response.ErrorListener errorListener = new Response.ErrorListener() {
         @Override
         public void onErrorResponse(VolleyError error) {

@@ -5,6 +5,16 @@
     android:layout_height="match_parent"
     tools:context=".main.HomeFragment">
 
+
+    <ProgressBar
+        android:id="@+id/progress"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
+        android:layout_centerInParent="true"
+        android:visibility="invisible"
+        android:indeterminateDrawable="@drawable/progressbar"/>
+
+
     <RelativeLayout
         android:id="@+id/rl_menubar"
         android:layout_width="match_parent"

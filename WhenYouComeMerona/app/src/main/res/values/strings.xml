@@ -23,6 +23,7 @@
     <string name="register_submit">가입하기</string>
     <string name="register_back">뒤로가기</string>
     <string name="register_name">이름을 입력하세요</string>
+    <string name="search_nickname">닉네임으로 검색</string>
 
 
     <string-array name="filter_spinner">
@@ -32,5 +33,14 @@
         <item>공유 된 일</item>
         <item>시간 순</item>
         <item>중요도</item>
+    </string-array>
+
+    <string-array name="my_page_setting">
+        <item>설정</item>
+        <item>로그아웃</item>
+    </string-array>
+
+    <string-array name="friend_setting">
+        <item>친구 끊기</item>
     </string-array>
 </resources>

@@ -1,7 +1,5 @@
 package com.example.whenyoucomemerona.main;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,25 +12,14 @@ import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.whenyoucomemerona.R;
 import com.example.whenyoucomemerona.controller.BaseActivity;
-import com.example.whenyoucomemerona.url.URL;
+import com.example.whenyoucomemerona.controller.StaticFunction;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class SplashActivity extends BaseActivity {
 
@@ -63,7 +50,7 @@ public class SplashActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        getAppKeyHash();
+//        getAppKeyHash();
 
         SharedPreferences auto = getSharedPreferences("auto", Activity.MODE_PRIVATE);
         auto_id = auto.getString("auto_id",null);
@@ -77,7 +64,7 @@ public class SplashActivity extends BaseActivity {
                     // 자동 로그인
                     params.clear();
                     params.put("id", auto_id);
-                    params.put("pw", auto_password);
+                    params.put("pw", StaticFunction.EncBySha256(auto_password));
                     request("login.do");
 
                 } else {
@@ -86,11 +73,6 @@ public class SplashActivity extends BaseActivity {
 
                     finish();
                 }
-                Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
-                startActivity(intent);
-
-                finish();
-
             }
         }, SPLASH_TIME_OUT);
     }
@@ -101,15 +83,10 @@ public class SplashActivity extends BaseActivity {
         try {
             JSONObject j = new JSONObject(response);
             if (j.optString("result").equals("ok")) {
-
-                Toast.makeText(SplashActivity.this, "로그인 성공", Toast.LENGTH_SHORT).show();
-
                 Intent intent = new Intent(SplashActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
-
             } else {
-                Toast.makeText(SplashActivity.this, "로그인 실패", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
                 startActivity(intent);
                 finish();

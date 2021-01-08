@@ -1,8 +1,8 @@
 package com.example.whenyoucomemerona.main;
 
-import androidx.fragment.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,33 +10,22 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.whenyoucomemerona.R;
 import com.example.whenyoucomemerona.controller.BaseFragment;
-import com.example.whenyoucomemerona.entity.Todos;
 import com.example.whenyoucomemerona.entity.User;
-import com.example.whenyoucomemerona.url.URL;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
-public class SearchFragment extends BaseFragment implements View.OnClickListener {
+public class SearchFragment extends BaseFragment implements View.OnClickListener, TextView.OnEditorActionListener {
 
     SearchFriendAdapter adapter;
     EditText etSearch;
@@ -67,6 +56,7 @@ public class SearchFragment extends BaseFragment implements View.OnClickListener
         btnSearchSubmit.setOnClickListener(this);
         btnSearchClear.setOnClickListener(this);
 
+        etSearch.setOnEditorActionListener(this);
 
         return view;
     }
@@ -117,8 +107,6 @@ public class SearchFragment extends BaseFragment implements View.OnClickListener
                     user.setId(id);
 
                     arr.add(user);
-
-                    Log.d("useruser", user.toString());
                 }
                 adapter.notifyDataSetChanged();
                 Toast.makeText(getContext(), "찾기 성공", Toast.LENGTH_SHORT).show();
@@ -129,5 +117,24 @@ public class SearchFragment extends BaseFragment implements View.OnClickListener
             Log.d("eeeee", "JSON에서 에러가 있습니다.");
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        // search 버튼을 누르지 않아도, 검색이 완료되면 실행된다.
+        if (v.getId() == R.id.et_search) {
+            String username = etSearch.getText().toString();
+            params.clear();
+            params.put("username", username);
+            request("searchFriend.do");
+
+            InputMethodManager imm = (InputMethodManager) getContext().getSystemService(INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);
+
+            adapter = new SearchFriendAdapter(getActivity(), arr);
+            listView.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
+        }
+        return false;
     }
 }
