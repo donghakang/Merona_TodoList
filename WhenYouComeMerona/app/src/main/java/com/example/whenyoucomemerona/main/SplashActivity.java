@@ -12,14 +12,25 @@ import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.whenyoucomemerona.R;
 import com.example.whenyoucomemerona.controller.BaseActivity;
 import com.example.whenyoucomemerona.controller.StaticFunction;
+import com.example.whenyoucomemerona.model.URL;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.security.MessageDigest;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SplashActivity extends BaseActivity {
 
@@ -62,10 +73,8 @@ public class SplashActivity extends BaseActivity {
             public void run() {
                 if (auto_id != null && auto_password != null) {
                     // 자동 로그인
-                    params.clear();
-                    params.put("id", auto_id);
-                    params.put("pw", StaticFunction.EncBySha256(auto_password));
-                    request("login.do");
+
+                    login(auto_id, auto_password, "login.do");
 
                 } else {
                     Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
@@ -77,7 +86,39 @@ public class SplashActivity extends BaseActivity {
         }, SPLASH_TIME_OUT);
     }
 
-    @Override
+    private void login(final String id, final String pw, String url) {
+        RequestQueue stringRequest = Volley.newRequestQueue(this);
+        StringRequest myReq = new StringRequest(Request.Method.POST, URL.getUrl() + url,
+                successListener, errorListener) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("id", id);
+                params.put("pw", StaticFunction.EncBySha256(pw));
+                return params;
+            }
+        };
+
+        myReq.setRetryPolicy(new DefaultRetryPolicy(3000, 0, 1f));
+        stringRequest.add(myReq);
+    }
+
+    public Response.ErrorListener errorListener = new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
+    };
+
+    public Response.Listener<String> successListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            response(response);
+        }
+    };
+
     public void response(String response) {
         // TODO: 통신을 성공 할 시
         try {
@@ -93,6 +134,11 @@ public class SplashActivity extends BaseActivity {
             }
         } catch (JSONException e) {
             e.printStackTrace();
+            Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
         }
     }
+
+
 }

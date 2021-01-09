@@ -81,17 +81,24 @@ public class RegisterActivity2 extends RegisterActivity implements View.OnClickL
             builder = new AlertDialog.Builder(this);
             LayoutInflater lnf = getLayoutInflater();
             final View view = lnf.inflate(R.layout.register_date, null);
+            final DatePicker date_picker = view.findViewById(R.id.register_date_picker);
             builder.setView(view);
 
-            int yy = cal.get(cal.YEAR);
-            int mm = cal.get(cal.MONTH);
-            int dd = cal.get(cal.DAY_OF_MONTH);
 
-            builder.setNegativeButton("취소", null);
+            builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    etBirth.setText("");
+                }
+            });
             builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     // TODO: 확인
+                    cal.set(Calendar.YEAR, date_picker.getYear());
+                    cal.set(Calendar.MONTH, date_picker.getMonth());
+                    cal.set(Calendar.DAY_OF_MONTH, date_picker.getDayOfMonth());
+                    updateLabel();
                 }
             });
 
@@ -175,16 +182,6 @@ public class RegisterActivity2 extends RegisterActivity implements View.OnClickL
 
 
     // 생 년 월 일 ------------------------------------------------------------------------
-    DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
-        @Override
-        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-            cal.set(Calendar.YEAR, year);
-            cal.set(Calendar.MONTH, month);
-            cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            updateLabel();
-        }
-    };
-
     private void updateLabel() {
         String myFormat = "yyyy-MM-dd"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);

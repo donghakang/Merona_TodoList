@@ -24,6 +24,12 @@
     <string name="register_back">뒤로가기</string>
     <string name="register_name">이름을 입력하세요</string>
     <string name="search_nickname">닉네임으로 검색</string>
+    <string name="add_content">해야 할 일</string>
+    <string name="add_memo">메모</string>
+    <string name="add_date">날짜</string>
+    <string name="add_time">시간</string>
+    <string name="add_location">장소</string>
+    <string name="share">공유</string>
 
 
     <string-array name="filter_spinner">

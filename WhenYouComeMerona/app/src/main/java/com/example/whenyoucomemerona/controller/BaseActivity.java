@@ -21,14 +21,14 @@ public class BaseActivity extends AppCompatActivity {
     public Map<String, String> params = new HashMap<String, String>();
 
 
-    Response.ErrorListener errorListener = new Response.ErrorListener() {
+    public Response.ErrorListener errorListener = new Response.ErrorListener() {
         @Override
         public void onErrorResponse(VolleyError error) {
             Toast.makeText(getApplicationContext(), "통신이 불가능 합니다.", Toast.LENGTH_SHORT).show();
         }
     };
 
-    Response.Listener<String> successListener = new Response.Listener<String>() {
+    public Response.Listener<String> successListener = new Response.Listener<String>() {
         @Override
         public void onResponse(String response) {
             response(response);
