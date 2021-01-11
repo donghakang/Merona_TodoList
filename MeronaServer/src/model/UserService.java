@@ -43,4 +43,9 @@ public class UserService {
 	public User myPageUser(User user) {
 		return userDao.myPageUser(user);
 	}
+
+
+	public User getUserPage(int user_id) {
+		return userDao.getUserPage(user_id);
+	}
 }

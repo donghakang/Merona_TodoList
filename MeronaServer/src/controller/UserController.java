@@ -55,6 +55,7 @@ public class UserController {
 	@RequestMapping(value="/login.do", method=RequestMethod.POST)
 	@ResponseBody
 	public String login(@ModelAttribute User user) {
+		System.out.println("_----_----__-");
 		return JSONController.jsonTemplate(userService.loginUser(user));
 	}
 	
@@ -73,6 +74,14 @@ public class UserController {
 	public String searchFriend(@ModelAttribute User user, Model model) {		
 		User user_info = userService.myPageUser(user);
 		System.out.println(user_info.toString());
+		model.addAttribute("user", user_info);
+		return "myPage";
+	}
+	
+	// 검색을 이용해서 친구의 페이지를 불러온다 ---------------------------------------------
+	@RequestMapping(value="/getUserPage.do", method=RequestMethod.POST) 
+	public String getUserPage(@RequestParam(value="user_id", defaultValue="", required=false) int user_id, Model model) {
+		User user_info = userService.getUserPage(user_id);
 		model.addAttribute("user", user_info);
 		return "myPage";
 	}

@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -26,7 +27,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class MyPageFragment extends BaseFragment implements AdapterView.OnItemSelectedListener {
+public class MyPageFragment extends BaseFragment implements AdapterView.OnItemSelectedListener, View.OnClickListener {
 
     int user_id;
     String id;
@@ -39,6 +40,7 @@ public class MyPageFragment extends BaseFragment implements AdapterView.OnItemSe
     RelativeLayout rlMyPage;
     TextView myId, myEmail;
     Spinner mySetting;
+    Button btnFriendList;
     public MyPageFragment() {
         // Required empty public constructor
     }
@@ -118,6 +120,7 @@ public class MyPageFragment extends BaseFragment implements AdapterView.OnItemSe
         myId = v.findViewById(R.id.my_id);
         myEmail = v.findViewById(R.id.my_email);
         mySetting = v.findViewById(R.id.my_setting);
+        btnFriendList = v.findViewById(R.id.btn_friend_list);
 
         if (id == null || pw == null) {
             // TODO: 세션이 만료 되었습니다, 로그인 페이지로.
@@ -135,6 +138,8 @@ public class MyPageFragment extends BaseFragment implements AdapterView.OnItemSe
         mySetting.setAdapter(adapter);
 
         mySetting.setOnItemSelectedListener(this);
+
+        btnFriendList.setOnClickListener(this);
 
     }
 
@@ -172,4 +177,10 @@ public class MyPageFragment extends BaseFragment implements AdapterView.OnItemSe
     }
 
 
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.btn_friend_list) {
+            // TODO: get Friend List
+        }
+    }
 }

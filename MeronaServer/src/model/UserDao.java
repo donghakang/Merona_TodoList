@@ -59,9 +59,11 @@ public class UserDao {
 		return factory.openSession().selectOne("mybatis.LoginMapper.getLoginUser", user);
 	}
 
+	// 검색을 이용해서 친구의 페이지를 불러온다 ---------------------------------------------
+	public User getUserPage(int user_id) {
+		return factory.openSession().selectOne("mybatis.LoginMapper.getUserPage", user_id);
+	}
 
-	
-	
 	
 	
 }

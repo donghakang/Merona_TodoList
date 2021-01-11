@@ -7,11 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
 
 import com.example.whenyoucomemerona.R;
 import com.example.whenyoucomemerona.controller.BaseFragment;
@@ -25,7 +28,7 @@ import java.util.ArrayList;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
-public class SearchFragment extends BaseFragment implements View.OnClickListener, TextView.OnEditorActionListener {
+public class SearchFragment extends BaseFragment implements View.OnClickListener, TextView.OnEditorActionListener, AdapterView.OnItemClickListener {
 
     SearchFriendAdapter adapter;
     EditText etSearch;
@@ -57,6 +60,8 @@ public class SearchFragment extends BaseFragment implements View.OnClickListener
         btnSearchClear.setOnClickListener(this);
 
         etSearch.setOnEditorActionListener(this);
+
+        listView.setOnItemClickListener(this);
 
         return view;
     }
@@ -136,5 +141,22 @@ public class SearchFragment extends BaseFragment implements View.OnClickListener
             adapter.notifyDataSetChanged();
         }
         return false;
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//        Log.d("arr:- " arr.get(position).getId() + "        " + "")
+        Fragment userPageFragment = new UserPageFragment(arr.get(position));
+        getActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .setCustomAnimations(
+                        R.anim.slide_in,  // enter
+                        R.anim.fade_out,  // exit
+                        R.anim.fade_in,   // popEnter
+                        R.anim.slide_out  // popExit
+                )
+                .replace(R.id.body_rl, userPageFragment)
+                .addToBackStack(null)
+                .commit();
     }
 }

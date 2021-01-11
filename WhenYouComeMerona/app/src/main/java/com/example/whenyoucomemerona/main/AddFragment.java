@@ -72,6 +72,11 @@ public class AddFragment extends BaseFragment implements View.OnClickListener {
     public void insertItem() {
         params.clear();
         params.put("content", etContent.getText().toString());
+        params.put("memo", etMemo.getText().toString());
+        params.put("date", etDate.getText().toString());
+        params.put("time", etDate.getText().toString());
+        params.put("location", etLocation.getText().toString());    // TODO: fix these.
+        params.put("share", etShare.getText().toString());
         params.put("done", "false");
 
         request("insertItem.do");

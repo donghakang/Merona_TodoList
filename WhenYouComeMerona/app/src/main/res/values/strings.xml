@@ -30,6 +30,7 @@
     <string name="add_time">시간</string>
     <string name="add_location">장소</string>
     <string name="share">공유</string>
+    <string name="level">중요</string>
 
 
     <string-array name="filter_spinner">
