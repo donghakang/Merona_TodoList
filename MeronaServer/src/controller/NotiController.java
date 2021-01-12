@@ -42,6 +42,9 @@ public class NotiController {
 	@RequestMapping(value = "/push.do")
 	public String push() {
 		ArrayList<String> token = new ArrayList<>();
+		token.add(
+				"c96CkM_eSO2ef_EfE9F50U:APA91bEMP6weEFraMyn4qOTIwXEJvkxTVGnfucD33bQibea5syP08wrM566o5l8Zt5g5rNEcbH_UaVevy1O-IWO6hed6fDjrjkTERy_syXADQ5VzVjcmp00MLq1QksmzBT2RqHW9fE_z");
+		String server_key = "AAAA0G64bRA:APA91bEc2y3dYzif-D0K2aQAEcnOv7x08jq8ex0XpfVk8pac2YIL2-HPkincS1ZBI0Z0Gi24qTeIXUdp-QHCtFOj0lfDO53ZL8lDNSOUbA908rzTQTGz6wZWRojEQZejYKpASRr5UeF4";
 
 		try {
 			URL url = new URL("https://fcm.googleapis.com/fcm/send");

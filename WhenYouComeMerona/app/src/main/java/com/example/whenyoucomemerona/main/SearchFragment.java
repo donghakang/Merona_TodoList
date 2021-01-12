@@ -69,6 +69,7 @@ public class SearchFragment extends BaseFragment implements View.OnClickListener
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.btn_search_submit) {
+            Log.d("dddd", "검색 버튼");
             String username = etSearch.getText().toString();
             if (username.length() == 0) {
                 Toast.makeText(getContext(), "검", Toast.LENGTH_SHORT).show();
@@ -98,7 +99,6 @@ public class SearchFragment extends BaseFragment implements View.OnClickListener
         try {
             JSONObject j = new JSONObject(response);
             // 데이터 가져오기 성공할 때,
-            Log.d("eeeee", response);
             if (j.optString("result").equals("ok")) {
                 arr.clear();                    // 데이터를 가져오기전 정리한다.
                 JSONArray data = j.optJSONArray("friend");
@@ -106,10 +106,18 @@ public class SearchFragment extends BaseFragment implements View.OnClickListener
                     JSONObject userObject = data.getJSONObject(i);
                     int user_id = userObject.getInt("user_id");
                     String id = userObject.getString("id");
+                    String name = userObject.getString("name");
+                    String email = userObject.getString("email");
+                    String birth = userObject.getString("birth");
+                    String token = userObject.getString("token");
 
                     User user = new User();
                     user.setUser_id(user_id);
                     user.setId(id);
+                    user.setName(name);
+                    user.setEmail(email);
+                    user.setBirth(birth);
+                    user.setToken(token);
 
                     arr.add(user);
                 }

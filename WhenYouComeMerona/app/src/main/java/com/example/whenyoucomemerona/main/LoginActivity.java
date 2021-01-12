@@ -4,18 +4,37 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.whenyoucomemerona.R;
 import com.example.whenyoucomemerona.controller.BaseActivity;
+import com.example.whenyoucomemerona.controller.My;
 import com.example.whenyoucomemerona.controller.StaticFunction;
+import com.example.whenyoucomemerona.model.URL;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
@@ -26,12 +45,27 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
     String id;
     String password;
     // 자동 로그인
-    String auto_id;
-    String auto_password;
+
+
+
+    private String token;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        // token 값
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
+            @Override
+            public void onComplete(@NonNull Task<String> task) {
+                if (!task.isSuccessful()) {
+                    Log.d("dddd", "fail");
+                    return;
+                }
+                token = task.getResult();
+                Log.d("dddd", "token: " + token);
+            }
+        });
 
         // 자동 로그인 실패
         et_username = findViewById(R.id.et_loginUsername);
@@ -59,6 +93,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                 autoLogin.apply();
                 Toast.makeText(LoginActivity.this, "로그인 성공", Toast.LENGTH_SHORT).show();
 
+                updateToken("updateToken.do");
+                updateMy("myPage.do");
+
                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();
@@ -70,6 +107,100 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         }
     }
 
+
+
+    // --- 내 페이지를 저장한다.
+    private void updateMy(String url) {
+
+        RequestQueue stringRequest = Volley.newRequestQueue(this);
+        StringRequest myReq = new StringRequest(Request.Method.POST, URL.getUrl() + url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject j = new JSONObject(response);
+                            // 데이터 가져오기 성공할 때,
+                            if (j.optString("result").equals("ok")) {
+                                JSONObject user_info = j.optJSONObject("data");
+                                assert user_info != null;
+
+                                My.Account.setUser_id(user_info.getInt("user_id"));
+                                My.Account.setId(user_info.getString("id"));
+                                My.Account.setName(user_info.getString("name"));
+                                My.Account.setEmail(user_info.getString("email"));
+                                My.Account.setBirth(user_info.getString("birth"));
+                                My.Account.setToken(user_info.getString("token"));
+
+                            } else {
+                                Log.d("ddddd", "데이터 가져오기 실패...");
+                            }
+                        } catch (JSONException e) {
+                            Log.d("JSON ERROR", "JSON에서 에러가 있습니다.");
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getApplicationContext(), "토큰 삽입 실패", Toast.LENGTH_SHORT).show();
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("id", id);
+                params.put("pw", StaticFunction.EncBySha256(password));
+                return params;
+            }
+        };
+
+        myReq.setRetryPolicy(new DefaultRetryPolicy(3000, 0, 1f));
+        stringRequest.add(myReq);
+    }
+
+    // --------------- Update Token
+    private void updateToken(String url) {
+
+
+        RequestQueue stringRequest = Volley.newRequestQueue(this);
+        StringRequest myReq = new StringRequest(Request.Method.POST, URL.getUrl() + url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject j = new JSONObject(response);
+                            // 데이터 가져오기 성공할 때,
+                            if (j.optString("result").equals("ok")) {
+                                Toast.makeText(getApplicationContext(), "토큰 삽입 성공", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getApplicationContext(), "토큰 삽입 실패", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getApplicationContext(), "토큰 삽입 실패", Toast.LENGTH_SHORT).show();
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("id", id);
+                params.put("pw", StaticFunction.EncBySha256(password));
+                params.put("token", token);
+                return params;
+            }
+        };
+
+        myReq.setRetryPolicy(new DefaultRetryPolicy(3000, 0, 1f));
+        stringRequest.add(myReq);
+
+    }
 
     @Override
     public void onClick(View v) {
@@ -83,7 +214,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
             request("login.do");
 
         } else if (v.getId() == R.id.tv_register) {
-            // TODO: 회원가입
             Intent intent = new Intent(this, RegisterActivity1.class);
             startActivity(intent);
             finish();

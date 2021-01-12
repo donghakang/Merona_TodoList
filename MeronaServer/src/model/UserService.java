@@ -48,4 +48,9 @@ public class UserService {
 	public User getUserPage(int user_id) {
 		return userDao.getUserPage(user_id);
 	}
+
+
+	public boolean updateToken(User user) {
+		return userDao.updateToken(user);
+	}
 }

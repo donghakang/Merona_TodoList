@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "123058660128",
+    "project_id": "whencomemerona",
+    "storage_bucket": "whencomemerona.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:123058660128:android:e2a9da2f4717511ffaed45",
+        "android_client_info": {
+          "package_name": "com.example.whenyoucomemerona"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "123058660128-cbt4bo0334p8p2q15rt4h6mkvs5abheg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBcIK-BDM8ORTVL68ysN_eb0yH6zHjo_5E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "123058660128-cbt4bo0334p8p2q15rt4h6mkvs5abheg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -22,6 +22,11 @@ if (users != null) {
 		JSONObject user = new JSONObject();
 		user.put("user_id", u.getUser_id());
 		user.put("id", u.getId());
+		user.put("name", u.getName());
+		user.put("email", u.getEmail());
+		user.put("birth", u.getBirth());
+ 		user.put("token", u.getToken());
+		
 		data.put(user);
 	}
 	

@@ -55,7 +55,6 @@ public class UserController {
 	@RequestMapping(value="/login.do", method=RequestMethod.POST)
 	@ResponseBody
 	public String login(@ModelAttribute User user) {
-		System.out.println("_----_----__-");
 		return JSONController.jsonTemplate(userService.loginUser(user));
 	}
 	
@@ -86,6 +85,14 @@ public class UserController {
 		return "myPage";
 	}
 
+	
+	// 토큰을 업데이트 ------------------------------------------------------------------
+	@RequestMapping(value="/updateToken.do", method=RequestMethod.POST)
+	@ResponseBody
+	public String updateToken(@ModelAttribute User user) {
+		System.out.println("_----_----__-");
+		return JSONController.jsonTemplate(userService.updateToken(user));
+	}
 }
 /* 
 @ModelAttribute User user는 아래와 동일

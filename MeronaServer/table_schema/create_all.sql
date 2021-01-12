@@ -1,12 +1,13 @@
--- user
+-- user --------------------------------------------------------------------------
 
 create table users (
-	user_id number,
+	user_id number primary key,
 	id varchar(100),
 	pw varchar(100),
 	name varchar(100),
 	birth varchar(100),	
 	email varchar(100),	
+	token varchar(1000)
 );
 create sequence user_seq increment by 1 start with 1;
 
@@ -14,14 +15,20 @@ create sequence user_seq increment by 1 start with 1;
 
 select * from users;
 
-
--- todo
+-- todo --------------------------------------------------------------------------
 
 create table todos (
-	todo_id number,
-	content varchar(200),
-	done number(1)
+	todo_id number primary key,
+	content varchar(1000),
+	memo varchar(1000),
+	duedate varchar(100),
+	duetime varchar(100),
+	location varchar(1000),
+	share_with varchar(1000),
+	done number							-- 0 false, 1 true
 );
+
+
 
 create sequence todo_seq increment by 1 start with 1;
 
@@ -36,6 +43,25 @@ insert into todos values (todo_seq.nextval, '비비빅 사오기', 1);
 select * from todos;
 
 
+
+-- friend --------------------------------------------------------------------------
+
+create table friend (
+	user_id number,
+	friend_id number,
+	constraint fk_user_id foreign key(user_id) references users(user_id)
+);
+
+create table request (
+	user_from number,
+	friend_to number
+);
+
+select * from friend;
+select * from request;
+select * from tab;
+
+-- examples --------------------------------------------------------------------------
 
 create table t2( col_name varchar2(10) );
 insert into t2(col_name) values('hsaJDadkD');

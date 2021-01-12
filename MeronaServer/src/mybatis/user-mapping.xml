@@ -53,4 +53,11 @@
 			WHERE USER_ID=#{user_id}
 		]]>
 	</select>
+	
+	<update id="updateToken" parameterType="user">
+		<![CDATA[
+			UPDATE USERS SET TOKEN=#{token} 
+			WHERE ID=#{id} and PW=#{pw}
+		]]>
+	</update>
 </mapper>

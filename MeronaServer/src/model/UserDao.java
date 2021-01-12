@@ -52,6 +52,7 @@ public class UserDao {
 	// 리스트 반환.
 	public List<User> searchFriend(String username) {
 		return factory.openSession().selectList("mybatis.LoginMapper.searchFriend", username);
+		
 	}
 
 	// 마이페이지 출력 --------------------------------------------------------------
@@ -62,6 +63,14 @@ public class UserDao {
 	// 검색을 이용해서 친구의 페이지를 불러온다 ---------------------------------------------
 	public User getUserPage(int user_id) {
 		return factory.openSession().selectOne("mybatis.LoginMapper.getUserPage", user_id);
+	}
+
+	
+	// 토큰 업데이트 
+	public boolean updateToken(User user) {
+		int n = factory.openSession().update("mybatis.LoginMapper.updateToken", user);
+		System.out.println("TOKEN STATUS: " + n);
+		return (n > 0) ? true : false;
 	}
 
 	

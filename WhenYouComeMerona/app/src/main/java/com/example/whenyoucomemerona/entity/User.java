@@ -7,6 +7,7 @@ public class User {
     String name;
     String email;
     String birth;
+    String token;
 
     public User() {
     }
@@ -57,6 +58,14 @@ public class User {
 
     public void setBirth(String birth) {
         this.birth = birth;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     @Override

@@ -21,6 +21,7 @@ if (user != null) {
 	user_info.put("name", user.getName());
 	user_info.put("email", user.getEmail());
 	user_info.put("birth", user.getBirth());
+	user_info.put("token", user.getToken());
 	
 	
 	jsonResult.put("result", "ok");

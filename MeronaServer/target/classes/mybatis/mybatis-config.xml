@@ -6,11 +6,13 @@
 	<typeAliases>
 		<typeAlias type="entity.User" alias="user"/>
 		<typeAlias type="entity.Todos" alias="todos"/>
+		<typeAlias type="entity.Relationship" alias="relationship"/>
 	</typeAliases>
 	
 	<!--쿼리문 -->
 	<mappers>
 		<mapper resource="mybatis/user-mapping.xml"/>
 		<mapper resource="mybatis/todo-mapping.xml"/>
+		<mapper resource="mybatis/friend-mapping.xml"/>
 	</mappers>
 </configuration>
