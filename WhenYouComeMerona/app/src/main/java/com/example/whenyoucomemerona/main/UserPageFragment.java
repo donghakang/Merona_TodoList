@@ -35,10 +35,11 @@ public class UserPageFragment extends BaseFragment implements View.OnClickListen
 
     User user;
     TextView userId;
+    // TODO: change from userEmail to userName
     TextView userEmail;
-    Button btnFriendInvite;
-    Button btnFriendFriendList;
+    Button btnFriend;
 
+    int status;
 
     public UserPageFragment() {
         // Required empty public constructor
@@ -69,30 +70,108 @@ public class UserPageFragment extends BaseFragment implements View.OnClickListen
 
         userId = v.findViewById(R.id.user_id);
         userEmail = v.findViewById(R.id.user_email);
-        btnFriendInvite = v.findViewById(R.id.btn_friend_add);
-        btnFriendFriendList = v.findViewById(R.id.btn_friend_friend_list);
+        btnFriend = v.findViewById(R.id.btn_friend);
 
         // 최소한의 세팅
         userId.setText(user.getId());
-        userId.setText(user.getName());
+        userEmail.setText(user.getName());
 
+        checkStatus();
+        buttonSetup();
 
+        btnFriend.setOnClickListener(this);
+    }
 
-        btnFriendInvite.setOnClickListener(this);
-        btnFriendFriendList.setOnClickListener(this);
+    private void buttonSetup() {
+        if (status == 0) {
+            btnFriend.setText("친구 신청 하기");
+        } else if (status == 1) {
+            btnFriend.setText("친구 신청 취소 하기");
+        } else if (status == 2) {
+            btnFriend.setText("친구 확인");
+        } else if (status == 3) {
+            btnFriend.setText("친구 보기");
+        }
     }
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.btn_friend_add) {
+        if (v.getId() == R.id.btn_friend) {
             // TODO: 버튼을 가리고, 보이게 한다.
             Log.d("dddd", user.toString() + "Add");
-        } else if (v.getId() == R.id.btn_friend_friend_list) {
-            // TODO: 우선 이 버튼을 친구 신청으로 바꾼다
-            Log.d ("dddd", user.toString() + "FFLIst");
-//            requestFriend("requestFriend.do");
-            deleteFriendRequest();
+
+            if (status == 0) {
+                // 친구 신청 하기
+                requestFriend();
+
+            } else if (status == 1) {
+                // 친구 신청 취소 하기
+                deleteFriendRequest();
+
+                Log.d("dddd", "CURR_STATUS: " + 1 + "      NEXT_STATUS: " + status);
+            } else if (status == 2) {
+                // 친구 확인
+                insertFriend();
+                Log.d("dddd", "CURR_STATUS: " + 2 + "      NEXT_STATUS: " + status);
+            } else if (status == 3) {
+                // 친구 보기
+
+            }
         }
+//            requestFriend("requestFriend.do");
+//            deleteFriendRequest();
+//            insertFriend();
+//            deleteFriend();
+    }
+
+    // -----------------------------------------------------------------------------------------------
+    // 친구와 나의 관계 확인 ------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------------
+
+    private void checkStatus() {
+        String url = "checkStatus.do";
+        RequestQueue stringRequest = Volley.newRequestQueue(getContext());
+        StringRequest myReq = new StringRequest(Request.Method.POST, URL.getUrl() + url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                // success listener
+                try {
+                    JSONObject j = new JSONObject(response);
+                    // 데이터 가져오기 성공할 때,
+                    if (j.optString("result").equals("ok")) {
+                        status = j.optInt("status");
+                        Log.d("dddd", "STATUS: " + status);
+                        Toast.makeText(getContext(), "status okay", Toast.LENGTH_LONG).show();
+                        buttonSetup();
+                    } else {
+                        Toast.makeText(getContext(), "status failed", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    Toast.makeText(getContext(), "JSON 오류", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // error listener
+                Toast.makeText(getContext(), "통신 오류", Toast.LENGTH_SHORT).show();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                // TODO: 데이터를 집어넣는다.
+                params.put("user_id", My.Account.getUser_id() + "");
+                params.put("friend_id", user.getUser_id() + "");
+                return params;
+            }
+        };
+
+
+        myReq.setRetryPolicy(new DefaultRetryPolicy(3000, 0, 1f));
+        stringRequest.add(myReq);
     }
 
 
@@ -109,6 +188,7 @@ public class UserPageFragment extends BaseFragment implements View.OnClickListen
                     // 데이터 가져오기 성공할 때,
                     if (j.optString("result").equals("ok")) {
                         Toast.makeText(getContext(), "친구 신청 성공", Toast.LENGTH_SHORT).show();
+                        checkStatus();
                     } else {
                         Toast.makeText(getContext(), "친구 신청 실패", Toast.LENGTH_SHORT).show();
                     }
@@ -155,6 +235,7 @@ public class UserPageFragment extends BaseFragment implements View.OnClickListen
                     // 데이터 가져오기 성공할 때,
                     if (j.optString("result").equals("ok")) {
                         Toast.makeText(getContext(), "친구 신청 취소 성공", Toast.LENGTH_SHORT).show();
+                        checkStatus();
                     } else {
                         Toast.makeText(getContext(), "친구 신청 취소 실패", Toast.LENGTH_SHORT).show();
                     }
@@ -187,4 +268,92 @@ public class UserPageFragment extends BaseFragment implements View.OnClickListen
     }
 
 
+    // 친구 확인 --------------------------------------------------------------------------------------
+    public void insertFriend() {
+        String url = "insertFriend.do";
+        RequestQueue stringRequest = Volley.newRequestQueue(getContext());
+        StringRequest myReq = new StringRequest(Request.Method.POST, URL.getUrl() + url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                // success listener
+                try {
+                    JSONObject j = new JSONObject(response);
+                    // 데이터 가져오기 성공할 때,
+                    if (j.optString("result").equals("ok")) {
+                        Toast.makeText(getContext(), "친구 신청 취소 성공", Toast.LENGTH_SHORT).show();
+                        checkStatus();
+                    } else {
+                        Toast.makeText(getContext(), "친구 신청 취소 실패", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    Toast.makeText(getContext(), "JSON 오류", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // error listener
+                Toast.makeText(getContext(), "통신 오류", Toast.LENGTH_SHORT).show();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                // TODO: 데이터를 집어넣는다.
+                params.put("user_id", My.Account.getUser_id() + "");
+                params.put("friend_id", user.getUser_id() + "");
+                return params;
+            }
+        };
+
+        myReq.setRetryPolicy(new DefaultRetryPolicy(3000, 0, 1f));
+        stringRequest.add(myReq);
+    }
+
+
+
+        // 친구 관계 해제 ----------------------------------------------------------------------------------
+        public void deleteFriend() {
+            String url = "deleteFriend.do";
+            RequestQueue stringRequest = Volley.newRequestQueue(getContext());
+            StringRequest myReq = new StringRequest(Request.Method.POST, URL.getUrl() + url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    // success listener
+                    try {
+                        JSONObject j = new JSONObject(response);
+                        // 데이터 가져오기 성공할 때,
+                        if (j.optString("result").equals("ok")) {
+                            Toast.makeText(getContext(), "친구 신청 취소 성공", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getContext(), "친구 신청 취소 실패", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch (JSONException e) {
+                        Toast.makeText(getContext(), "JSON 오류", Toast.LENGTH_SHORT).show();
+                        e.printStackTrace();
+                    }
+
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    // error listener
+                    Toast.makeText(getContext(), "통신 오류", Toast.LENGTH_SHORT).show();
+                }
+            }) {
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<String, String>();
+                    // TODO: 데이터를 집어넣는다.
+                    params.put("user_id", My.Account.getUser_id() + "");
+                    params.put("friend_id", user.getUser_id() + "");
+                    return params;
+                }
+            };
+
+            myReq.setRetryPolicy(new DefaultRetryPolicy(3000, 0, 1f));
+            stringRequest.add(myReq);
+        }
 }

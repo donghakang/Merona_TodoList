@@ -14,7 +14,7 @@
 	
 	<insert id="requestFriend" parameterType="relationship">
 		<![CDATA[
-			INSERT INTO REQUEST(USER_FROM, FRIEND_TO)
+			INSERT INTO REQUEST(USER_ID, FRIEND_ID)
 			VALUES (#{user_id}, #{friend_id})
 		]]>
 	</insert>
@@ -22,7 +22,7 @@
 	<delete id="deleteFriendRequest" parameterType="relationship">
 		<![CDATA[
 			DELETE FROM REQUEST 
-			WHERE USER_FROM=#{user_id} AND FRIEND_TO=#{friend_id}
+			WHERE USER_ID=#{user_id} AND FRIEND_ID=#{friend_id}
 		]]>
 	</delete>
 	
@@ -39,4 +39,18 @@
 			WHERE USER_ID=#{user_id} AND FRIEND_ID=#{friend_id}
 		]]>
 	</delete>
+	
+	<select id="selectFriendRequest" parameterType="relationship" resultType="relationship">
+		<![CDATA[
+			SELECT * FROM REQUEST
+			WHERE USER_ID=#{user_id} AND FRIEND_ID=#{friend_id}
+		]]>
+	</select>
+	
+	<select id="selectFriend" parameterType="relationship" resultType="relationship">
+		<![CDATA[
+			SELECT * FROM FRIEND
+			WHERE USER_ID=#{user_id} AND FRIEND_ID=#{friend_id}
+		]]>
+	</select>
 </mapper>

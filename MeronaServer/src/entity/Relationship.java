@@ -24,5 +24,9 @@ public class Relationship {
 		this.friend_id = friend_id;
 	}
 	
-	
+	public void swap() {
+		int tmp = this.user_id;
+		this.user_id = this.friend_id;
+		this.friend_id = tmp;
+	}
 }

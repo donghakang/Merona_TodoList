@@ -64,6 +64,8 @@ public class FriendController {
 	}
 	
 	// 친구 신청 확인 -------------------------------------------------------------------
+	// ** @params user_id - 친구 받는사람
+	// ** @params friend_id - 친구 신청한 사람 
 	@RequestMapping(value="/insertFriend.do", method=RequestMethod.POST) 
 	@ResponseBody
 	public String insertFriend(@ModelAttribute Relationship relationship){
@@ -80,6 +82,33 @@ public class FriendController {
 	}
 
 	
+	// 친구 관계 상태 -------------------------------------------------------------------
+	@RequestMapping(value="/checkStatus.do", method=RequestMethod.POST) 
+	@ResponseBody
+	public String checkStatus(@ModelAttribute Relationship relationship){
+		int statusId = friendService.checkStatus(relationship);
+		
+		JSONObject json = new JSONObject();
+		if (statusId < 0) {
+			json.put("result", "fail");
+		} else {
+			json.put("result", "ok");
+			System.out.println(statusId);
+			json.put("status", statusId);
+		}
+		return json.toString();
+	}
+
+//	
+//	// 친구 리스트 가져오기 ----------------------------------------------------------------
+//	@RequestMapping(value="/getFriendList.do", method=RequestMethod.POST) 
+//	public String checkStatus(@ModelAttribute User user, Model model){
+//		
+//		List<User> list = friendService.searchFriend(user);
+//		model.addAttribute("list", list);
+//		
+//		return "friendList";
+//	}
 
 }
 

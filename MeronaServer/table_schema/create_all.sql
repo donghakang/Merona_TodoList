@@ -53,13 +53,18 @@ create table friend (
 );
 
 create table request (
-	user_from number,
-	friend_to number
+	user_id number,
+	friend_id number
 );
+
 
 select * from friend;
 select * from request;
 select * from tab;
+
+insert into request values (1,2);
+delete from REQUEST;
+
 
 -- examples --------------------------------------------------------------------------
 

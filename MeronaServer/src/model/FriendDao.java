@@ -38,20 +38,33 @@ public class FriendDao {
 		return (n > 0) ? true : false;
 	}
 
+	
 	// 친구 신청 확인 -------------------------------------------------------------------
 	public boolean insertFriend(Relationship relationship) {
-		// TODO Auto-generated method stub
-		return false;
+		int n = factory.openSession().insert("mybatis.FriendMapper.insertFriend", relationship);
+		return (n > 0) ? true : false;
 	}
 	
 	
 	// 친구 관계 해제 -------------------------------------------------------------------
 	public boolean deleteFriend(Relationship relationship) {
-		// TODO Auto-generated method stub
-		return false;
+		int n = factory.openSession().delete("mybatis.FriendMapper.deleteFriend", relationship);
+		
+		return n > 0 ? true : false;
+		
+	}
+
+	// 친구 신청 여부 확인
+	public boolean selectFriendRequest(Relationship relationship) {
+		Relationship isRequested = factory.openSession().selectOne("mybatis.FriendMapper.selectFriendRequest", relationship);
+		return (isRequested != null) ? true : false;
 	}
 	
-	
+	// 친구 여부 확인
+	public boolean selectFriend(Relationship relationship) {
+		Relationship isFriend = factory.openSession().selectOne("mybatis.FriendMapper.selectFriend", relationship);
+		return (isFriend != null) ? true : false;
+	}
 
 }
 
