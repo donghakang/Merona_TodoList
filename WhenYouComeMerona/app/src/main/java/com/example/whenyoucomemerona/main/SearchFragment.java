@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.whenyoucomemerona.R;
 import com.example.whenyoucomemerona.controller.BaseFragment;
+import com.example.whenyoucomemerona.controller.My;
 import com.example.whenyoucomemerona.entity.User;
 
 import org.json.JSONArray;
@@ -103,6 +104,7 @@ public class SearchFragment extends BaseFragment implements View.OnClickListener
                 arr.clear();                    // 데이터를 가져오기전 정리한다.
                 JSONArray data = j.optJSONArray("friend");
                 for (int i = 0; i < data.length(); i ++ ){
+
                     JSONObject userObject = data.getJSONObject(i);
                     int user_id = userObject.getInt("user_id");
                     String id = userObject.getString("id");
@@ -110,16 +112,19 @@ public class SearchFragment extends BaseFragment implements View.OnClickListener
                     String email = userObject.getString("email");
                     String birth = userObject.getString("birth");
                     String token = userObject.getString("token");
+                    if (My.Account.getUser_id() != user_id) {
+                        User user = new User();
+                        user.setUser_id(user_id);
+                        user.setId(id);
+                        user.setName(name);
+                        user.setEmail(email);
+                        user.setBirth(birth);
+                        user.setToken(token);
 
-                    User user = new User();
-                    user.setUser_id(user_id);
-                    user.setId(id);
-                    user.setName(name);
-                    user.setEmail(email);
-                    user.setBirth(birth);
-                    user.setToken(token);
-
-                    arr.add(user);
+                        arr.add(user);
+                    } else {
+                        // 자신일 경우
+                    }
                 }
                 adapter.notifyDataSetChanged();
                 Toast.makeText(getContext(), "찾기 성공", Toast.LENGTH_SHORT).show();

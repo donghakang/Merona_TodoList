@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.content.ContextCompat;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -84,12 +86,16 @@ public class UserPageFragment extends BaseFragment implements View.OnClickListen
 
     private void buttonSetup() {
         if (status == 0) {
+            btnFriend.setBackgroundResource(R.drawable.button);
             btnFriend.setText("친구 신청 하기");
         } else if (status == 1) {
+            btnFriend.setBackgroundResource(R.drawable.default_button);
             btnFriend.setText("친구 신청 취소 하기");
         } else if (status == 2) {
+            btnFriend.setBackgroundResource(R.drawable.button);
             btnFriend.setText("친구 확인");
         } else if (status == 3) {
+            btnFriend.setBackgroundResource(R.drawable.default_button);
             btnFriend.setText("친구 보기");
         }
     }
