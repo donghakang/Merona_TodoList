@@ -31,6 +31,7 @@
     <string name="add_location">장소</string>
     <string name="share">공유</string>
     <string name="level">중요</string>
+    <string name="search_location">장소 검색하기</string>
 
 
     <string-array name="filter_spinner">

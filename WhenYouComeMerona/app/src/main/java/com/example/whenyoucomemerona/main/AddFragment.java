@@ -1,18 +1,22 @@
 package com.example.whenyoucomemerona.main;
 
-import android.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -20,18 +24,39 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.SwitchCompat;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.whenyoucomemerona.R;
 import com.example.whenyoucomemerona.controller.BaseFragment;
+import com.example.whenyoucomemerona.controller.My;
+import com.example.whenyoucomemerona.entity.User;
+import com.example.whenyoucomemerona.model.URL;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 
+import net.daum.mf.map.api.MapView;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
+
+import static android.content.Context.INPUT_METHOD_SERVICE;
 
 
-public class AddFragment extends BaseFragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+public class AddFragment extends BaseFragment implements View.OnClickListener, CompoundButton.OnCheckedChangeListener, AdapterView.OnItemClickListener {
 
     EditText etContent;
     EditText etMemo;
@@ -166,7 +191,11 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, C
                 etLocation.setText("");
             }
         } else if (buttonView.getId() == R.id.switch_share) {
-
+            if (isChecked) {
+                setupShare();
+            } else {
+                etShare.setText("");
+            }
         } else if (buttonView.getId() == R.id.switch_level) {
             if (isChecked) {
                 setupLevel();
@@ -183,7 +212,7 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, C
     // 날짜를 설정한다.
     public void setupDate() {
         final Calendar cal = Calendar.getInstance();
-        AlertDialog.Builder  builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder  builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
         LayoutInflater lnf = getLayoutInflater();
         final View view = lnf.inflate(R.layout.add_date, null);
         final DatePicker date_picker = view.findViewById(R.id.add_date_picker);
@@ -222,7 +251,7 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, C
 
     // 시간을 설정한다.
     public void setupTime() {
-        AlertDialog.Builder  builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder  builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
         LayoutInflater lnf = getLayoutInflater();
         final View view = lnf.inflate(R.layout.add_time, null);
         final TimePicker timePicker = view.findViewById(R.id.add_time_picker);
@@ -267,11 +296,214 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, C
         dialog.show();
     }
 
+
+
+    // 공유 설정 ----------------------------------------------------------------
+    SearchFriendAdapter adapter;
+    ArrayList<User> arr;
+    ListView shareSearchList;
+    EditText etSearch;
+    Button btnSearchClear;
+    Button btnSearchSubmit;
+    ChipGroup chipGroup;
+
+    public void setupShare() {
+        AlertDialog.Builder  builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
+        LayoutInflater lnf = getLayoutInflater();
+        final View view = lnf.inflate(R.layout.add_share, null);
+        View titleView = lnf.inflate(R.layout.add_level_title, null);
+        TextView title = titleView.findViewById(R.id.dialog_title);
+        title.setText("공유 설정");
+
+        etSearch = view.findViewById(R.id.et_search);
+        btnSearchClear = view.findViewById(R.id.btn_search_clear);
+        btnSearchSubmit = view.findViewById(R.id.btn_search_submit);
+        shareSearchList = view.findViewById(R.id.share_search_list);
+        chipGroup = view.findViewById(R.id.quick_add_chips);
+        arr = new ArrayList<>();
+
+        btnSearchClear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                etSearch.setText("");
+            }
+        });
+
+        btnSearchSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String username = etSearch.getText().toString();
+                searchShareList(username);
+            }
+        });
+
+        etSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                String username = etSearch.getText().toString();
+                searchShareList(username);
+
+                return false;
+            }
+        });
+
+        shareSearchList.setOnItemClickListener(this);
+
+
+        builder.setCustomTitle(titleView);
+        builder.setView(view);
+        builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (switchShare.isChecked() && etShare.getText().toString().length() == 0) {
+                    // 버튼을 눌렀는데, 취소를 누를시 다시 버튼을 꺼버린다.
+                    switchShare.setChecked(false);
+                }
+            }
+        });
+        builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // TODO: 확인
+                String outShare = "";
+                Chip firstChip = (Chip)chipGroup.getChildAt(0);
+                if (chipGroup.getChildCount() == 0) {
+                    switchShare.setChecked(false);
+                } else if (chipGroup.getChildCount() == 1) {
+                    outShare = firstChip.getText() + "";
+                    switchShare.setChecked(true);
+                } else {
+                    outShare = firstChip.getText() + " 외 " + chipGroup.getChildCount() + "명";
+                    switchShare.setChecked(true);
+                }
+
+                etShare.setText(outShare);
+
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void searchShareList(final String username) {
+        String url = "searchFriend.do";
+        RequestQueue stringRequest = Volley.newRequestQueue(getContext());
+        StringRequest myReq = new StringRequest(Request.Method.POST, URL.getUrl() + url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                // success listener
+                try {
+                    JSONObject j = new JSONObject(response);
+                    // 데이터 가져오기 성공할 때,
+                    if (j.optString("result").equals("ok")) {
+                        arr.clear();                    // 데이터를 가져오기전 정리한다.
+                        JSONArray data = j.optJSONArray("friend");
+                        for (int i = 0; i < data.length(); i ++ ){
+
+                            JSONObject userObject = data.getJSONObject(i);
+                            int user_id = userObject.getInt("user_id");
+                            String id = userObject.getString("id");
+                            String name = userObject.getString("name");
+                            String email = userObject.getString("email");
+                            String birth = userObject.getString("birth");
+                            String token = userObject.getString("token");
+                            if (My.Account.getUser_id() != user_id) {
+                                User user = new User();
+                                user.setUser_id(user_id);
+                                user.setId(id);
+                                user.setName(name);
+                                user.setEmail(email);
+                                user.setBirth(birth);
+                                user.setToken(token);
+
+                                arr.add(user);
+                            } else {
+                                // 자신일 경우
+                            }
+
+                            InputMethodManager imm = (InputMethodManager) getContext().getSystemService(INPUT_METHOD_SERVICE);
+                            imm.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);
+
+                            adapter = new SearchFriendAdapter(getActivity(), arr);
+                            shareSearchList.setAdapter(adapter);
+                            adapter.notifyDataSetChanged();
+                        }
+                        adapter.notifyDataSetChanged();
+                        Toast.makeText(getContext(), "찾기 성공", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getContext(), "찾기 실패", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    Log.d("eeeee", "JSON에서 에러가 있습니다.");
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // error listener
+                Toast.makeText(getContext(), "통신 오류", Toast.LENGTH_SHORT).show();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("username", username);
+                return params;
+            }
+        };
+
+
+        myReq.setRetryPolicy(new DefaultRetryPolicy(3000, 0, 1f));
+        stringRequest.add(myReq);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        User shareUser = arr.get(position);
+        boolean isInChipGroup = false;
+
+        final Chip chip = new Chip(getContext());
+        chip.setChipIconVisible(true);
+        chip.setCloseIconVisible(true);
+        chip.setText(shareUser.getId());
+
+        chip.setOnCloseIconClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chipGroup.removeView(chip);
+            }
+        });
+
+        for (int i = 0; i < chipGroup.getChildCount(); i ++ ) {
+            Chip c = (Chip)chipGroup.getChildAt(i);
+            if (c.getText().toString().equals(shareUser.getId())) {
+                isInChipGroup = true;
+            }
+        }
+        if (!isInChipGroup) {
+            chipGroup.addView(chip, chipGroup.getChildCount() - 1);
+        }
+
+        Log.d("dddd", chipGroup.getChildCount() + "" );
+    }
+
+
+
+    // 장소 설정 ----------------------------------------------------------------
     public void setupLocation() {
-        AlertDialog.Builder  builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder  builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
         LayoutInflater lnf = getLayoutInflater();
         final View view = lnf.inflate(R.layout.add_location, null);
         View titleView = lnf.inflate(R.layout.add_level_title, null);
+        TextView title = titleView.findViewById(R.id.dialog_title);
+        title.setText("장소 설정");
+
+        MapView mapView = new MapView(getActivity());
+        ViewGroup mapViewContainer = (ViewGroup) view.findViewById(R.id.add_location_view);
+        mapViewContainer.addView(mapView);
 
         final RatingBar ratingBar = view.findViewById(R.id.add_rating);
         builder.setCustomTitle(titleView);
@@ -303,10 +535,12 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, C
 
 
     public void setupLevel() {
-        AlertDialog.Builder  builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder  builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
         LayoutInflater lnf = getLayoutInflater();
         final View view = lnf.inflate(R.layout.add_level, null);
         View titleView = lnf.inflate(R.layout.add_level_title, null);
+        TextView title = titleView.findViewById(R.id.dialog_title);
+        title.setText("중요도 설정");
         final RatingBar ratingBar = view.findViewById(R.id.add_rating);
         builder.setCustomTitle(titleView);
         builder.setView(view);
@@ -333,5 +567,6 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, C
         AlertDialog dialog = builder.create();
         dialog.show();
     }
+
 
 }

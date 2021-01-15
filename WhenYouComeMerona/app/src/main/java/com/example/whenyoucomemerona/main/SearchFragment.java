@@ -61,7 +61,6 @@ public class SearchFragment extends BaseFragment implements View.OnClickListener
         btnSearchClear.setOnClickListener(this);
 
         etSearch.setOnEditorActionListener(this);
-
         listView.setOnItemClickListener(this);
 
         return view;

@@ -2,8 +2,10 @@
 <resources>
     <color name="colorPrimary">#6BF068</color>
     <color name="colorPrimaryDark">#2bbc37</color>
+    <color name="colorPrimaryDarkest">#1b5e20</color>
     <color name="colorPrimaryLight">#a2ff99</color>
     <color name="gray">#cccccc</color>
     <color name="dark_gray">#999999</color>
     <color name="white">#FFFFFF</color>
+
 </resources>

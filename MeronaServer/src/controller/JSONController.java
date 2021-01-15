@@ -11,5 +11,4 @@ public class JSONController {
 		else json.put("result", "fail");
 		return json.toString();
 	}
-		
 }

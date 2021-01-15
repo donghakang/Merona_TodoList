@@ -9,12 +9,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import entity.Todos;
 import entity.User;
 import model.TodoService;
+import template.ApiKey;
 
 @Controller
 public class TodoController {
@@ -62,6 +64,15 @@ public class TodoController {
 	@ResponseBody
 	public String deleteItem(@ModelAttribute Todos todo, Model model) {
 		return JSONController.jsonTemplate(todoService.deleteItem(todo));
+	}
+	
+	
+	// 지도 검색하기 ------------------------------------------------
+	@RequestMapping(value="/searchLocation.do")
+	public String searchLocation(@RequestParam(value="location", defaultValue="", required=false) String location, Model model) {
+		model.addAttribute("apiKey", ApiKey.getApiJSKey());
+		model.addAttribute("location", location);
+		return "location";
 	}
 	
 }
