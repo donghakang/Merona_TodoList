@@ -1,5 +1,6 @@
 package com.example.whenyoucomemerona.main;
 
+import android.net.Uri;
 import android.os.Bundle;
 
 import android.util.Log;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 import com.example.whenyoucomemerona.R;
 import com.example.whenyoucomemerona.controller.BaseFragment;
 import com.example.whenyoucomemerona.entity.Todos;
+import com.example.whenyoucomemerona.model.Key;
 
 import net.daum.mf.map.api.MapPoint;
 import net.daum.mf.map.api.MapView;
@@ -76,44 +78,56 @@ public class MapFragment extends BaseFragment implements View.OnClickListener {
         } else if (v.getId() == R.id.btn_search_submit) {
             Log.d("dddd", "button Pressed!");
             searchPlace = etSearch.getText().toString();
-            params.clear();
-            params.put("location", searchPlace);
-            request("searchLocation.do");
+
+//            params.clear();
+//            params.put("location", searchPlace);
+//            request("searchLocation.do");
+//
+
+            header_params.clear();
+            header_params.put("Authorization", "KakaoAK " + Key.getREST() );
+
+            specificRequest("https://dapi.kakao.com/v2/local/search/keyword.json" + "?query=" + Uri.encode(searchPlace));
         }
     }
 
     @Override
     public void response(String response) {
-        Log.d("ddddXX response", response);
-        try {
-            JSONObject j = new JSONObject(response);
-            // 데이터 가져오기 성공할 때,
-            if (j.optString("result").equals("ok")) {
-                if (j.optInt("description") == 0) {
-                    Toast.makeText(getContext(), "검색 결과가 없습니다.", Toast.LENGTH_LONG).show();
-                } else {
-                    JSONArray locations = j.optJSONArray("locations");
-                    for (int i = 0; i < locations.length(); i ++) {
-                        JSONObject location = locations.optJSONObject(i);
-                        double lat = location.optDouble("lat");
-                        double lng = location.optDouble("lng");
-                        String place_name = location.optString("place_name");
-                        String road_address_name = location.optString("road_address_name");
-                        String address_name = location.optString("address_name");
-
-                        Log.d("dddd", lat + "    " + lng + "   " + place_name);
-
-                        // TODO: do something with data
-                    }
-                }
-
-                Toast.makeText(getContext(), "위치 검색 성공", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(getContext(), "위치 검색 실패", Toast.LENGTH_SHORT).show();
-            }
-        } catch (JSONException e) {
-            Log.d("JSON ERROR", "JSON에서 에러가 있습니다.");
-            e.printStackTrace();
-        }
+        Log.d("RESPONSE", response);
     }
+
+    //    @Override
+//    public void response(String response) {
+//        Log.d("ddddXX response", response);
+//        try {
+//            JSONObject j = new JSONObject(response);
+//            // 데이터 가져오기 성공할 때,
+//            if (j.optString("result").equals("ok")) {
+//                if (j.optInt("description") == 0) {
+//                    Toast.makeText(getContext(), "검색 결과가 없습니다.", Toast.LENGTH_LONG).show();
+//                } else {
+//                    JSONArray locations = j.optJSONArray("locations");
+//                    for (int i = 0; i < locations.length(); i ++) {
+//                        JSONObject location = locations.optJSONObject(i);
+//                        double lat = location.optDouble("lat");
+//                        double lng = location.optDouble("lng");
+//                        String place_name = location.optString("place_name");
+//                        String road_address_name = location.optString("road_address_name");
+//                        String address_name = location.optString("address_name");
+//
+//                        Log.d("dddd", lat + "    " + lng + "   " + place_name);
+//
+//                        // TODO: do something with data
+//                    }
+//                }
+//
+//                Toast.makeText(getContext(), "위치 검색 성공", Toast.LENGTH_SHORT).show();
+//            } else {
+//                Toast.makeText(getContext(), "위치 검색 실패", Toast.LENGTH_SHORT).show();
+//            }
+//        } catch (JSONException e) {
+//            Log.d("JSON ERROR", "JSON에서 에러가 있습니다.");
+//            e.printStackTrace();
+//        }
+//    }
 }

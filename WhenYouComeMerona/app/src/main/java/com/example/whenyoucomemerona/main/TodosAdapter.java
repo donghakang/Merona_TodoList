@@ -28,7 +28,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.whenyoucomemerona.R;
 import com.example.whenyoucomemerona.entity.Todos;
-import com.example.whenyoucomemerona.model.URL;
+import com.example.whenyoucomemerona.model.Key;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -150,7 +150,7 @@ public class TodosAdapter extends ArrayAdapter {
                                 RequestQueue stringRequest = Volley.newRequestQueue(getContext());
                                 String url = "deleteItem.do";
 
-                                StringRequest myReq = new StringRequest(Request.Method.POST, URL.getUrl() + url,
+                                StringRequest myReq = new StringRequest(Request.Method.POST, Key.getUrl() + url,
                                 new Response.Listener<String>() {
                                     @Override
                                     public void onResponse(String response) {
@@ -224,7 +224,7 @@ public class TodosAdapter extends ArrayAdapter {
         RequestQueue stringRequest = Volley.newRequestQueue(getContext());
         String url = "updateCheckbox.do";
 
-        StringRequest myReq = new StringRequest(Request.Method.POST, URL.getUrl() + url,
+        StringRequest myReq = new StringRequest(Request.Method.POST, Key.getUrl() + url,
                 updateSuccessListener, updateErrorListener) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {

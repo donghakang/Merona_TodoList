@@ -12,7 +12,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.whenyoucomemerona.model.URL;
+import com.example.whenyoucomemerona.model.Key;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,7 +39,7 @@ public class BaseActivity extends AppCompatActivity {
 
     public void request(String url) {
         RequestQueue stringRequest = Volley.newRequestQueue(this);
-        StringRequest myReq = new StringRequest(Request.Method.POST, URL.getUrl() + url,
+        StringRequest myReq = new StringRequest(Request.Method.POST, Key.getUrl() + url,
                 successListener, errorListener) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {

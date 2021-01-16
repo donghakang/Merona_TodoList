@@ -16,15 +16,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.whenyoucomemerona.R;
-import com.example.whenyoucomemerona.main.MapFragment;
-import com.example.whenyoucomemerona.model.URL;
+import com.example.whenyoucomemerona.model.Key;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class BaseFragment extends Fragment {
     public Map<String, String> params = new HashMap<String, String>();
+    public Map<String, String> header_params = new HashMap<String, String>();
     public ProgressBar progressBar;
     // Progress Bar
 
@@ -59,7 +58,7 @@ public class BaseFragment extends Fragment {
 
     public void request(String url) {
         RequestQueue stringRequest = Volley.newRequestQueue(getContext());
-        StringRequest myReq = new StringRequest(Request.Method.POST, URL.getUrl() + url,
+        StringRequest myReq = new StringRequest(Request.Method.POST, Key.getUrl() + url,
                 successListener, errorListener) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
@@ -70,6 +69,27 @@ public class BaseFragment extends Fragment {
         myReq.setRetryPolicy(new DefaultRetryPolicy(3000, 0, 1f));
         stringRequest.add(myReq);
     }
+
+
+    public void specificRequest(String url) {
+        RequestQueue stringRequest = Volley.newRequestQueue(getContext());
+        StringRequest myReq = new StringRequest(Request.Method.GET, url,
+                successListener, errorListener) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                return header_params;
+            }
+        };
+
+        myReq.setRetryPolicy(new DefaultRetryPolicy(3000, 0, 1f));
+        stringRequest.add(myReq);
+    }
+
 
     public void checkSession() {
         SharedPreferences auto = getActivity().getSharedPreferences("auto", Activity.MODE_PRIVATE);

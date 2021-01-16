@@ -2,12 +2,8 @@ package com.example.whenyoucomemerona.main;
 
 import android.app.ActivityOptions;
 import android.app.AlertDialog;
-import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,7 +24,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.whenyoucomemerona.R;
 import com.example.whenyoucomemerona.controller.StaticFunction;
-import com.example.whenyoucomemerona.model.URL;
+import com.example.whenyoucomemerona.model.Key;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -137,7 +133,7 @@ public class RegisterActivity2 extends RegisterActivity implements View.OnClickL
         String url = "checkEmail.do";
 
         RequestQueue stringRequest = Volley.newRequestQueue(this);
-        StringRequest myReq = new StringRequest(Request.Method.POST, URL.getUrl() + url,
+        StringRequest myReq = new StringRequest(Request.Method.POST, Key.getUrl() + url,
                 emailSuccessListener, emailErrorListener) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {

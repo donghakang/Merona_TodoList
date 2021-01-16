@@ -25,7 +25,7 @@ import com.example.whenyoucomemerona.R;
 import com.example.whenyoucomemerona.controller.BaseActivity;
 import com.example.whenyoucomemerona.controller.My;
 import com.example.whenyoucomemerona.controller.StaticFunction;
-import com.example.whenyoucomemerona.model.URL;
+import com.example.whenyoucomemerona.model.Key;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -113,7 +113,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
     private void updateMy(String url) {
 
         RequestQueue stringRequest = Volley.newRequestQueue(this);
-        StringRequest myReq = new StringRequest(Request.Method.POST, URL.getUrl() + url,
+        StringRequest myReq = new StringRequest(Request.Method.POST, Key.getUrl() + url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -164,7 +164,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
 
         RequestQueue stringRequest = Volley.newRequestQueue(this);
-        StringRequest myReq = new StringRequest(Request.Method.POST, URL.getUrl() + url,
+        StringRequest myReq = new StringRequest(Request.Method.POST, Key.getUrl() + url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {

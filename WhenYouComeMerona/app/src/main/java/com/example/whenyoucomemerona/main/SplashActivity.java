@@ -26,10 +26,9 @@ import com.example.whenyoucomemerona.R;
 import com.example.whenyoucomemerona.controller.BaseActivity;
 import com.example.whenyoucomemerona.controller.My;
 import com.example.whenyoucomemerona.controller.StaticFunction;
-import com.example.whenyoucomemerona.model.URL;
+import com.example.whenyoucomemerona.model.Key;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONException;
@@ -106,7 +105,7 @@ public class SplashActivity extends BaseActivity {
 
     private void login(final String id, final String pw, String url) {
         RequestQueue stringRequest = Volley.newRequestQueue(this);
-        StringRequest myReq = new StringRequest(Request.Method.POST, URL.getUrl() + url,
+        StringRequest myReq = new StringRequest(Request.Method.POST, Key.getUrl() + url,
                 successListener, errorListener) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
@@ -166,7 +165,7 @@ public class SplashActivity extends BaseActivity {
     private void updateMy(String url) {
 
         RequestQueue stringRequest = Volley.newRequestQueue(this);
-        StringRequest myReq = new StringRequest(Request.Method.POST, URL.getUrl() + url,
+        StringRequest myReq = new StringRequest(Request.Method.POST, Key.getUrl() + url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -217,7 +216,7 @@ public class SplashActivity extends BaseActivity {
 
 
         RequestQueue stringRequest = Volley.newRequestQueue(this);
-        StringRequest myReq = new StringRequest(Request.Method.POST, URL.getUrl() + url,
+        StringRequest myReq = new StringRequest(Request.Method.POST, Key.getUrl() + url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {

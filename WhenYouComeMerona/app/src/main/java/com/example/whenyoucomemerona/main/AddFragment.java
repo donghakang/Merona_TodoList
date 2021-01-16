@@ -36,7 +36,7 @@ import com.example.whenyoucomemerona.R;
 import com.example.whenyoucomemerona.controller.BaseFragment;
 import com.example.whenyoucomemerona.controller.My;
 import com.example.whenyoucomemerona.entity.User;
-import com.example.whenyoucomemerona.model.URL;
+import com.example.whenyoucomemerona.model.Key;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
@@ -389,7 +389,7 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, C
     private void searchShareList(final String username) {
         String url = "searchFriend.do";
         RequestQueue stringRequest = Volley.newRequestQueue(getContext());
-        StringRequest myReq = new StringRequest(Request.Method.POST, URL.getUrl() + url, new Response.Listener<String>() {
+        StringRequest myReq = new StringRequest(Request.Method.POST, Key.getUrl() + url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 // success listener

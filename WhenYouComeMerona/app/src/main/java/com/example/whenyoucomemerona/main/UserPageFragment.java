@@ -10,8 +10,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.core.content.ContextCompat;
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -24,7 +22,7 @@ import com.example.whenyoucomemerona.R;
 import com.example.whenyoucomemerona.controller.BaseFragment;
 import com.example.whenyoucomemerona.controller.My;
 import com.example.whenyoucomemerona.entity.User;
-import com.example.whenyoucomemerona.model.URL;
+import com.example.whenyoucomemerona.model.Key;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -137,7 +135,7 @@ public class UserPageFragment extends BaseFragment implements View.OnClickListen
     private void checkStatus() {
         String url = "checkStatus.do";
         RequestQueue stringRequest = Volley.newRequestQueue(getContext());
-        StringRequest myReq = new StringRequest(Request.Method.POST, URL.getUrl() + url, new Response.Listener<String>() {
+        StringRequest myReq = new StringRequest(Request.Method.POST, Key.getUrl() + url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 // success listener
@@ -185,7 +183,7 @@ public class UserPageFragment extends BaseFragment implements View.OnClickListen
     public void requestFriend() {
         String url = "requestFriend.do";
         RequestQueue stringRequest = Volley.newRequestQueue(getContext());
-        StringRequest myReq = new StringRequest(Request.Method.POST, URL.getUrl() + url, new Response.Listener<String>() {
+        StringRequest myReq = new StringRequest(Request.Method.POST, Key.getUrl() + url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 // success listener
@@ -232,7 +230,7 @@ public class UserPageFragment extends BaseFragment implements View.OnClickListen
     public void deleteFriendRequest() {
         String url = "deleteFriendRequest.do";
         RequestQueue stringRequest = Volley.newRequestQueue(getContext());
-        StringRequest myReq = new StringRequest(Request.Method.POST, URL.getUrl() + url, new Response.Listener<String>() {
+        StringRequest myReq = new StringRequest(Request.Method.POST, Key.getUrl() + url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 // success listener
@@ -278,7 +276,7 @@ public class UserPageFragment extends BaseFragment implements View.OnClickListen
     public void insertFriend() {
         String url = "insertFriend.do";
         RequestQueue stringRequest = Volley.newRequestQueue(getContext());
-        StringRequest myReq = new StringRequest(Request.Method.POST, URL.getUrl() + url, new Response.Listener<String>() {
+        StringRequest myReq = new StringRequest(Request.Method.POST, Key.getUrl() + url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 // success listener
@@ -324,7 +322,7 @@ public class UserPageFragment extends BaseFragment implements View.OnClickListen
         public void deleteFriend() {
             String url = "deleteFriend.do";
             RequestQueue stringRequest = Volley.newRequestQueue(getContext());
-            StringRequest myReq = new StringRequest(Request.Method.POST, URL.getUrl() + url, new Response.Listener<String>() {
+            StringRequest myReq = new StringRequest(Request.Method.POST, Key.getUrl() + url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     // success listener
