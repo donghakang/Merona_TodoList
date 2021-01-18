@@ -1,8 +1,10 @@
 package com.example.whenyoucomemerona.controller;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -20,6 +22,8 @@ import com.example.whenyoucomemerona.model.Key;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static android.content.Context.INPUT_METHOD_SERVICE;
 
 public class BaseFragment extends Fragment {
     public Map<String, String> params = new HashMap<String, String>();
@@ -102,4 +106,6 @@ public class BaseFragment extends Fragment {
 
         }
     }
+
+
 }

@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
+import entity.Address;
 import entity.Todos;
 import entity.User;
 
@@ -30,6 +31,12 @@ public class TodoDao {
 		int n = factory.openSession().insert("mybatis.TodoMapper.insertItem", todo);
 		return (n > 0) ? true : false;
 	}
+	
+	public boolean insertAddress(Address addr) {
+		int n = factory.openSession().insert("mybatis.TodoMapper.insertAddress", addr);
+		return (n > 0) ? true : false;
+	}
+
 
 	// 체크박스 클릭시 아이템 업데이트 ------------------------------------
 	public boolean updateByCheckbox(Todos todo) {
@@ -49,5 +56,7 @@ public class TodoDao {
 		return (n > 0) ? true : false;
 	}
 
+
+	
 }
 

@@ -123,7 +123,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
 
         searchFragment = new SearchFragment();
 
-        request("todoList.do");
+//        request("todoList.do");
         refresh(arr);
 
         // Scroll Down to refresh  ------------------------------------------------
@@ -190,7 +190,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
                 // 다 된일 숨기기
                 ArrayList<Todos> newArr = new ArrayList<>();
                 for (Todos t : arr) {
-                    if (!t.getDone()) {
+                    if (!t.isDone()) {
                         newArr.add(t);
                     }
                 }

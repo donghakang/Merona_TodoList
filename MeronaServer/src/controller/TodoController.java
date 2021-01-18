@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import entity.Address;
 import entity.Todos;
 import entity.User;
 import model.TodoService;
@@ -41,8 +42,25 @@ public class TodoController {
 	//추가하기(데이터 추가)--------------------------------
 	@RequestMapping(value="/insertItem.do", method=RequestMethod.POST)
 	@ResponseBody
-	public String insertItem(@ModelAttribute Todos todo) {
-		return JSONController.jsonTemplate(todoService.insertItem(todo));
+	public String insertItem(@ModelAttribute Todos todo, 
+			@RequestParam(value="address_name", defaultValue="", required=false) String address_name,
+			@RequestParam(value="road_address_name", defaultValue="", required=false) String road_address_name,
+			@RequestParam(value="category_name", defaultValue="", required=false) String category_name,
+			@RequestParam(value="place_name", defaultValue="", required=false) String place_name,
+			@RequestParam(value="x", defaultValue="", required=false) String x,
+			@RequestParam(value="y", defaultValue="", required=false) String y
+			) {
+		Address addr = new Address();
+	
+		addr.setAddress_name(address_name);
+		addr.setRoad_address_name(road_address_name);
+		addr.setCategory_name(category_name);
+		addr.setPlace_name(place_name);
+		addr.setLat(Double.parseDouble(y));
+		addr.setLng(Double.parseDouble(x));
+
+		System.out.println(todo.isDone());
+		return JSONController.jsonTemplate(todoService.insertItem(todo, addr));
 	}
 	
 	// 업데이트하기 (체크박스만) ----------------------------------

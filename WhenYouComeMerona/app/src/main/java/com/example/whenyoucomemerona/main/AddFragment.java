@@ -2,6 +2,7 @@ package com.example.whenyoucomemerona.main;
 
 import androidx.appcompat.app.AlertDialog;
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -12,12 +13,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RatingBar;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -35,23 +39,28 @@ import com.android.volley.toolbox.Volley;
 import com.example.whenyoucomemerona.R;
 import com.example.whenyoucomemerona.controller.BaseFragment;
 import com.example.whenyoucomemerona.controller.My;
+import com.example.whenyoucomemerona.entity.Address;
 import com.example.whenyoucomemerona.entity.User;
 import com.example.whenyoucomemerona.model.Key;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
+import net.daum.mf.map.api.MapPoint;
 import net.daum.mf.map.api.MapView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
@@ -65,6 +74,11 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, C
     SwitchCompat switchDate, switchTime, switchLocation, switchShare, switchLevel;
 
     Button   btnSubmit;
+
+    String finalDate, finalTime;
+    Address finalLocation;
+    String finalShare;
+    String finalLevel;
 
     public AddFragment() {
     }
@@ -96,6 +110,12 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, C
 
         btnSubmit = view.findViewById(R.id.btn_submit);
 
+        finalDate = "";
+        finalTime = "";
+        finalLocation = new Address();
+        finalShare = "";
+        finalLevel = "";
+
         etDate.setOnClickListener(this);
         etTime.setOnClickListener(this);
         etLocation.setOnClickListener(this);
@@ -121,14 +141,37 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, C
         params.clear();
         params.put("content", etContent.getText().toString());
         params.put("memo", etMemo.getText().toString());
-        params.put("duedate", etDate.getText().toString());
-        params.put("duetime", etDate.getText().toString());
-        // TODO: fix these.
-        params.put("location", etLocation.getText().toString());
-        params.put("share_with", etShare.getText().toString());
-        params.put("level", etLevel.getText().toString());
+        params.put("duedate", finalDate);
+        params.put("duetime", finalTime);
+        params.put("share_with", finalShare);
+        params.put("writer_id", My.Account.getUser_id() + "");
+        params.put("importance", finalLevel);
+
+        params.put("address_name", finalLocation.getAddress_name());
+        params.put("place_name", finalLocation.getPlace_name());
+        params.put("road_address_name", finalLocation.getRoad_address_name());
+        params.put("category_name", "");
+        params.put("y", finalLocation.getLat() + "");
+        params.put("x", finalLocation.getLng() + "");
+
         params.put("done", "false");
 
+//        Log.d("dddd", etContent.getText().toString());
+//        Log.d("dddd", etMemo.getText().toString());
+//        Log.d("dddd", finalDate);
+//        Log.d("dddd", finalTime);
+//        Log.d("dddd", finalShare);
+//        Log.d("dddd", My.Account.getUser_id() + "");
+//        Log.d("dddd", finalLevel);
+//
+//        Log.d("dddd", finalLocation.getAddress_name());
+//        Log.d("dddd", finalLocation.getPlace_name());
+//        Log.d("dddd", finalLocation.getRoad_address_name());
+//        Log.d("dddd", "");
+//        Log.d("dddd", finalLocation.getLat() + "");
+//        Log.d("dddd", finalLocation.getLng() + "");
+
+        Log.d("done", "false");
         request("insertItem.do");
     }
 
@@ -153,15 +196,13 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, C
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.et_date) {
-            // 날짜
             setupDate();
         } else if (v.getId() == R.id.et_time) {
             setupTime();
         } else if (v.getId() == R.id.et_location) {
-            Log.d("debugging", "장소 선택");
             setupLocation();
         } else if (v.getId() == R.id.et_share) {
-            Log.d("debugging", "공유 선택");
+            setupShare();
         } else if (v.getId() == R.id.et_level) {
             setupLevel();
         }
@@ -172,10 +213,8 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, C
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         if (buttonView.getId() == R.id.switch_date) {
             if (isChecked) {
-                Log.d("dddd", "on");
                 setupDate();
             } else {
-                Log.d("dddd", "off");
                 etDate.setText("");
             }
         } else if (buttonView.getId() == R.id.switch_time) {
@@ -240,6 +279,7 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, C
                 SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
                 etDate.setText(sdf.format(cal.getTime()));
+                finalDate = sdf.format(cal.getTime());
 
                 switchTime.setChecked(true);            // 스위치를 온으로 바꾼다
             }
@@ -270,7 +310,6 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, C
         builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                // TODO: 확인
                 int hour, minute;
                 String am_pm;
                 if (Build.VERSION.SDK_INT >= 23 ){
@@ -281,6 +320,8 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, C
                     minute = timePicker.getCurrentMinute();
                 }
 
+                finalTime = hour + ":" + minute;
+
                 if(hour > 12) {
                     am_pm = "PM";
                     hour = hour - 12;
@@ -288,6 +329,7 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, C
                     am_pm="AM";
                 }
                 etTime.setText(hour + ":" + minute + " " + am_pm);
+
                 switchTime.setChecked(true);
             }
         });
@@ -379,6 +421,12 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, C
 
                 etShare.setText(outShare);
 
+                JSONArray json = new JSONArray();
+                for (int i = 0; i < chipGroup.getChildCount(); i ++) {
+                    Chip chip = (Chip)chipGroup.getChildAt(i);
+                    json.put(chip.getText().toString());
+                }
+                finalShare = json.toString();
             }
         });
 
@@ -493,19 +541,45 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, C
 
 
     // 장소 설정 ----------------------------------------------------------------
+    SearchView searchView;
+    ListView listView;
+    ArrayList<Address> locArr;
+    SearchLocationAdapter locAdapter;
+
+
     public void setupLocation() {
         AlertDialog.Builder  builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
         LayoutInflater lnf = getLayoutInflater();
+
         final View view = lnf.inflate(R.layout.add_location, null);
         View titleView = lnf.inflate(R.layout.add_level_title, null);
         TextView title = titleView.findViewById(R.id.dialog_title);
         title.setText("장소 설정");
 
-        MapView mapView = new MapView(getActivity());
+        final MapView mapView = new MapView(getActivity());
         ViewGroup mapViewContainer = (ViewGroup) view.findViewById(R.id.add_location_view);
         mapViewContainer.addView(mapView);
 
-        final RatingBar ratingBar = view.findViewById(R.id.add_rating);
+        locArr = new ArrayList<>();
+        searchView = view.findViewById(R.id.location_bar);
+        listView = view.findViewById(R.id.search_list);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                locArr.clear();
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                searchLocation(newText);
+                return false;
+            }
+        });
+
+
+
         builder.setCustomTitle(titleView);
         builder.setView(view);
 
@@ -522,18 +596,161 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, C
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // TODO: 확인
-                float rating = ratingBar.getRating();
 //                etLocation.setText(rating + "");
+                searchByLatLng(mapView.getMapCenterPoint());
                 switchLocation.setChecked(true);
+                Log.d("dddd", mapView.getMapCenterPoint().toString());
             }
         });
 
         AlertDialog dialog = builder.create();
         dialog.show();
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Address selectedAddress = locArr.get(position);
+                mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(selectedAddress.getLat(), selectedAddress.getLng()), true);
+
+                // list를 닫는다
+                locArr.clear();
+                locAdapter.notifyDataSetChanged();
+
+                // 키보드를 없앤다.
+                InputMethodManager imm = (InputMethodManager) getContext().getSystemService(INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
+            }
+        });
+
+    }
+
+    private void searchLocation(String text) {
+        String url = "https://dapi.kakao.com/v2/local/search/keyword.json" + "?query=" + Uri.encode(text);
+        if (text.length() != 0) {
+            RequestQueue stringRequest = Volley.newRequestQueue(getContext());
+            StringRequest myReq = new StringRequest(Request.Method.GET, url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            try {
+                                JSONObject json = new JSONObject(response);
+                                JSONArray documents = json.optJSONArray("documents");
+                                Log.d("RESPONSE", "총 " + documents.length() + "의 데이터가 발견되었습니다.");
+                                locArr.clear();
+                                for (int i = 0; i < documents.length(); i ++) {
+                                    JSONObject loc = documents.getJSONObject(i);
+                                    Address addr = new Address();
+                                    addr.setAddress_name(loc.optString("address_name"));
+                                    addr.setPlace_name(loc.optString("place_name"));
+                                    addr.setRoad_address_name(loc.optString("road_address_name"));
+                                    addr.setCategory_name(loc.optString("category_group_name"));
+                                    addr.setLat(loc.optDouble("y"));
+                                    addr.setLng(loc.optDouble("x"));
+                                    locArr.add(addr);
+                                }
+                                locAdapter = new SearchLocationAdapter(getActivity(), locArr);
+                                listView.setAdapter(locAdapter);
+                                locAdapter.notifyDataSetChanged();
+                            } catch (Exception e) {
+                                Log.d("RESPONSE", "데이터 없습니다.");
+                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+
+                        }
+                    }
+            ) {
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    return params;
+                }
+
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> header_params = new HashMap<String, String>();
+                    header_params.clear();
+                    header_params.put("Authorization", "KakaoAK " + Key.getREST() );
+                    return header_params;
+                }
+            };
+
+            myReq.setRetryPolicy(new DefaultRetryPolicy(3000, 0, 1f));
+            stringRequest.add(myReq);
+        }
+    }
+
+    private void searchByLatLng(MapPoint mp) {
+        final double x = mp.getMapPointGeoCoord().longitude;
+        final double y = mp.getMapPointGeoCoord().latitude;
+        String url = "https://dapi.kakao.com//v2/local/geo/coord2address.json" + "?x=" + x + "&y=" + y;
+
+        RequestQueue stringRequest = Volley.newRequestQueue(getContext());
+        StringRequest myReq = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            Log.d("ddddd", response);
+                            JSONObject json = new JSONObject(response);
+                            JSONArray documents = json.optJSONArray("documents");
+                            Address addr = new Address();
+                            addr.setAddress_name("");
+                            addr.setPlace_name("");
+                            addr.setRoad_address_name("");
+                            addr.setCategory_name("");
+                            addr.setLat(y);
+                            addr.setLng(x);
+                            JSONObject loc = documents.optJSONObject(0);
+                            if (loc != null) {
+                                JSONObject road_adr = loc.optJSONObject("road_address");
+                                JSONObject adr = loc.optJSONObject("address");
+                                if (road_adr != null) {
+                                    addr.setPlace_name(road_adr.optString("building_name"));
+                                    addr.setRoad_address_name(road_adr.optString("address_name"));
+                                }
+                                if (adr != null) {
+                                    addr.setAddress_name(adr.optString("address_name"));
+                                }
+                            }
+
+                            finalLocation = addr;
+                            Log.d("dddd", finalLocation.toString());
+                        } catch (Exception e) {
+                            Log.d("RESPONSE", "데이터 없습니다.");
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }
+        ) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> header_params = new HashMap<String, String>();
+                header_params.clear();
+                header_params.put("Authorization", "KakaoAK " + Key.getREST() );
+                return header_params;
+            }
+        };
+
+        myReq.setRetryPolicy(new DefaultRetryPolicy(3000, 0, 1f));
+        stringRequest.add(myReq);
     }
 
 
 
+    // 중요도 설정 ------------------------------------------------------------------------------------
     public void setupLevel() {
         AlertDialog.Builder  builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
         LayoutInflater lnf = getLayoutInflater();
@@ -561,6 +778,8 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, C
                 float rating = ratingBar.getRating();
                 etLevel.setText(rating + "");
                 switchLevel.setChecked(true);
+
+                finalLevel = rating + "";
             }
         });
 

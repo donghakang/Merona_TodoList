@@ -12,10 +12,19 @@
 	
 	<insert id="insertItem" parameterType="todos">
 		<![CDATA[
-			INSERT INTO TODOS(TODO_ID, CONTENT, DONE) VALUES
-			(TODO_SEQ.NEXTVAL, #{content}, #{done})
+			INSERT INTO TODOS(TODO_ID, CONTENT, MEMO, DUEDATE, DUETIME, SHARE_WITH, IMPORTANCE, WRITER_ID, ADDR_ID, DONE) VALUES
+			(TODO_SEQ.NEXTVAL, #{content}, #{memo}, #{duedate}, #{duetime}, #{share_with}, #{importance}, #{writer_id}, 
+			(SELECT MAX(ADDR_ID) FROM ADDRESS), #{done})
 		]]>
 	</insert>
+	
+	<insert id="insertAddress" parameterType="address">
+		<![CDATA[
+			INSERT INTO ADDRESS(ADDR_ID, ADDRESS_NAME, PLACE_NAME, ROAD_ADDRESS_NAME, CATEGORY_NAME, LAT, LNG) VALUES
+			(ADDR_SEQ.NEXTVAL, #{address_name}, #{place_name}, #{road_address_name}, #{category_name}, #{lat}, #{lng})
+		]]>
+	</insert>
+
 	
 	<update id="updateByCheckbox" parameterType="todos">
 		<![CDATA[

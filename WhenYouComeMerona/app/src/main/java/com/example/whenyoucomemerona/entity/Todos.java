@@ -5,21 +5,18 @@ import java.util.Random;
 public class Todos {
     private int todo_id;
     private String content;
+    private String memo;
+    private String duedate;
+    private String duetime;
+    private String share_with;
+    private double importance;
+
+    private int writer_id;
+    private int addr_id;
+
     private boolean done;
-    private String date;
 
     public Todos() {
-        this.todo_id = 0;
-        this.content = "";
-        this.done = false;
-        this.date = "";
-    }
-
-    public Todos(int todo_id, String content, boolean done, String date) {
-        this.todo_id = todo_id;
-        this.content = content;
-        this.done = done;
-        this.date = date;
     }
 
     public int getTodo_id() {
@@ -38,28 +35,67 @@ public class Todos {
         this.content = content;
     }
 
-    public boolean getDone() {
+    public String getMemo() {
+        return memo;
+    }
+
+    public void setMemo(String memo) {
+        this.memo = memo;
+    }
+
+    public String getDuedate() {
+        return duedate;
+    }
+
+    public void setDuedate(String duedate) {
+        this.duedate = duedate;
+    }
+
+    public String getDuetime() {
+        return duetime;
+    }
+
+    public void setDuetime(String duetime) {
+        this.duetime = duetime;
+    }
+
+    public String getShare_with() {
+        return share_with;
+    }
+
+    public void setShare_with(String share_with) {
+        this.share_with = share_with;
+    }
+
+    public double getImportance() {
+        return importance;
+    }
+
+    public void setImportance(double importance) {
+        this.importance = importance;
+    }
+
+    public int getWriter_id() {
+        return writer_id;
+    }
+
+    public void setWriter_id(int writer_id) {
+        this.writer_id = writer_id;
+    }
+
+    public int getAddr_id() {
+        return addr_id;
+    }
+
+    public void setAddr_id(int addr_id) {
+        this.addr_id = addr_id;
+    }
+
+    public boolean isDone() {
         return done;
     }
 
     public void setDone(boolean done) {
         this.done = done;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    @Override
-    public String toString() {
-        return "Todos{" +
-                "content='" + content + '\'' +
-                ", done=" + done +
-                ", date='" + date + '\'' +
-                '}';
     }
 }

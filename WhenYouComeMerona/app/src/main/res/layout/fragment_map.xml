@@ -3,61 +3,73 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".main.MapFragment">
 
-    <RelativeLayout
-        android:id="@+id/location_search"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginEnd="12dp"
-        android:layout_marginBottom="4dp">
 
-        <RelativeLayout
-            android:id="@+id/location_search_bar"
-            android:layout_toStartOf="@id/btn_search_submit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="12dp">
-            <EditText
-                android:id="@+id/et_search"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:background="@drawable/login_edittext"
-                android:hint="@string/search_location"
-                android:textColorHint="#333333"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:inputType="textEmailAddress" />
 
-            <Button
-                android:id="@+id/btn_search_clear"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="8dp"
-                android:layout_marginLeft="8dp"
-                android:background="@drawable/baseline_cancel_24" />
+<!--    <RelativeLayout-->
+<!--        android:id="@+id/location_search"-->
+<!--        android:layout_below="@id/search_location"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="12dp"-->
+<!--        android:layout_marginStart="12dp"-->
+<!--        android:layout_marginEnd="12dp"-->
+<!--        android:layout_marginBottom="8dp">-->
 
-        </RelativeLayout>
-        <Button
-            android:id="@+id/btn_search_submit"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentEnd="true"
-            android:background="@drawable/baseline_search_24"
-            android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"
-            />
-    </RelativeLayout>
+<!--        <RelativeLayout-->
+<!--            android:id="@+id/location_search_bar"-->
+<!--            android:layout_toStartOf="@id/btn_search_submit"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginEnd="12dp">-->
+<!--            <EditText-->
+<!--                android:id="@+id/et_search"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="40dp"-->
+<!--                android:background="@drawable/login_edittext"-->
+<!--                android:hint="@string/search_location"-->
+<!--                android:textColorHint="#333333"-->
+<!--                android:paddingStart="16dp"-->
+<!--                android:paddingEnd="16dp"-->
+<!--                android:inputType="textEmailAddress" />-->
+
+<!--            <Button-->
+<!--                android:id="@+id/btn_search_clear"-->
+<!--                android:layout_width="20dp"-->
+<!--                android:layout_height="20dp"-->
+<!--                android:layout_alignParentEnd="true"-->
+<!--                android:layout_centerVertical="true"-->
+<!--                android:layout_marginRight="8dp"-->
+<!--                android:layout_marginLeft="8dp"-->
+<!--                android:background="@drawable/baseline_cancel_24" />-->
+
+<!--        </RelativeLayout>-->
+<!--        <Button-->
+<!--            android:id="@+id/btn_search_submit"-->
+<!--            android:layout_width="40dp"-->
+<!--            android:layout_height="40dp"-->
+<!--            android:layout_alignParentEnd="true"-->
+<!--            android:background="@drawable/baseline_search_24"-->
+<!--            android:layout_centerVertical="true"-->
+<!--            android:layout_centerHorizontal="true"-->
+<!--            />-->
+<!--    </RelativeLayout>-->
 
     <RelativeLayout
         android:id="@+id/map_view"
-        android:layout_below="@id/location_search"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/colorPrimary"
         />
+
+    <Button
+        android:id="@+id/location_search_activate"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/baseline_search_24"
+        android:layout_margin="12dp"
+        android:layout_alignParentEnd="true"/>
 
 </RelativeLayout>

@@ -1,21 +1,34 @@
 package com.example.whenyoucomemerona.main;
 
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.SearchView;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
 
 import com.example.whenyoucomemerona.R;
 import com.example.whenyoucomemerona.controller.BaseFragment;
+import com.example.whenyoucomemerona.entity.Address;
 import com.example.whenyoucomemerona.entity.Todos;
 import com.example.whenyoucomemerona.model.Key;
+import com.google.android.material.chip.Chip;
+import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
 
 import net.daum.mf.map.api.MapPoint;
 import net.daum.mf.map.api.MapView;
@@ -24,15 +37,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Random;
+
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
 
 public class MapFragment extends BaseFragment implements View.OnClickListener {
 
-    EditText etSearch;
-    Button btnCancel;
-    Button btnSubmit;
-    String searchPlace;
+    Button mSearchButton;
 
     MapView mapView;
     ViewGroup mapViewContainer;
@@ -52,82 +65,127 @@ public class MapFragment extends BaseFragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_map, container, false);
-        etSearch = v.findViewById(R.id.et_search);
-        btnCancel = v.findViewById(R.id.btn_search_clear);
-        btnSubmit = v.findViewById(R.id.btn_search_submit);
+
+        mSearchButton = v.findViewById(R.id.location_search_activate);
+        arr = new ArrayList<>();
 
         //지도
         mapView = new MapView(getActivity());
         mapViewContainer = (ViewGroup) v.findViewById(R.id.map_view);
         mapViewContainer.addView(mapView);
 
-        etSearch.bringToFront();
-        btnCancel.bringToFront();
-        btnSubmit.bringToFront();
-
-        btnCancel.setOnClickListener(this);
-        btnSubmit.setOnClickListener(this);
-
+        mSearchButton.setOnClickListener(this);
         return v;
     }
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.btn_search_clear) {
-            etSearch.setText("");
-        } else if (v.getId() == R.id.btn_search_submit) {
-            Log.d("dddd", "button Pressed!");
-            searchPlace = etSearch.getText().toString();
-
-//            params.clear();
-//            params.put("location", searchPlace);
-//            request("searchLocation.do");
-//
-
-            header_params.clear();
-            header_params.put("Authorization", "KakaoAK " + Key.getREST() );
-
-            specificRequest("https://dapi.kakao.com/v2/local/search/keyword.json" + "?query=" + Uri.encode(searchPlace));
+        if (v.getId() == R.id.location_search_activate) {
+            locate();
         }
     }
 
-    @Override
-    public void response(String response) {
-        Log.d("RESPONSE", response);
+    // ------------
+    SearchView searchView;
+    ListView listView;
+    ArrayList<Address> arr;
+    SearchLocationAdapter adapter;
+
+    public void locate() {
+        AlertDialog.Builder  builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
+        LayoutInflater lnf = getLayoutInflater();
+
+        final View view = lnf.inflate(R.layout.dialog_location, null);
+        View titleView = lnf.inflate(R.layout.add_level_title, null);
+        TextView title = titleView.findViewById(R.id.dialog_title);
+        title.setText("장소 검색하기");
+
+        searchView  = view.findViewById(R.id.location_bar);
+        listView = view.findViewById(R.id.search_list);
+
+
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchLocation(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                searchLocation(newText);
+                return false;
+            }
+        });
+
+
+        builder.setCustomTitle(titleView);
+        builder.setView(view);
+        builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+//        builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//            }
+//        });
+
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // list 에 아이템이 클릭 될 시, map view 를 다시 옮긴다.
+                Address selectedAddress = arr.get(position);
+                mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(selectedAddress.getLat(), selectedAddress.getLng()), true);
+                dialog.cancel();
+
+            }
+        });
     }
 
-    //    @Override
-//    public void response(String response) {
-//        Log.d("ddddXX response", response);
-//        try {
-//            JSONObject j = new JSONObject(response);
-//            // 데이터 가져오기 성공할 때,
-//            if (j.optString("result").equals("ok")) {
-//                if (j.optInt("description") == 0) {
-//                    Toast.makeText(getContext(), "검색 결과가 없습니다.", Toast.LENGTH_LONG).show();
-//                } else {
-//                    JSONArray locations = j.optJSONArray("locations");
-//                    for (int i = 0; i < locations.length(); i ++) {
-//                        JSONObject location = locations.optJSONObject(i);
-//                        double lat = location.optDouble("lat");
-//                        double lng = location.optDouble("lng");
-//                        String place_name = location.optString("place_name");
-//                        String road_address_name = location.optString("road_address_name");
-//                        String address_name = location.optString("address_name");
-//
-//                        Log.d("dddd", lat + "    " + lng + "   " + place_name);
-//
-//                        // TODO: do something with data
-//                    }
-//                }
-//
-//                Toast.makeText(getContext(), "위치 검색 성공", Toast.LENGTH_SHORT).show();
-//            } else {
-//                Toast.makeText(getContext(), "위치 검색 실패", Toast.LENGTH_SHORT).show();
-//            }
-//        } catch (JSONException e) {
-//            Log.d("JSON ERROR", "JSON에서 에러가 있습니다.");
-//            e.printStackTrace();
-//        }
-//    }
+
+
+    @Override
+    public void response(String response) {
+        try {
+            JSONObject json = new JSONObject(response);
+            JSONArray documents = json.optJSONArray("documents");
+            Log.d("RESPONSE", "총 " + documents.length() + "의 데이터가 발견되었습니다.");
+            arr.clear();
+            for (int i = 0; i < documents.length(); i ++) {
+                JSONObject loc = documents.getJSONObject(i);
+                Address addr = new Address();
+                addr.setAddress_name(loc.optString("address_name"));
+                addr.setPlace_name(loc.optString("place_name"));
+                addr.setRoad_address_name(loc.optString("road_address_name"));
+                addr.setCategory_name(loc.optString("category_group_name"));
+                addr.setLat(loc.optDouble("y"));
+                addr.setLng(loc.optDouble("x"));
+                arr.add(addr);
+            }
+            adapter = new SearchLocationAdapter(getActivity(), arr);
+            listView.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
+        } catch (Exception e) {
+            Log.d("RESPONSE", "데이터 없습니다.");
+        }
+    }
+
+    private void searchLocation(String newText) {
+        if (newText.length() != 0) {
+            header_params.clear();
+            header_params.put("Authorization", "KakaoAK " + Key.getREST() );
+            specificRequest("https://dapi.kakao.com/v2/local/search/keyword.json" + "?query=" + Uri.encode(newText));
+        }
+    }
+
+
+
+
 }

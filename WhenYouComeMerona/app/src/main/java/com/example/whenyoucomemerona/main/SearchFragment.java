@@ -83,6 +83,7 @@ public class SearchFragment extends BaseFragment implements View.OnClickListener
                 InputMethodManager imm = (InputMethodManager) getContext().getSystemService(INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);
 
+                arr.clear();
                 adapter = new SearchFriendAdapter(getActivity(), arr);
                 listView.setAdapter(adapter);
                 adapter.notifyDataSetChanged();

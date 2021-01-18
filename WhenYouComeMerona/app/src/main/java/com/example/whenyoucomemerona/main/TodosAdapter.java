@@ -89,7 +89,7 @@ public class TodosAdapter extends ArrayAdapter {
         }
 
         viewHolder.tvContent.setText(arr.get(position).getContent());
-        viewHolder.cbIsDone.setChecked(arr.get(position).getDone());
+        viewHolder.cbIsDone.setChecked(arr.get(position).isDone());
 
         viewHolder.cbIsDone.setOnClickListener(new CheckBox.OnClickListener() {
             @Override
@@ -183,7 +183,7 @@ public class TodosAdapter extends ArrayAdapter {
                                         Map<String, String> params = new HashMap<String, String>();
                                         params.put("todo_id", getItem(position).getTodo_id()+"");
                                         params.put("content", getItem(position).getContent());
-                                        params.put("done", getItem(position).getDone()+"");
+                                        params.put("done", getItem(position).isDone()+"");
                                         return params;
                                     }
                                 };
