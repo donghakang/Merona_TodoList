@@ -21,8 +21,8 @@ public class TodoDao {
 	private SqlSessionFactory factory;
 	
 
-	public List<Todos> getTodoList() {
-		return factory.openSession().selectList("mybatis.TodoMapper.getTodoList");
+	public List<Todos> getTodoList(User user) {
+		return factory.openSession().selectList("mybatis.TodoMapper.getTodoList", user);
 	}
 
 

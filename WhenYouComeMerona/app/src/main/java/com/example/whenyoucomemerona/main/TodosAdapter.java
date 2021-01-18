@@ -110,7 +110,7 @@ public class TodosAdapter extends ArrayAdapter {
         convertView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                final AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
                 builder.setTitle("타이틀 짜잔");
                 builder.setMessage("메시지가 들어갑니다");
                 builder.setPositiveButton("수정하기", new DialogInterface.OnClickListener() {
@@ -182,8 +182,6 @@ public class TodosAdapter extends ArrayAdapter {
                                     protected Map<String, String> getParams() throws AuthFailureError {
                                         Map<String, String> params = new HashMap<String, String>();
                                         params.put("todo_id", getItem(position).getTodo_id()+"");
-                                        params.put("content", getItem(position).getContent());
-                                        params.put("done", getItem(position).isDone()+"");
                                         return params;
                                     }
                                 };

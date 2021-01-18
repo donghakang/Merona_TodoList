@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.example.whenyoucomemerona.R;
 import com.example.whenyoucomemerona.controller.BaseFragment;
+import com.example.whenyoucomemerona.controller.My;
 import com.example.whenyoucomemerona.entity.Todos;
 
 import org.json.JSONArray;
@@ -70,19 +71,31 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
                 arr.clear();                    // 데이터를 가져오기전 정리한다.
                 JSONArray data = j.optJSONArray("data");
                 for (int i = 0; i < data.length(); i ++ ){
-                    JSONObject item = data.getJSONObject(i);
-                    int todo_id = item.getInt("todo_id");
-                    String content = item.getString("content");
-                    boolean done = item.getBoolean("done");
+                    JSONObject item = data.optJSONObject(i);
+                    int todo_id = item.optInt("todo_id");
+                    String content = item.optString("content");
+                    String memo = item.optString("memo");
+                    String duedate = item.optString("duedate");
+                    String duetime = item.optString("duetime");
+                    String share_with = item.optString("share_with");
+                    int writer_id = item.optInt("writer_id");
+                    int addr_id = item.optInt("addr_id");
+                    boolean done = item.optBoolean("done");
 
                     Todos todo = new Todos();
                     todo.setTodo_id(todo_id);
                     todo.setContent(content);
+                    todo.setMemo(memo);
+                    todo.setDuedate(duedate);
+                    todo.setDuetime(duetime);
+                    todo.setShare_with(share_with);
+                    todo.setWriter_id(writer_id);
+                    todo.setAddr_id(addr_id);
                     todo.setDone(done);
 
                     arr.add(todo);
                 }
-                adapter.notifyDataSetChanged();
+                refresh(arr);
                 Toast.makeText(getContext(), "리스트 불러오기 성공", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(getContext(), "리스트 불러오기 실패", Toast.LENGTH_SHORT).show();
@@ -94,8 +107,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
     }
 
     /* ----------------------------------------------------------------------------------------------------
-        * -------------------------------------------Create View----------------------------------------------
-         ---------------------------------------------------------------------------------------------------- */
+    * -------------------------------------------Create View----------------------------------------------
+     ---------------------------------------------------------------------------------------------------- */
 
     @Override
     public void loadStart() {
@@ -123,13 +136,17 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
 
         searchFragment = new SearchFragment();
 
-//        request("todoList.do");
-        refresh(arr);
+        params.clear();
+        params.put("user_id", My.Account.getUser_id() + "");
+        request("todoList.do");
+
 
         // Scroll Down to refresh  ------------------------------------------------
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                params.clear();
+                params.put("user_id", My.Account.getUser_id() + "");
                 request("todoList.do");
                 refresh(arr);
                 pullToRefresh.setRefreshing(false);

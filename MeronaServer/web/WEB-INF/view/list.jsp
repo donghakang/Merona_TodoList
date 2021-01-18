@@ -33,7 +33,15 @@ if (todos != null) {
 		JSONObject item = new JSONObject();
 		item.put("todo_id", t.getTodo_id());
 		item.put("content", t.getContent());
-		item.put("done", t.getDone());
+		item.put("memo", t.getMemo());
+		item.put("duedate", t.getDuedate());
+		item.put("duetime", t.getDuetime());
+		item.put("share_with", t.getShare_with());
+		item.put("importance", t.getImportance());
+		item.put("writer_id", t.getWriter_id());
+		item.put("addr_id", t.getAddr_id());
+		
+		item.put("done", t.isDone());
 		data.put(item);
 	}
 	

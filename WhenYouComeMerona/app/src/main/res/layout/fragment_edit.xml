@@ -3,25 +3,280 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".main.AddFragment">
-
-    <EditText
-        android:id="@+id/et_content"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="@drawable/login_edittext"
-        android:hint="해야 할 일"
-        android:textColorHint="#333333"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/et_content"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@drawable/login_edittext"
+                android:hint="@string/add_content"
+                android:textColorHint="#333333"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textStyle="bold"
+                android:layout_marginTop="120dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"/>
+            <EditText
+                android:id="@+id/et_memo"
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:layout_below="@+id/et_content"
+                android:inputType="textMultiLine"
+                android:lines="8"
+                android:minLines="4"
+                android:gravity="top|left"
+                android:maxLines="10"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:layout_marginTop="4dp"
+                android:text=""
+                android:background="@drawable/login_edittext"
+                android:hint="@string/add_memo"
+                android:textColorHint="#333333"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"/>
 
-        android:paddingLeft="16dp"
-        />
+            <RelativeLayout
+                android:id="@+id/rl_date"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_below="@+id/et_memo"
+                android:background="@drawable/login_edittext"
+                android:layout_marginTop="32dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp">
+                <ImageView
+                    android:id="@+id/icon_calendar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_baseline_calendar_today_24"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="8dp"
+                    />
+                <EditText
+                    android:id="@+id/et_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_toEndOf="@id/icon_calendar"
+                    android:background="@null"
+                    android:hint="@string/add_date"
+                    android:textColorHint="#333333"
+                    android:focusable="false"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="16dp"/>
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switch_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:layout_centerVertical="true"
+                    android:thumb="@drawable/switch_thumb"
+                    app:track="@drawable/switch_track_selector"/>
 
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_time"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_below="@+id/rl_date"
+                android:background="@drawable/login_edittext"
+                android:layout_marginTop="4dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp">
+                <ImageView
+                    android:id="@+id/icon_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_baseline_access_time_24"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="8dp"
+                    />
+                <EditText
+                    android:id="@+id/et_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_toEndOf="@id/icon_time"
+                    android:background="@null"
+                    android:hint="@string/add_time"
+                    android:textColorHint="#333333"
+                    android:focusable="false"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="16dp"/>
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switch_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:layout_centerVertical="true"
+                    android:thumb="@drawable/switch_thumb"
+                    app:track="@drawable/switch_track_selector"/>
+
+            </RelativeLayout>
+
+            <!--   -->
+
+            <RelativeLayout
+                android:id="@+id/rl_location"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_below="@+id/rl_time"
+                android:background="@drawable/login_edittext"
+                android:layout_marginTop="4dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp">
+                <ImageView
+                    android:id="@+id/icon_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_baseline_near_me_24"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="8dp"
+                    />
+                <EditText
+                    android:id="@+id/et_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_toEndOf="@id/icon_location"
+                    android:background="@null"
+                    android:hint="@string/add_location"
+                    android:textColorHint="#333333"
+                    android:focusable="false"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="16dp"/>
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switch_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:layout_centerVertical="true"
+                    android:thumb="@drawable/switch_thumb"
+                    app:track="@drawable/switch_track_selector"/>
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/rl_share"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_below="@+id/rl_location"
+                android:background="@drawable/login_edittext"
+                android:layout_marginTop="4dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp">
+                <ImageView
+                    android:id="@+id/icon_share"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_baseline_group_24"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="8dp"
+                    />
+                <EditText
+                    android:id="@+id/et_share"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_toEndOf="@id/icon_share"
+                    android:background="@null"
+                    android:hint="@string/share"
+                    android:textColorHint="#333333"
+                    android:focusable="false"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="16dp"/>
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switch_share"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:layout_centerVertical="true"
+                    android:thumb="@drawable/switch_thumb"
+                    app:track="@drawable/switch_track_selector"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_level"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_below="@+id/rl_share"
+                android:background="@drawable/login_edittext"
+                android:layout_marginTop="4dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="120dp">
+                <ImageView
+                    android:id="@+id/icon_level"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_baseline_star_24"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="8dp"
+                    />
+                <EditText
+                    android:id="@+id/et_level"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_toEndOf="@id/icon_level"
+                    android:background="@null"
+                    android:hint="@string/level"
+                    android:textColorHint="#333333"
+                    android:focusable="false"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="16dp"/>
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switch_level"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
+                    android:layout_centerVertical="true"
+                    android:thumb="@drawable/switch_thumb"
+                    app:track="@drawable/switch_track_selector"/>
+
+            </RelativeLayout>
+
+
+
+        </RelativeLayout>
+    </ScrollView>
     <Button
         android:id="@+id/btn_submit"
-        android:layout_below="@id/et_content"
+        android:layout_alignParentBottom="true"
         android:layout_width="144dp"
         android:layout_height="40dp"
-        android:text="수정하기"
+        android:text="등록하기"
+        android:layout_marginBottom="32dp"
         android:textStyle="bold"
         android:layout_centerHorizontal="true"
         android:background="@drawable/login_button"/>

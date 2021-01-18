@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import entity.Address;
 import entity.Todos;
+import entity.User;
 
 
 @Service("todoService")
@@ -19,8 +20,8 @@ public class TodoService {
 		this.todoDao = todoDao;
 	}
 
-	public List<Todos> getTodoList() {
-		return todoDao.getTodoList();
+	public List<Todos> getTodoList(User user) {
+		return todoDao.getTodoList(user);
 	}
 
 	public boolean insertItem(Todos todo, Address addr) {

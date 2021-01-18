@@ -4,9 +4,10 @@
 
 
 <mapper namespace="mybatis.TodoMapper">
-	<select id="getTodoList" parameterType="todos" resultType="todos">
+	<select id="getTodoList" parameterType="user" resultType="todos">
 		<![CDATA[
-			SELECT * FROM TODOS
+			SELECT * FROM TODOS 
+			WHERE WRITER_ID=#{user_id}
 		]]>
 	</select>
 	

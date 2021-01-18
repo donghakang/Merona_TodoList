@@ -32,8 +32,8 @@ public class TodoController {
 	
 	// Todo List 출력하기 -------------------------------------
 	@RequestMapping(value="/todoList.do")
-	public String getTodoList(Model model) {
-		List<Todos> list = todoService.getTodoList();
+	public String getTodoList(@ModelAttribute User user, Model model) {
+		List<Todos> list = todoService.getTodoList(user);
 		model.addAttribute("todoList", list);
 		return "list";
 	}
