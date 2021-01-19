@@ -43,7 +43,7 @@
 	<select id="myPageUser" parameterType="user" resultType="user">
 		<![CDATA[
 			SELECT * FROM USERS
-			WHERE ID=#{id} AND PW=#{pw}
+			WHERE USER_ID=#{user_id}
 		]]>
 	</select>
 	

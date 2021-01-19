@@ -1,7 +1,7 @@
 package com.example.whenyoucomemerona.main;
 
 import android.app.Activity;
-import android.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.util.Log;
@@ -111,8 +111,12 @@ public class TodosAdapter extends ArrayAdapter {
             @Override
             public boolean onLongClick(View v) {
                 final AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
-                builder.setTitle("타이틀 짜잔");
-                builder.setMessage("메시지가 들어갑니다");
+
+                View titleView = lnf.inflate(R.layout.add_level_title, null);
+                TextView title = titleView.findViewById(R.id.dialog_title);
+                title.setText("수정/삭제");
+                builder.setCustomTitle(titleView);
+
                 builder.setPositiveButton("수정하기", new DialogInterface.OnClickListener() {
                     /**
                      * 수정하기 버튼을 누른다.
@@ -141,8 +145,11 @@ public class TodosAdapter extends ArrayAdapter {
                      */
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        AlertDialog.Builder deleteBox = new AlertDialog.Builder(getContext());
-                        deleteBox.setTitle("삭제하기");
+                        AlertDialog.Builder deleteBox = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
+                        View titleView = lnf.inflate(R.layout.add_level_title, null);
+                        TextView title = titleView.findViewById(R.id.dialog_title);
+                        title.setText("삭제하기");
+                        deleteBox.setCustomTitle(titleView);
                         deleteBox.setMessage("정말로 삭제하시겠습니까?");
                         deleteBox.setPositiveButton("예", new DialogInterface.OnClickListener() {
                             @Override

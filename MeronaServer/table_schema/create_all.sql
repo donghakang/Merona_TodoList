@@ -86,7 +86,7 @@ select * from friend;
 select * from request;
 select * from tab;
 
-insert into request values (1,2);
+insert into friend values (4, 1);
 delete from REQUEST;
 
 
@@ -101,4 +101,20 @@ delete from users where id='admin';
 Select * from T3;
 
 create table t3( a number, b number);
-insert into t3 values (1, (select max(addr_id) from address));
+
+insert into t3 values (2, 21);
+insert into t3 values (1, 2);
+insert into t3 values (22, 2);
+insert into t3 values (1, 21);
+
+
+
+
+select users.* from 
+(select b as "uid" from t3 where a=2
+union
+select a as "uid" from t3 where b=2) 
+left join users on "uid"=user_id
+
+
+drop table t3;

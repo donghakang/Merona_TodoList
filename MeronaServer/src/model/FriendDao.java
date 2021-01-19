@@ -65,6 +65,11 @@ public class FriendDao {
 		Relationship isFriend = factory.openSession().selectOne("mybatis.FriendMapper.selectFriend", relationship);
 		return (isFriend != null) ? true : false;
 	}
+	
+	// user의 친구 리스트 가져오기 
+	public List<User> getFriendList(User user) {
+		return factory.openSession().selectList("mybatis.FriendMapper.getFriendList", user);
+	}
 
 }
 

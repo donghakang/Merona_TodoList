@@ -4,11 +4,13 @@
 
 
 <mapper namespace="mybatis.FriendMapper">
-	<select id="getFriendIdList" parameterType="user" resultType="user">
+	<select id="getFriendList" parameterType="user" resultType="user">
 		<![CDATA[
-			SELECT * FROM FRIEND
-			WHERE USER_ID=#{user_id}
-			LEFT JOIN 
+			SELECT USERS.* FROM (
+			SELECT USER_ID AS "UID" FROM FRIEND WHERE FRIEND_ID=#{user_id}
+			UNION
+			SELECT FRIEND_ID AS "UID" FROM FRIEND WHERE USER_ID=#{user_id}) 
+			LEFT JOIN USERS ON "UID"=USER_ID
 		]]>
 	</select>
 	

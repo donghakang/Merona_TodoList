@@ -145,9 +145,7 @@ public class SplashActivity extends BaseActivity {
                 updateToken("updateToken.do");
                 updateMy("myPage.do");
 
-                Intent intent = new Intent(SplashActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
+
             } else {
                 Intent intent = new Intent(SplashActivity.this, LoginActivity.class);
                 startActivity(intent);
@@ -183,6 +181,9 @@ public class SplashActivity extends BaseActivity {
                                 My.Account.setBirth(user_info.getString("birth"));
                                 My.Account.setToken(user_info.getString("token"));
 
+                                Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                                startActivity(intent);
+                                finish();
                             } else {
                                 Log.d("ddddd", "데이터 가져오기 실패...");
                             }

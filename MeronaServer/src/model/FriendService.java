@@ -1,9 +1,12 @@
 package model;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import entity.Relationship;
+import entity.User;
 
 @Service("friendService")
 public class FriendService {
@@ -88,6 +91,12 @@ public class FriendService {
 		} else {
 			return 0;
 		}
+	}
+
+
+	public List<User> getFriendList(User user) {
+		// TODO Auto-generated method 
+		return friendDao.getFriendList(user);
 	}
 	
 }

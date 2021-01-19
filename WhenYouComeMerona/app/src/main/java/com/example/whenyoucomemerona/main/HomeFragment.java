@@ -66,6 +66,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
         // 통신을 성공 할 시
         try {
             JSONObject j = new JSONObject(response);
+            Log.d("dddd", response);
             // 데이터 가져오기 성공할 때,
             if (j.optString("result").equals("ok")) {
                 arr.clear();                    // 데이터를 가져오기전 정리한다.
@@ -95,6 +96,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
 
                     arr.add(todo);
                 }
+
+
                 refresh(arr);
                 Toast.makeText(getContext(), "리스트 불러오기 성공", Toast.LENGTH_SHORT).show();
             } else {
@@ -140,6 +143,11 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
         params.put("user_id", My.Account.getUser_id() + "");
         request("todoList.do");
 
+        Log.d("dddd", "OMG");
+        Log.d("dddd", arr.size() + "");
+        for (Todos t : arr) {
+            Log.d("dddd", t.toString());
+        }
 
         // Scroll Down to refresh  ------------------------------------------------
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -148,10 +156,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
                 params.clear();
                 params.put("user_id", My.Account.getUser_id() + "");
                 request("todoList.do");
-                refresh(arr);
                 pullToRefresh.setRefreshing(false);
             }
-
         });
 
         // 친구 찾기 버튼 설정 ---------------------------∂-----------------------------
@@ -164,6 +170,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
         filterSpinner.setAdapter(adapter);
 
         filterSpinner.setOnItemSelectedListener(this);
+
 
 
         return view;

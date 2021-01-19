@@ -96,9 +96,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                 updateToken("updateToken.do");
                 updateMy("myPage.do");
 
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
+
             } else {
                 Toast.makeText(LoginActivity.this, "로그인 실패", Toast.LENGTH_SHORT).show();
             }
@@ -130,6 +128,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                                 My.Account.setEmail(user_info.getString("email"));
                                 My.Account.setBirth(user_info.getString("birth"));
                                 My.Account.setToken(user_info.getString("token"));
+
+                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                startActivity(intent);
+                                finish();
 
                             } else {
                                 Log.d("ddddd", "데이터 가져오기 실패...");

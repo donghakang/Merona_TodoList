@@ -17,8 +17,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
+
 import com.example.whenyoucomemerona.R;
 import com.example.whenyoucomemerona.controller.BaseFragment;
+import com.example.whenyoucomemerona.controller.My;
 import com.example.whenyoucomemerona.controller.StaticFunction;
 import com.example.whenyoucomemerona.entity.Todos;
 import com.example.whenyoucomemerona.entity.User;
@@ -29,13 +32,7 @@ import org.json.JSONObject;
 
 public class MyPageFragment extends BaseFragment implements AdapterView.OnItemSelectedListener, View.OnClickListener {
 
-    int user_id;
-    String id;
-    String pw;
-    String name;
-    String email;
-    String birth;
-    User my;
+
 
     RelativeLayout rlMyPage;
     TextView myId, myEmail;
@@ -53,22 +50,9 @@ public class MyPageFragment extends BaseFragment implements AdapterView.OnItemSe
     }
 
     @Override
-    public void loadStart() {
-        super.loadStart();
-        rlMyPage.setVisibility(View.INVISIBLE);
-    }
-
-    @Override
-    public void loadEnd() {
-        super.loadEnd();
-        rlMyPage.setVisibility(View.VISIBLE);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_my_page, container, false);
-        progressBar = v.findViewById(R.id.progress);
         rlMyPage = v.findViewById(R.id.my_page);
 
         init(v);
@@ -87,15 +71,15 @@ public class MyPageFragment extends BaseFragment implements AdapterView.OnItemSe
 
                 Toast.makeText(getContext(), "마이페이지 불러오기 성공", Toast.LENGTH_SHORT).show();
 
-                JSONObject user_info = j.optJSONObject("data");
-                assert user_info != null;
-                my.setUser_id(user_info.getInt("user_id"));
-                my.setId(user_info.getString("id"));
-                my.setName(user_info.getString("name"));
-                my.setEmail(user_info.getString("email"));
-                my.setBirth(user_info.getString("birth"));
+//                JSONObject user_info = j.optJSONObject("data");
+//                assert user_info != null;
+//                my.setUser_id(user_info.optInt("user_id"));
+//                my.setId(user_info.optString("id"));
+//                my.setName(user_info.optString("name"));
+//                my.setEmail(user_info.optString("email"));
+//                my.setBirth(user_info.optString("birth"));
 
-                myPageSetup(my);
+//                myPageSetup();
             } else {
                 Toast.makeText(getContext(), "마이페이지 불러오기 실패", Toast.LENGTH_SHORT).show();
             }
@@ -105,31 +89,31 @@ public class MyPageFragment extends BaseFragment implements AdapterView.OnItemSe
         }
     }
 
+    // 서버에서 받은 자료들을 마이페이지에 옮긴다.
+    private void myPageSetup() {
+        myId.setText(My.Account.getId());
+        myEmail.setText(My.Account.getEmail());
+    }
 
     // init ------------------------------------------------------
     private void init (View v) {
-        SharedPreferences auto = getActivity().getSharedPreferences("auto", Activity.MODE_PRIVATE);
-        pw = auto.getString("auto_pw",null);
-        id = auto.getString("auto_id",null);
-        user_id = -1;
-        name = "";
-        email = "";
-        birth = "";
-        my = new User();
 
         myId = v.findViewById(R.id.my_id);
         myEmail = v.findViewById(R.id.my_email);
         mySetting = v.findViewById(R.id.my_setting);
         btnFriendList = v.findViewById(R.id.btn_friend_list);
 
-        if (id == null || pw == null) {
-            // TODO: 세션이 만료 되었습니다, 로그인 페이지로.
-        } else {
-            params.clear();
-            params.put("id", id);
-            params.put("pw", StaticFunction.EncBySha256(pw));
-            request("myPage.do");
-        }
+        // TODO: load different object.
+//        if (id == null || pw == null) {
+
+//        } else {
+//            params.clear();
+//            params.put("user_id", My.Account.getUser_id() + "");
+//            request("myPage.do");
+//        }
+
+        myPageSetup();
+
 
         // Spinner 로 연결
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
@@ -146,8 +130,8 @@ public class MyPageFragment extends BaseFragment implements AdapterView.OnItemSe
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         if (position == 0) {
-            // 설정
-            Log.d ("ddddd", "설정");
+            // TODO: 설정
+
         } else {
             // 로그아웃
             SharedPreferences auto = getActivity().getSharedPreferences("auto", Activity.MODE_PRIVATE);
@@ -155,6 +139,8 @@ public class MyPageFragment extends BaseFragment implements AdapterView.OnItemSe
             autoLogin.putString("auto_id", "");
             autoLogin.putString("auto_pw", "");
             autoLogin.apply();
+
+            My.Account = new User();
 
             Intent intent = new Intent(getActivity(), LoginActivity.class);
             getActivity().startActivity(intent);
@@ -170,17 +156,29 @@ public class MyPageFragment extends BaseFragment implements AdapterView.OnItemSe
         // 설정에서 아무것도 고르지 않는다.
     }
 
-    // 서버에서 받은 자료들을 마이페이지에 옮긴다.
-    private void myPageSetup(User my) {
-        myId.setText(my.getId());
-        myEmail.setText(my.getEmail());
-    }
+
 
 
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.btn_friend_list) {
             // TODO: get Friend List
+            getFriendList(v);
         }
+    }
+
+
+    // 친구 리스트 불러오기 페이지로 이동 --------------------------------------------------------------------
+    private void getFriendList(View v) {
+        Fragment friendListFragment = new FriendListFragment(My.Account);
+        getActivity().getSupportFragmentManager()
+            .beginTransaction()
+            .setCustomAnimations(
+                R.anim.slide_next1,
+                R.anim.slide_next2
+            )
+            .replace(R.id.body_rl, friendListFragment)
+            .addToBackStack(null)
+            .commit();
     }
 }

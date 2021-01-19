@@ -72,7 +72,6 @@ public class UserController {
 	@RequestMapping(value="/myPage.do", method=RequestMethod.POST)
 	public String searchFriend(@ModelAttribute User user, Model model) {		
 		User user_info = userService.myPageUser(user);
-		System.out.println(user_info.toString());
 		model.addAttribute("user", user_info);
 		return "myPage";
 	}

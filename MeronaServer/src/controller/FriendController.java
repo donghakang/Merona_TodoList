@@ -28,24 +28,13 @@ public class FriendController {
 		this.friendService = friendService;
 	}
 	
-//	// 자기의 친구 리스트를 확인한다. ---------------------------------------------------
-//	@RequestMapping(value="/getFriendList.do", method=RequestMethod.POST) 
-//	@ResponseBody 
-//	public String getFriendList(@ModelAttribute User user) {
-//		JSONObject json = new JSONObject();
-//		
-//		List<User> friends = friendService.getFriendList(user);
-//	
-//		if (friends == null) {
-//			json.put("result", "fail");
-//		} else {
-//			json.put("result", "ok");
-//		}
-//		
-//		
-//		return json.toString();
-//	}
-//	
+	// 자기의 친구 리스트를 확인한다. ---------------------------------------------------
+	@RequestMapping(value="/getFriendList.do", method=RequestMethod.POST) 
+	public String getFriendList(@ModelAttribute User user, Model model) {
+		List<User> friends = friendService.getFriendList(user);
+		model.addAttribute("list", friends);
+		return "searchFriend";
+	}
 	
 	
 	// 친구 신청 -------------------------------------------------------------------
@@ -98,17 +87,6 @@ public class FriendController {
 		}
 		return json.toString();
 	}
-
-//	
-//	// 친구 리스트 가져오기 ----------------------------------------------------------------
-//	@RequestMapping(value="/getFriendList.do", method=RequestMethod.POST) 
-//	public String checkStatus(@ModelAttribute User user, Model model){
-//		
-//		List<User> list = friendService.searchFriend(user);
-//		model.addAttribute("list", list);
-//		
-//		return "friendList";
-//	}
 
 }
 

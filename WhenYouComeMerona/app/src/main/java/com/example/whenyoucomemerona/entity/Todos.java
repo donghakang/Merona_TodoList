@@ -98,4 +98,20 @@ public class Todos {
     public void setDone(boolean done) {
         this.done = done;
     }
+
+    @Override
+    public String toString() {
+        return "Todos{" +
+                "todo_id=" + todo_id +
+                ", content='" + content + '\'' +
+                ", memo='" + memo + '\'' +
+                ", duedate='" + duedate + '\'' +
+                ", duetime='" + duetime + '\'' +
+                ", share_with='" + share_with + '\'' +
+                ", importance=" + importance +
+                ", writer_id=" + writer_id +
+                ", addr_id=" + addr_id +
+                ", done=" + done +
+                '}';
+    }
 }
