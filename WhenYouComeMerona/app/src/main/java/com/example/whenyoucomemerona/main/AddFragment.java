@@ -156,21 +156,6 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, C
 
         params.put("done", "false");
 
-//        Log.d("dddd", etContent.getText().toString());
-//        Log.d("dddd", etMemo.getText().toString());
-//        Log.d("dddd", finalDate);
-//        Log.d("dddd", finalTime);
-//        Log.d("dddd", finalShare);
-//        Log.d("dddd", My.Account.getUser_id() + "");
-//        Log.d("dddd", finalLevel);
-//
-//        Log.d("dddd", finalLocation.getAddress_name());
-//        Log.d("dddd", finalLocation.getPlace_name());
-//        Log.d("dddd", finalLocation.getRoad_address_name());
-//        Log.d("dddd", "");
-//        Log.d("dddd", finalLocation.getLat() + "");
-//        Log.d("dddd", finalLocation.getLng() + "");
-
         Log.d("done", "false");
         request("insertItem.do");
     }
