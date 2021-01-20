@@ -138,7 +138,6 @@ public class MyPageFragment extends BaseFragment implements AdapterView.OnItemSe
         pgLevel.setMax(level[1]);
         tvLevelCount.setText("Lv. " + level[2]);
 
-
     }
 
 
