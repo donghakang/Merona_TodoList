@@ -6,8 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -16,28 +14,17 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.example.whenyoucomemerona.R;
 import com.example.whenyoucomemerona.controller.BaseFragment;
 import com.example.whenyoucomemerona.controller.My;
-import com.example.whenyoucomemerona.entity.Address;
 import com.example.whenyoucomemerona.entity.User;
-import com.example.whenyoucomemerona.model.Key;
+import com.example.whenyoucomemerona.view.SearchFriendAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class FriendListFragment extends BaseFragment implements AdapterView.OnItemClickListener {
 

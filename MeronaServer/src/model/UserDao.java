@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+
+import entity.Todos;
 import entity.User;
 
 @Repository("userDao")
@@ -60,10 +62,6 @@ public class UserDao {
 		return factory.openSession().selectOne("mybatis.LoginMapper.getLoginUser", user);
 	}
 
-	// 검색을 이용해서 친구의 페이지를 불러온다 ---------------------------------------------
-	public User getUserPage(int user_id) {
-		return factory.openSession().selectOne("mybatis.LoginMapper.getUserPage", user_id);
-	}
 
 	
 	// 토큰 업데이트 
@@ -71,6 +69,24 @@ public class UserDao {
 		int n = factory.openSession().update("mybatis.LoginMapper.updateToken", user);
 		System.out.println("TOKEN STATUS: " + n);
 		return (n > 0) ? true : false;
+	}
+	
+	// 검색을 이용해서 친구의 페이지를 불러온다 ---------------------------------------------
+	public User getUserPage(int user_id) {
+		return factory.openSession().selectOne("mybatis.LoginMapper.getUserPage", user_id);
+	}
+
+
+	public List<Todos> getUserData(User user) {
+		System.out.println("userID: " + user.getUser_id());
+		System.out.println(factory.openSession().selectList("mybatis.TodoMapper.getUserData", user).size() + " is the size of arr");
+		return factory.openSession().selectList("mybatis.TodoMapper.getUserData", user);
+	}
+
+	public List<Todos> getUserSharedData(User user) {
+		System.out.println("userID: " + user.getUser_id());
+		System.out.println(factory.openSession().selectList("mybatis.TodoMapper.getUserSharedData", user).size() + " is the size of arr");
+		return factory.openSession().selectList("mybatis.TodoMapper.getUserSharedData", user);
 	}
 
 	

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import entity.Todos;
 import entity.User;
 import model.UserService;
 
@@ -84,6 +85,20 @@ public class UserController {
 		return "myPage";
 	}
 
+	@RequestMapping(value="/getUserData.do", method=RequestMethod.POST)
+	public String getUserData(@ModelAttribute User user, Model model) {
+		User user_info = userService.getUserPage(user.getUser_id());
+		System.out.println(user_info.toString());
+		List<Todos> user_data = userService.getUserData(user_info);
+		
+		List<Todos> user_shared_data = userService.getUserSharedData(user_info);
+		model.addAttribute("user", user_info);
+		model.addAttribute("data", user_data);
+		model.addAttribute("shared_data", user_shared_data);
+		
+		return "userData";
+	}
+	
 	
 	// 토큰을 업데이트 ------------------------------------------------------------------
 	@RequestMapping(value="/updateToken.do", method=RequestMethod.POST)

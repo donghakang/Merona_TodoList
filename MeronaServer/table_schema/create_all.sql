@@ -108,8 +108,6 @@ insert into t3 values (22, 2);
 insert into t3 values (1, 21);
 
 
-
-
 select users.* from 
 (select b as "uid" from t3 where a=2
 union
@@ -117,4 +115,18 @@ select a as "uid" from t3 where b=2)
 left join users on "uid"=user_id
 
 
+select * from todos;
+select * from users;
+
+select * from users
+where lower(email) like '%naver%';
+
+select * from todos
+where writer_id=2;
+
 drop table t3;
+
+
+
+select * from todos 
+where writer_id=2;

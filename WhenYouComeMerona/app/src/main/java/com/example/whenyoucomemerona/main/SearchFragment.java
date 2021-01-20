@@ -20,6 +20,7 @@ import com.example.whenyoucomemerona.R;
 import com.example.whenyoucomemerona.controller.BaseFragment;
 import com.example.whenyoucomemerona.controller.My;
 import com.example.whenyoucomemerona.entity.User;
+import com.example.whenyoucomemerona.view.SearchFriendAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;

@@ -43,5 +43,4 @@ public class StaticFunction {
         return retVal;
     }
 
-
 }

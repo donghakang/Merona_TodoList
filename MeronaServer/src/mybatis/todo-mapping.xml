@@ -45,4 +45,17 @@
 		]]>
 	</delete>
 	
+	
+	<select id="getUserData" parameterType="user" resultType="todos">
+		<![CDATA[
+			SELECT * FROM TODOS
+			WHERE WRITER_ID=#{user_id}
+		]]>
+	</select>
+	
+	<select id="getUserSharedData" parameterType="user" resultType="todos">
+		SELECT * FROM TODOS
+		WHERE LOWER(SHARE_WITH) LIKE '%' ||  #{user_id} || '%'
+	</select>
+	
 </mapper>

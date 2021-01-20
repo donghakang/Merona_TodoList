@@ -94,7 +94,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                 Toast.makeText(LoginActivity.this, "로그인 성공", Toast.LENGTH_SHORT).show();
 
                 updateToken("updateToken.do");
-                updateMy("myPage.do");
+
 
 
             } else {
@@ -175,6 +175,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                             // 데이터 가져오기 성공할 때,
                             if (j.optString("result").equals("ok")) {
                                 Toast.makeText(getApplicationContext(), "토큰 삽입 성공", Toast.LENGTH_SHORT).show();
+                                updateMy("myPage.do");
                             } else {
                                 Toast.makeText(getApplicationContext(), "토큰 삽입 실패", Toast.LENGTH_SHORT).show();
                             }

@@ -13,8 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
@@ -42,6 +40,8 @@ import com.example.whenyoucomemerona.controller.My;
 import com.example.whenyoucomemerona.entity.Address;
 import com.example.whenyoucomemerona.entity.User;
 import com.example.whenyoucomemerona.model.Key;
+import com.example.whenyoucomemerona.view.SearchFriendAdapter;
+import com.example.whenyoucomemerona.view.SearchLocationAdapter;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
@@ -52,15 +52,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Random;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 

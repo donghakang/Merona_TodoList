@@ -5,42 +5,30 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SearchView;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
 import com.example.whenyoucomemerona.R;
 import com.example.whenyoucomemerona.controller.BaseFragment;
 import com.example.whenyoucomemerona.entity.Address;
-import com.example.whenyoucomemerona.entity.Todos;
 import com.example.whenyoucomemerona.model.Key;
-import com.google.android.material.chip.Chip;
-import com.toptoche.searchablespinnerlibrary.SearchableSpinner;
+import com.example.whenyoucomemerona.view.SearchLocationAdapter;
 
 import net.daum.mf.map.api.MapPoint;
 import net.daum.mf.map.api.MapView;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Random;
-
-import static android.content.Context.INPUT_METHOD_SERVICE;
 
 
 public class MapFragment extends BaseFragment implements View.OnClickListener {

@@ -21,6 +21,7 @@ import com.example.whenyoucomemerona.R;
 import com.example.whenyoucomemerona.controller.BaseFragment;
 import com.example.whenyoucomemerona.controller.My;
 import com.example.whenyoucomemerona.entity.Todos;
+import com.example.whenyoucomemerona.view.TodosAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;

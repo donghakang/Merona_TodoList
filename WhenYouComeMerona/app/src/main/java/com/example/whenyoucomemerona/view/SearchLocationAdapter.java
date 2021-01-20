@@ -1,4 +1,4 @@
-package com.example.whenyoucomemerona.main;
+package com.example.whenyoucomemerona.view;
 
 import android.app.Activity;
 import android.content.Context;
@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -14,7 +13,6 @@ import androidx.annotation.Nullable;
 
 import com.example.whenyoucomemerona.R;
 import com.example.whenyoucomemerona.entity.Address;
-import com.example.whenyoucomemerona.entity.User;
 
 import java.util.ArrayList;
 

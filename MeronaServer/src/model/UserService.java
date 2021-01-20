@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import entity.Todos;
 import entity.User;
 
 @Service("userService")
@@ -45,12 +46,26 @@ public class UserService {
 	}
 
 
-	public User getUserPage(int user_id) {
-		return userDao.getUserPage(user_id);
-	}
+	
 
 
 	public boolean updateToken(User user) {
 		return userDao.updateToken(user);
 	}
+
+	
+	public User getUserPage(int user_id) {
+		return userDao.getUserPage(user_id);
+	}
+
+	public List<Todos> getUserData(User user) {
+		return userDao.getUserData(user);
+	}
+
+
+	public List<Todos> getUserSharedData(User user) {
+		return userDao.getUserSharedData(user);
+	}
+	
+	
 }
