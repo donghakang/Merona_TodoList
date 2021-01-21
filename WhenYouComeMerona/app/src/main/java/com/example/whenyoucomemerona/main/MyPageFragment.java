@@ -24,16 +24,17 @@ import androidx.fragment.app.Fragment;
 import com.example.whenyoucomemerona.R;
 import com.example.whenyoucomemerona.controller.BaseFragment;
 import com.example.whenyoucomemerona.controller.My;
-import com.example.whenyoucomemerona.controller.StaticFunction;
 import com.example.whenyoucomemerona.entity.Todos;
 import com.example.whenyoucomemerona.entity.User;
 import com.example.whenyoucomemerona.lib.Level;
+import com.example.whenyoucomemerona.view.TodosAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class MyPageFragment extends BaseFragment implements AdapterView.OnItemSelectedListener, View.OnClickListener {
 
@@ -48,6 +49,7 @@ public class MyPageFragment extends BaseFragment implements AdapterView.OnItemSe
     TextView tvLevel, tvMyContent, tvOurContent;
 
     ListView lvMyPageList;
+    TodosAdapter adapter;
 
 
     ArrayList<Todos> myTodos;
@@ -69,7 +71,6 @@ public class MyPageFragment extends BaseFragment implements AdapterView.OnItemSe
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_my_page, container, false);
-        rlMyPage = v.findViewById(R.id.my_page);
 
         init(v);
 
@@ -104,14 +105,6 @@ public class MyPageFragment extends BaseFragment implements AdapterView.OnItemSe
         sharedTodos = new ArrayList<>();
         allTodos = new ArrayList<>();
 
-        // TODO: load different object.
-        params.clear();
-        params.put("user_id", My.Account.getUser_id() + "");
-        params.put("id", My.Account.getId());
-        request("getUserData.do");
-        myPageSetup();
-
-
         // Spinner 로 연결
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
                 R.array.my_page_setting, android.R.layout.simple_spinner_item);
@@ -121,6 +114,13 @@ public class MyPageFragment extends BaseFragment implements AdapterView.OnItemSe
         mySetting.setOnItemSelectedListener(this);
 
         btnFriendList.setOnClickListener(this);
+
+
+
+        params.clear();
+        params.put("user_id", My.Account.getUser_id() + "");
+        params.put("id", My.Account.getId());
+        request("getUserData.do");
 
     }
 
@@ -133,10 +133,24 @@ public class MyPageFragment extends BaseFragment implements AdapterView.OnItemSe
         tvMyContentCount.setText(myTodos.size() + "");
         tvOurContentCount.setText(sharedTodos.size() + "");
 
+        // 레벨
         int[] level = Level.calcLevel(myTodos.size(), sharedTodos.size());
         pgLevel.setProgress(level[0]);
         pgLevel.setMax(level[1]);
         tvLevelCount.setText("Lv. " + level[2]);
+
+        // 리스트
+        ArrayList<Todos> tmpArr = new ArrayList<>();
+        for (Todos t : allTodos) {
+            if (t.isDone()) {
+                tmpArr.add(t);              // 한 일 만 삽입한다.
+            }
+        }
+        Collections.sort(tmpArr);           // sort by 작성된 날들.
+
+        adapter = new TodosAdapter(getActivity(), tmpArr);
+        lvMyPageList.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
 
     }
 
@@ -164,14 +178,11 @@ public class MyPageFragment extends BaseFragment implements AdapterView.OnItemSe
                     tmp.setAddr_id(d.optInt("addr_id"));
                     tmp.setDone(d.optBoolean("done"));
 
-                    Log.d("dddd", tmp.isDone() + "");
-                    Log.d("dddd", (tmp.isDone() == false) + "");
                     if (tmp.isDone()) {
                         myTodos.add(tmp);
                     }
-                    Log.d("dddd", tmp.isDone() + "");
+
                     allTodos.add(tmp);
-                    Log.d("dddd", tmp.isDone() + "");
                 }
 
                 JSONArray sharedArr = json.optJSONArray("shared_data");
@@ -194,6 +205,7 @@ public class MyPageFragment extends BaseFragment implements AdapterView.OnItemSe
 
                     if (tmp.isDone()) {
                         sharedTodos.add(tmp);
+
                     }
 
                     allTodos.add(tmp);
@@ -251,13 +263,13 @@ public class MyPageFragment extends BaseFragment implements AdapterView.OnItemSe
     public void onClick(View v) {
         if (v.getId() == R.id.btn_friend_list) {
             // TODO: get Friend List
-            getFriendList(v);
+            getFriendList();
         }
     }
 
 
     // 친구 리스트 불러오기 페이지로 이동 --------------------------------------------------------------------
-    private void getFriendList(View v) {
+    private void getFriendList() {
         Fragment friendListFragment = new FriendListFragment(My.Account);
         getActivity().getSupportFragmentManager()
             .beginTransaction()

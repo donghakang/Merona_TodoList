@@ -1,4 +1,4 @@
-package com.example.whenyoucomemerona.controller;
+package com.example.whenyoucomemerona.lib;
 
 import android.content.pm.PackageInfo;
 import android.util.Log;

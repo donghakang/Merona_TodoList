@@ -2,7 +2,7 @@ package com.example.whenyoucomemerona.entity;
 
 import java.util.Random;
 
-public class Todos {
+public class Todos implements Comparable {
     private int todo_id;
     private String content;
     private String memo;
@@ -113,5 +113,12 @@ public class Todos {
                 ", addr_id=" + addr_id +
                 ", done=" + done +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Object t) {
+        int compareTodoId = ((Todos)t).getTodo_id();
+        /* For Ascending order*/
+        return this.todo_id - compareTodoId;
     }
 }

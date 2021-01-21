@@ -3,6 +3,7 @@ package com.example.whenyoucomemerona.controller;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
@@ -16,10 +17,14 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.whenyoucomemerona.model.Key;
 
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -107,5 +112,48 @@ public class BaseFragment extends Fragment {
         }
     }
 
+
+    public void sendNotification(String token, String title, String message) {
+        String FCM_API = "https://fcm.googleapis.com/fcm/send";
+        final String serverKey = "key=" + Key.getFirebaseServerKey();
+        final String contentType = "application/json";
+
+        JSONObject notification = new JSONObject();
+        JSONObject notifcationBody = new JSONObject();
+        try {
+            notifcationBody.put("title", title);
+            notifcationBody.put("message", message);
+
+            notification.put("to", token);
+            notification.put("data", notifcationBody);
+        } catch (Exception e) {
+            Log.d("dddd", "onCreate: " + e.getMessage() );
+        }
+
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(FCM_API, notification,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("Notification Tag", "Notification Sent");
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+//                        Toast.makeText(MainActivity.this, "Request error", Toast.LENGTH_LONG).show();
+                        Log.d("Notification Tag", "onErrorResponse: Didn't work");
+                    }
+                }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<>();
+                params.put("Authorization", serverKey);
+                params.put("Content-Type", contentType);
+                return params;
+            }
+        };
+        MySingleton.getInstance(getContext()).addToRequestQueue(jsonObjectRequest);
+    }
 
 }

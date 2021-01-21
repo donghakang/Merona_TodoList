@@ -31,9 +31,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".controller.MyFirebaseInstance">
+
+        <service
+            android:name=".view.MyFirebaseInstance"
+            android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
             </intent-filter>
         </service>
         <meta-data android:name="com.kakao.sdk.AppKey" android:value="d91b15f487701dcd1cfcb3c740e9b510"/>

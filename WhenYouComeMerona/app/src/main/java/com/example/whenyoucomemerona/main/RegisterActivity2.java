@@ -23,7 +23,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.whenyoucomemerona.R;
-import com.example.whenyoucomemerona.controller.StaticFunction;
+import com.example.whenyoucomemerona.lib.StaticFunction;
 import com.example.whenyoucomemerona.model.Key;
 
 import org.json.JSONException;

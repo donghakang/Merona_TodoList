@@ -25,7 +25,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.whenyoucomemerona.R;
 import com.example.whenyoucomemerona.controller.BaseActivity;
 import com.example.whenyoucomemerona.controller.My;
-import com.example.whenyoucomemerona.controller.StaticFunction;
+import com.example.whenyoucomemerona.lib.StaticFunction;
 import com.example.whenyoucomemerona.model.Key;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
