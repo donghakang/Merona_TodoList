@@ -36,6 +36,9 @@ if (user != null) {
 }
 
 out.println(jsonResult.toString());
+System.out.println("----------------------------------------");
+System.out.println("GETUSERPAGE.DO: " + jsonResult.toString());
+System.out.println("----------------------------------------");
 %>
 
 
