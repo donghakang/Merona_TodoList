@@ -14,6 +14,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -23,16 +26,23 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.whenyoucomemerona.R;
+import com.example.whenyoucomemerona.controller.My;
 import com.example.whenyoucomemerona.lib.StaticFunction;
 import com.example.whenyoucomemerona.model.Key;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 public class RegisterActivity2 extends RegisterActivity implements View.OnClickListener {
 
@@ -47,6 +57,9 @@ public class RegisterActivity2 extends RegisterActivity implements View.OnClickL
     DatePicker datePicker;
     final Calendar cal = Calendar.getInstance();
 
+    String token;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +70,7 @@ public class RegisterActivity2 extends RegisterActivity implements View.OnClickL
         name = "";
         email = "";
         birth = "";
+        token = "";
 
         etName = findViewById(R.id.et_registerName);
         etBirth = findViewById(R.id.et_registerBirth);
@@ -188,9 +202,12 @@ public class RegisterActivity2 extends RegisterActivity implements View.OnClickL
     // 회원 등록 ------------------------------------------------------------------------
 
     private void register() {
+
         name = etName.getText().toString();
         birth = etBirth.getText().toString();
         email = etEmail.getText().toString();
+
+        Log.d("dddd", "current Token: " + My.Account.getToken());
 
         params.clear();
         params.put("id", id);
@@ -198,6 +215,7 @@ public class RegisterActivity2 extends RegisterActivity implements View.OnClickL
         params.put("name", name);
         params.put("birth", birth);
         params.put("email", email);
+        params.put("token", My.Account.getToken());
         request("register.do");
     }
 
@@ -209,14 +227,7 @@ public class RegisterActivity2 extends RegisterActivity implements View.OnClickL
             if (j.optString("result").equals("ok")) {
                 // TODO: 회원가입 완료 페이지로 이동
 
-                Toast.makeText(this, "성공", Toast.LENGTH_SHORT).show();
-//                    Intent intent = new Intent(this, RegisterActivity2.class);
-//                    intent.putExtra("id", id);
-//                    intent.putExtra("pw", pw);
-//                    ActivityOptions options = ActivityOptions.makeCustomAnimation(this, R.anim.slide_next1, R.anim.slide_next2);
-//                    startActivity(intent, options.toBundle());
-//                    finish();
-
+                processLogin();
 
 
             } else {
@@ -230,4 +241,115 @@ public class RegisterActivity2 extends RegisterActivity implements View.OnClickL
             e.printStackTrace();
         }
     }
+
+
+    // 회원가입이 완료 된 후, 바로 첫번째 페이지로 이동한다,
+    // 그 와 동시에 첫 notification을 준다.
+    private void processLogin() {
+        // token 값
+
+
+        String url = "login.do";
+        RequestQueue stringRequest = Volley.newRequestQueue(this);
+        StringRequest myReq = new StringRequest(Request.Method.POST, Key.getUrl() + url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject j = new JSONObject(response);
+                            // 데이터 가져오기 성공할 때,
+                            if (j.optString("result").equals("ok")) {
+                                updateMy("myPage.do");
+                            } else {
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> loginParams = new HashMap<String, String>();
+                loginParams.put("id", id);
+                loginParams.put("pw", StaticFunction.EncBySha256(pw));
+                loginParams.put("token", token);
+
+                return loginParams;
+            }
+        };
+
+        myReq.setRetryPolicy(new DefaultRetryPolicy(3000, 0, 1f));
+        stringRequest.add(myReq);
+
+
+    }
+
+
+
+    // --- 내 페이지를 저장한다.
+    private void updateMy(String url) {
+
+        RequestQueue stringRequest = Volley.newRequestQueue(this);
+        StringRequest myReq = new StringRequest(Request.Method.POST, Key.getUrl() + url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject j = new JSONObject(response);
+                            // 데이터 가져오기 성공할 때,
+                            if (j.optString("result").equals("ok")) {
+                                JSONObject user_info = j.optJSONObject("data");
+                                assert user_info != null;
+
+                                My.Account.setUser_id(user_info.getInt("user_id"));
+                                My.Account.setId(user_info.getString("id"));
+                                My.Account.setName(user_info.getString("name"));
+                                My.Account.setEmail(user_info.getString("email"));
+                                My.Account.setBirth(user_info.getString("birth"));
+                                Log.d("dddd", user_info.optString("token"));
+
+                                My.Account.setToken(user_info.getString("token"));
+
+
+
+                                updateNotification(0, My.Account, My.Account);
+
+                                Intent intent = new Intent(RegisterActivity2.this, MainActivity.class);
+                                startActivity(intent);
+                                finish();
+
+                            } else {
+                                Log.d("ddddd", "데이터 가져오기 실패...");
+                            }
+                        } catch (JSONException e) {
+                            Log.d("JSON ERROR", "JSON에서 에러가 있습니다.");
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getApplicationContext(), "토큰 삽입 실패", Toast.LENGTH_SHORT).show();
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("id", id);
+                params.put("pw", StaticFunction.EncBySha256(pw));
+                return params;
+            }
+        };
+
+        myReq.setRetryPolicy(new DefaultRetryPolicy(3000, 0, 1f));
+        stringRequest.add(myReq);
+    }
+
 }

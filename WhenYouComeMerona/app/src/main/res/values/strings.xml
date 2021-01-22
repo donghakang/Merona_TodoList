@@ -32,7 +32,8 @@
     <string name="share">공유</string>
     <string name="level">중요</string>
     <string name="search_location">장소 검색하기</string>
-
+    <string name="search_friends">아이디로 검색하기</string>
+    <string name="logo_play"><font fgcolor='#111111'>올때</font><font fgcolor='#6BF068'>,</font> <font fgcolor='#111111'>메로나</font></string>
 
     <string-array name="filter_spinner">
         <item>등록 순</item>

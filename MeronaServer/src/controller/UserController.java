@@ -71,7 +71,7 @@ public class UserController {
 	
 	// 마이페이지 출력 --------------------------------------------------------------
 	@RequestMapping(value="/myPage.do", method=RequestMethod.POST)
-	public String searchFriend(@ModelAttribute User user, Model model) {		
+	public String myPageUser(@ModelAttribute User user, Model model) {		
 		User user_info = userService.myPageUser(user);
 		model.addAttribute("user", user_info);
 		return "myPage";

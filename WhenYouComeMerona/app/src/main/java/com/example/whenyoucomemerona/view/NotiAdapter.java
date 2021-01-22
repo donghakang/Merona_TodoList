@@ -379,6 +379,7 @@ public class NotiAdapter extends ArrayAdapter {
             // TODO: 아이디 이름을 변경한다.
             case 0:
                 msg = notification.getWelcomeMsg();
+                viewHolder.tvMessage.setText(Html.fromHtml("<b>" + user.getId() + "</b>" + msg + "<font color='#d3d3d3'>  " + time + "</font>"));
                 break;
             case 1:
                 msg = notification.getFriendReqMsg();

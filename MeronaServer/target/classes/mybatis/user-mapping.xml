@@ -34,8 +34,8 @@
 	
 	<insert id="registerUser" parameterType="user">
 		<![CDATA[
-			INSERT INTO USERS(USER_ID, ID, PW, NAME, BIRTH, EMAIL)
-			VALUES (USER_SEQ.NEXTVAL, #{id}, #{pw}, #{name}, #{birth}, #{email})
+			INSERT INTO USERS(USER_ID, ID, PW, NAME, BIRTH, EMAIL, TOKEN)
+			VALUES (USER_SEQ.NEXTVAL, #{id}, #{pw}, #{name}, #{birth}, #{email}, #{token})
 		]]>
 	</insert>
 	

@@ -63,7 +63,7 @@ public class BaseActivity extends AppCompatActivity {
 
 
     // Noti Table에 업데이트 시킨다
-    public void updateNotification(final int type, final User user) {
+    public void updateNotification(final int type, final User user, final User friend) {
         String url = "insertNoti.do";
 
         String DATE_FORMAT = "yyyyMMdd HH:mm:ss";
@@ -77,6 +77,7 @@ public class BaseActivity extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        Log.d("dddd", response);
                         try {
                             JSONObject j = new JSONObject(response);
                             // 데이터 가져오기 성공할 때,
@@ -101,6 +102,7 @@ public class BaseActivity extends AppCompatActivity {
                 Map<String, String> notiParams = new HashMap<String, String>();
                 notiParams.put("type", type + "");
                 notiParams.put("user_id", user.getUser_id() + "");
+                notiParams.put("friend_id", friend.getUser_id() + "");
                 notiParams.put("pushDate", pushDate);
                 return notiParams;
             }

@@ -5,13 +5,28 @@
     android:layout_height="match_parent"
     tools:context=".main.SearchFragment">
 
-
+    <RelativeLayout
+        android:id="@+id/rl_menubar"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:layout_margin="12dp">
+        <TextView
+            android:id="@+id/tv_noti"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/search_friends"
+            android:fontFamily="@font/jalnan"
+            android:textSize="20sp"/>
+    </RelativeLayout>
 
     <RelativeLayout
+        android:layout_below="@id/rl_menubar"
         android:id="@+id/rl_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="12dp">
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="12dp">
 
         <RelativeLayout
             android:id="@+id/rl_search_bar"

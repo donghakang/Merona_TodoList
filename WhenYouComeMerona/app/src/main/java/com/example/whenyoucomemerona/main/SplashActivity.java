@@ -75,6 +75,7 @@ public class SplashActivity extends BaseActivity {
                     return;
                 }
                 token = task.getResult();
+                My.Account.setToken(token);
                 Log.d("dddd", "token: " + token);
             }
         });

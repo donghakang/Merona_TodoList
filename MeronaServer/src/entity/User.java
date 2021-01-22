@@ -61,9 +61,10 @@ public class User {
 	@Override
 	public String toString() {
 		return "User [user_id=" + user_id + ", id=" + id + ", pw=" + pw + ", name=" + name + ", email=" + email
-				+ ", birth=" + birth + "]";
+				+ ", birth=" + birth + ", token=" + token + "]";
 	}
-	
+
+
 	
 
 	
