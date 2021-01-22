@@ -5,10 +5,22 @@
     android:layout_height="match_parent"
     tools:context=".main.NotificationFragment">
 
-    <!-- TODO: Update blank fragment layout -->
+
+
     <TextView
+        android:id="@+id/tv_noti"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="알림"
+        android:layout_margin="12dp"
+        android:fontFamily="@font/jalnan"
+        android:textSize="20sp"/>
+
+    <ListView
+        android:id="@+id/lv_notification"
+        android:layout_below="@id/tv_noti"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#00ffff" />
+        android:layout_height="match_parent"/>
+
 
 </RelativeLayout>

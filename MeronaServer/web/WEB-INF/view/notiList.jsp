@@ -1,31 +1,36 @@
-<%@page import="entity.User"%>
+<%@page import="entity.Noti"%>
+<%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%> 
 <%@page import="org.json.JSONObject"%>
 <%@page import="org.json.JSONArray" %>
 <%
-User user = (User)request.getAttribute("user");
+
+List<Noti> noti = (List<Noti>)request.getAttribute("noti");
 
 JSONObject jsonResult = new JSONObject();
 
-if (user != null) {
+if (noti != null) {
 	/*
 	* 성공시
 	* result: ok
 	* data : json array of results
 	*/
-	JSONObject user_info = new JSONObject();
-	user_info.put("user_id", user.getUser_id());
-	user_info.put("id", user.getId());
-	user_info.put("name", user.getName());
-	user_info.put("email", user.getEmail());
-	user_info.put("birth", user.getBirth());
-	user_info.put("token", user.getToken());
-	
+	JSONArray data = new JSONArray();
+	for (Noti n : noti) {
+		JSONObject item = new JSONObject();
+		item.put("noti_id", n.getNoti_id());
+		item.put("user_id", n.getUser_id());
+		item.put("friend_id", n.getFriend_id());
+		item.put("type", n.getType());
+		item.put("pushDate", n.getPushDate());
+
+		data.put(item);
+	}
 	
 	jsonResult.put("result", "ok");
-	jsonResult.put("data", user_info);
+	jsonResult.put("data", data);
 	
 } else {
 	/*
@@ -36,6 +41,7 @@ if (user != null) {
 }
 
 out.println(jsonResult.toString());
+
 %>
 
 

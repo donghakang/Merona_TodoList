@@ -86,6 +86,7 @@ public class UserPageFragment extends BaseFragment implements View.OnClickListen
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_user_page, container, false);
+        Log.d("dddd", user.toString());
         init(v);
         return v;
     }
@@ -361,7 +362,11 @@ public class UserPageFragment extends BaseFragment implements View.OnClickListen
                         Log.d("Notification Tag" , user.getToken());
                         Log.d("Notification Tag" , user.getId());
 
+
                         sendNotification(friend, title, message);
+                        // TODO: updateNotification
+                        Log.d("dddd", "FRIEND's USERID: " + user.getUser_id());
+                        updateNotification(1, My.Account, user);
                         checkStatus();
                     } else {
                         Toast.makeText(getContext(), "친구 신청 실패", Toast.LENGTH_SHORT).show();

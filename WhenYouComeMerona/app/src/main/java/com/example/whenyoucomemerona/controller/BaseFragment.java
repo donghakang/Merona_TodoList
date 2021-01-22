@@ -20,13 +20,19 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.whenyoucomemerona.entity.User;
 import com.example.whenyoucomemerona.model.Key;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
@@ -155,5 +161,59 @@ public class BaseFragment extends Fragment {
         };
         MySingleton.getInstance(getContext()).addToRequestQueue(jsonObjectRequest);
     }
+
+
+
+    // Noti Table에 업데이트 시킨다
+    public void updateNotification(final int type, final User user, final User friend) {
+        String url = "insertNoti.do";
+
+        String DATE_FORMAT = "yyyyMMdd HH:mm:ss";
+        SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
+        Date today = Calendar.getInstance().getTime();
+        final String pushDate = sdf.format(today);
+
+        Log.d("dddd", "FINAL: " + friend.getUser_id());
+
+        RequestQueue stringRequest = Volley.newRequestQueue(getContext());
+        StringRequest myReq = new StringRequest(Request.Method.POST, Key.getUrl() + url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject j = new JSONObject(response);
+                            // 데이터 가져오기 성공할 때,
+                            if (j.optString("result").equals("ok")) {
+                                Toast.makeText(getContext(), "삽입하기 성공", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(getContext(), "삽입하기 실패", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Response Tag", "통신 실패");
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> notiParams = new HashMap<String, String>();
+                notiParams.put("type", type + "");
+                notiParams.put("user_id", user.getUser_id() + "");
+                notiParams.put("friend_id", friend.getUser_id() + "");
+                notiParams.put("pushDate", pushDate);
+                return notiParams;
+            }
+        };
+
+        myReq.setRetryPolicy(new DefaultRetryPolicy(3000, 0, 1f));
+        stringRequest.add(myReq);
+    }
+
 
 }

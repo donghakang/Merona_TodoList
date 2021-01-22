@@ -216,6 +216,9 @@ public class RegisterActivity2 extends RegisterActivity implements View.OnClickL
 //                    ActivityOptions options = ActivityOptions.makeCustomAnimation(this, R.anim.slide_next1, R.anim.slide_next2);
 //                    startActivity(intent, options.toBundle());
 //                    finish();
+
+
+
             } else {
                 Toast.makeText(this, "어떠한 이유 때문에 회원가입을 할 수 없습니다.", Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(this, LoginActivity.class);

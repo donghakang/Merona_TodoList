@@ -27,7 +27,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 public class HomeFragment extends BaseFragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
@@ -131,8 +136,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-        list = (ListView) view.findViewById(R.id.home_list);
 
+
+        list = (ListView) view.findViewById(R.id.home_list);
         list.setItemsCanFocus(false);
         pullToRefresh = (SwipeRefreshLayout) view.findViewById(R.id.pullToRefresh);
         filterSpinner = (Spinner) view.findViewById(R.id.filter_spinner);

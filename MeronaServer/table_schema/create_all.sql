@@ -36,14 +36,6 @@ drop table todos;
 create sequence todo_seq increment by 1 start with 1;
 drop sequence todo_seq;
 
-insert into todos values (todo_seq.nextval, '메로나 사오기', 0);
-insert into todos values (todo_seq.nextval, '바밤바 사오기', '잘', '12-12-12', '11:11', '["admin"]', '2', '2', addr_seq.currval, 0);
-insert into todos values (todo_seq.nextval, '더위사냥 사오기', 1);
-insert into todos values (todo_seq.nextval, '설레임 사오기', 1);
-insert into todos values (todo_seq.nextval, '엑셀런트 사오기', 0);
-insert into todos values (todo_seq.nextval, '찰떡 붕어빵 사오기', 1);
-insert into todos values (todo_seq.nextval, '비비빅 사오기', 1);
-
 select * from todos;
 
 
@@ -63,9 +55,6 @@ drop table address;
 
 create sequence addr_seq increment by 1 start with 1;
 drop sequence addr_seq;
-select addr_seq.NEXTVAL from dual;
-select addr_seq.CURRVAL from dual;
-select todo_seq.NEXTVAL from dual;
 
 
 -- friend --------------------------------------------------------------------------
@@ -89,6 +78,22 @@ select * from tab;
 insert into friend values (4, 1);
 delete from REQUEST;
 
+-- notification ----------------------------------------------------------
+
+create table noti (
+	noti_id number primary key,
+	user_id number,
+	friend_id number,
+	type number,
+	pushDate varchar2(50)
+);
+
+drop table noti;
+create sequence noti_seq increment by 1 start with 1;
+
+select * from noti;
+
+delete from noti where noti_id=2
 
 -- examples --------------------------------------------------------------------------
 

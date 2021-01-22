@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="mybatis.NotiMapper">	
+
+	<select id="getNotiList" parameterType="user" resultType="noti">
+		<![CDATA[
+			SELECT * FROM NOTI
+			WHERE FRIEND_ID=#{user_id} 	
+		]]>
+	</select>
+
+	<insert id="insertNoti" parameterType="noti">
+		<![CDATA[
+			INSERT INTO NOTI(NOTI_ID, USER_ID, FRIEND_ID, TYPE, PUSHDATE) VALUES 
+			(NOTI_SEQ.NEXTVAL, #{user_id}, #{friend_id}, #{type}, #{pushDate})
+		]]>
+	</insert>
+	
+	<delete id="deleteNoti" parameterType="noti">
+		<![CDATA[
+			DELETE FROM NOTI
+			WHERE USER_ID=#{user_id} AND FRIEND_ID=#{friend_id}
+		]]>
+	</delete>
+	
+</mapper>

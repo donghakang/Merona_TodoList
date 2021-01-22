@@ -8,6 +8,7 @@
 		<typeAlias type="entity.Todos" alias="todos"/>
 		<typeAlias type="entity.Relationship" alias="relationship"/>
 		<typeAlias type="entity.Address" alias="address"/>
+		<typeAlias type="entity.Noti" alias="noti"/>
 	</typeAliases>
 	
 	<!--쿼리문 -->
@@ -15,5 +16,6 @@
 		<mapper resource="mybatis/user-mapping.xml"/>
 		<mapper resource="mybatis/todo-mapping.xml"/>
 		<mapper resource="mybatis/friend-mapping.xml"/>
+		<mapper resource="mybatis/noti-mapping.xml"/>
 	</mappers>
 </configuration>
