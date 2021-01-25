@@ -77,8 +77,6 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.page_5:
                     onFragmentSelected(5, null);
                     break;
-
-
             }
             return true;
         }
