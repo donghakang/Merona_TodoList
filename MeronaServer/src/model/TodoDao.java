@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import entity.Address;
+import entity.AddressTodo;
 import entity.Todos;
 import entity.User;
 
@@ -54,6 +55,26 @@ public class TodoDao {
 	public boolean deleteItem(Todos todo) {
 		int n = factory.openSession().update("mybatis.TodoMapper.deleteItem", todo);
 		return (n > 0) ? true : false;
+	}
+
+	// 지도 데이터 가져오기 ------------------------------------------------
+	public List<AddressTodo> getMyMapData(User user) {
+		return factory.openSession().selectList("mybatis.TodoMapper.getMyMapData", user);
+	}
+
+	public List<AddressTodo> getSharedMapData(User user) {
+		return factory.openSession().selectList("mybatis.TodoMapper.getSharedMapData", user);
+	}
+
+	// 지도 데이터 업데이트 (Notification)
+	public boolean updateMapNotification(List<Integer> ids) {
+		for (int id : ids) {
+			int n = factory.openSession().update("mybatis.TodoMapper.updateMapNotification", id);
+			if (n <= 0) return false;
+		}
+		
+		return true;
+		
 	}
 
 

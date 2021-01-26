@@ -105,7 +105,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
 
 
                 refresh(arr);
-                Toast.makeText(getContext(), "리스트 불러오기 성공", Toast.LENGTH_SHORT).show();
+
+                saveTodos();
             } else {
                 Toast.makeText(getContext(), "리스트 불러오기 실패", Toast.LENGTH_SHORT).show();
             }
@@ -150,11 +151,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
         params.put("user_id", My.Account.getUser_id() + "");
         request("todoList.do");
 
-        Log.d("dddd", "OMG");
-        Log.d("dddd", arr.size() + "");
-        for (Todos t : arr) {
-            Log.d("dddd", t.toString());
-        }
 
         // Scroll Down to refresh  ------------------------------------------------
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

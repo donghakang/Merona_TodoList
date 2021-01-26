@@ -13,6 +13,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+        android:screenOrientation="portrait"
         android:windowSoftInputMode="adjustNothing">
         <activity android:name=".main.RegisterActivity1"
             android:windowSoftInputMode="adjustResize">
@@ -41,6 +42,12 @@
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
             </intent-filter>
         </service>
+
+        <service
+            android:name=".controller.LocationService"
+            android:enabled="true"
+            android:exported="false"/>
+
         <meta-data android:name="com.kakao.sdk.AppKey" android:value="d91b15f487701dcd1cfcb3c740e9b510"/>
     </application>
 

@@ -13,6 +13,10 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class StaticFunction {
+
+
+
+
     // 암호화
     public static String EncBySha256(String data) {
         String retVal = "";

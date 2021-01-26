@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import entity.Address;
+import entity.AddressTodo;
 import entity.Todos;
 import entity.User;
 
@@ -42,5 +43,17 @@ public class TodoService {
 
 	public boolean deleteItem(Todos todo) {
 		return todoDao.deleteItem(todo);
+	}
+
+	public List<AddressTodo> getMyMapData(User user) {
+		return todoDao.getMyMapData(user);
+	}
+
+	public List<AddressTodo> getSharedMapData(User user) {
+		return todoDao.getSharedMapData(user);
+	}
+
+	public boolean updateMapNotification(List<Integer> ids) {
+		return todoDao.updateMapNotification(ids);
 	}
 }

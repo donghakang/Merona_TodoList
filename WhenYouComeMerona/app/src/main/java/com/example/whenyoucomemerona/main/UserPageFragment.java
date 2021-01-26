@@ -362,7 +362,6 @@ public class UserPageFragment extends BaseFragment implements View.OnClickListen
                         Log.d("Notification Tag" , user.getToken());
                         Log.d("Notification Tag" , user.getId());
 
-
                         sendNotification(friend, title, message);
                         // TODO: updateNotification
                         Log.d("dddd", "FRIEND's USERID: " + user.getUser_id());

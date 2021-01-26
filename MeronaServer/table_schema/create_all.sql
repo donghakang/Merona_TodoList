@@ -48,13 +48,15 @@ create table address (
 	road_address_name varchar2(1000),
 	category_name varchar2(1000),
 	lat number,
-	lng number
+	lng number,
+	notify number
 );
 select * from address;
 drop table address;
 
 create sequence addr_seq increment by 1 start with 1;
 drop sequence addr_seq;
+
 
 
 -- friend --------------------------------------------------------------------------
@@ -101,6 +103,11 @@ create table t2( col_name varchar2(10) );
 insert into t2(col_name) values('hsaJDadkD');
 ALTER TABLE t2 ADD (col number); --virtual column
 
+alter table address add (notify number);
+select * from address;
+
+update address set notify=0
+
 delete from users where id='admin';
 
 Select * from T3;
@@ -131,6 +138,17 @@ where writer_id=2;
 
 drop table t3;
 
+select * from todos, address;
+select * from todos 
+left join address on todos.addr_id=address.addr_id
+where writer_id=1;
+
+
+update (select * from todos left join address on todos.addr_id=address.addr_id)
+set notify=1
+
+select * from address where 
+select * from address; 
 
 
 select * from todos 

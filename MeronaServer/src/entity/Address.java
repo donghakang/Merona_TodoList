@@ -9,6 +9,8 @@ public class Address {
     private double lat;         // y
     private double lng;         // x
     
+    private boolean notify;
+    
 	public int getAddr_id() {
 		return addr_id;
 	}
@@ -50,6 +52,18 @@ public class Address {
 	}
 	public void setLng(double lng) {
 		this.lng = lng;
+	}
+	public boolean isNotify() {
+		return notify;
+	}
+	public void setNotify(boolean notify) {
+		this.notify = notify;
+	}
+	@Override
+	public String toString() {
+		return "Address [addr_id=" + addr_id + ", address_name=" + address_name + ", place_name=" + place_name
+				+ ", road_address_name=" + road_address_name + ", category_name=" + category_name + ", lat=" + lat
+				+ ", lng=" + lng + "]";
 	}
     
     

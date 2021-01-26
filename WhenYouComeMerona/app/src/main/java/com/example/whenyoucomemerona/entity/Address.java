@@ -1,22 +1,32 @@
 package com.example.whenyoucomemerona.entity;
 
 public class Address {
+    private int addr_id;
     private String address_name;
     private String place_name;
     private String road_address_name;
     private String category_name;
     private double lat;         // y
     private double lng;         // x
+    private boolean notify;
 
     public Address() {
+        addr_id = -1;
         address_name = "";
         place_name ="";
         road_address_name = "";
         category_name ="";
         lat = -1.0;
         lng = -1.0;
+        notify = false;
     }
 
+    public int getAddr_id() {
+        return addr_id;
+    }
+    public void setAddr_id(int addr_id) {
+        this.addr_id = addr_id;
+    }
     public String getAddress_name() {
         return address_name;
     }
@@ -63,6 +73,14 @@ public class Address {
 
     public String getCategory_name() {
         return category_name;
+    }
+
+    public boolean isNotify() {
+        return notify;
+    }
+
+    public void setNotify(boolean notify) {
+        this.notify = notify;
     }
 
     @Override

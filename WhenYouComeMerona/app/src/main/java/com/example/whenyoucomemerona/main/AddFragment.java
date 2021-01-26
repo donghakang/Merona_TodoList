@@ -239,7 +239,6 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, C
         final DatePicker date_picker = view.findViewById(R.id.add_date_picker);
         builder.setView(view);
 
-
         builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -249,6 +248,7 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, C
                 }
             }
         });
+
         builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -263,9 +263,11 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, C
                 etDate.setText(sdf.format(cal.getTime()));
                 finalDate = sdf.format(cal.getTime());
 
-                switchTime.setChecked(true);            // 스위치를 온으로 바꾼다
+                switchDate.setChecked(true);            // 스위치를 온으로 바꾼다
             }
         });
+
+
 
         AlertDialog dialog = builder.create();
         dialog.show();

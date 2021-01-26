@@ -1,7 +1,9 @@
 package controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import entity.Address;
+import entity.AddressTodo;
 import entity.Todos;
 import entity.User;
 import model.TodoService;
@@ -95,6 +98,31 @@ public class TodoController {
 		model.addAttribute("location", location);
 		return "location";
 	}
+	
+	
+	// 지도 데이터 가져오기
+	@RequestMapping(value="/getMapData.do")
+	public String getMapData(@ModelAttribute User user, Model model) {
+		List<AddressTodo> myData = todoService.getMyMapData(user);
+//		List<Todos> sharedData = todoService.getSharedMapData(user);
+		model.addAttribute("myData", myData);
+//		model.addAttribute("sharedData", sharedData);
+		return "mapData";
+		
+	}
+	
+	// 지도 데이터 업데이트 (Notification)
+	@RequestMapping(value="/updateMapNotification.do", method=RequestMethod.POST)
+	@ResponseBody
+	public String updateMapNotification(@RequestParam(value="todo_ids", defaultValue="", required=false) String todo_ids) {
+		JSONArray json = new JSONArray("todo_ids");
+		List<Integer> ids = new ArrayList<>();
+		for (int i = 0; i < json.length(); i ++ ) {
+			ids.add(json.optInt(i));
+		}
+		return JSONController.jsonTemplate(todoService.updateMapNotification(ids));
+	}
+	
 	
 }
 /* 

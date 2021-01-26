@@ -4,6 +4,38 @@
 
 
 <mapper namespace="mybatis.TodoMapper">
+
+	<resultMap type="todos" id="todosMap">
+		<result column="todo_id" property="todo_id"/>
+		<result column="content" property="content"/>
+		<result column="memo" property="memo"/>
+		<result column="duedate" property="duedate"/>
+		<result column="duetime" property="duetime"/>
+		<result column="share_with" property="share_with"/>
+		<result column="importance" property="importance"/>
+		<result column="writer_id" property="writer_id"/>
+		<result column="addr_id" property="addr_id"/>
+		<result column="done" property="done"/>
+	</resultMap>
+	
+	<resultMap type="address" id="addressMap">
+		<result column="addr_id" property="addr_id"/>
+		<result column="address_name" property="address_name"/>
+		<result column="place_name" property="place_name"/>
+		<result column="road_address_name" property="road_address_name"/>
+		<result column="category_name" property="category_name"/>
+		<result column="lat" property="lat"/>
+		<result column="lng" property="lng"/>
+	</resultMap>
+	
+	<resultMap type="entity.AddressTodo" id="totalMap">
+		<collection property="todos" resultMap="todosMap"/>
+		<collection property="address" resultMap="addressMap"/>
+	</resultMap>
+
+
+
+
 	<select id="getTodoList" parameterType="user" resultType="todos">
 		<![CDATA[
 			SELECT * FROM TODOS 
@@ -21,8 +53,8 @@
 	
 	<insert id="insertAddress" parameterType="address">
 		<![CDATA[
-			INSERT INTO ADDRESS(ADDR_ID, ADDRESS_NAME, PLACE_NAME, ROAD_ADDRESS_NAME, CATEGORY_NAME, LAT, LNG) VALUES
-			(ADDR_SEQ.NEXTVAL, #{address_name}, #{place_name}, #{road_address_name}, #{category_name}, #{lat}, #{lng})
+			INSERT INTO ADDRESS(ADDR_ID, ADDRESS_NAME, PLACE_NAME, ROAD_ADDRESS_NAME, CATEGORY_NAME, LAT, LNG, NOTIFY) VALUES
+			(ADDR_SEQ.NEXTVAL, #{address_name}, #{place_name}, #{road_address_name}, #{category_name}, #{lat}, #{lng}, 0)
 		]]>
 	</insert>
 
@@ -55,7 +87,34 @@
 	
 	<select id="getUserSharedData" parameterType="user" resultType="todos">
 		SELECT * FROM TODOS
-		WHERE LOWER(SHARE_WITH) LIKE '%' ||  #{user_id} || '%'
+		WHERE LOWER(SHARE_WITH) LIKE '%' ||  #{id} || '%'
 	</select>
 	
+	
+	
+	<select id="getMyMapData" parameterType="user" resultMap="totalMap">
+		<![CDATA[	
+			SELECT * FROM TODOS 
+			LEFT JOIN ADDRESS ON TODOS.ADDR_ID=ADDRESS.ADDR_ID
+			WHERE WRITER_ID=#{user_id}
+		]]>
+	</select>
+	
+	<select id="getSharedMapData" parameterType="user" resultMap="totalMap">
+		SELECT * FROM TODOS 
+		LEFT JOIN ADDRESS ON TODOS.ADDR_ID=ADDRESS.ADDR_ID
+		WHERE LOWER(SHARE_WITH) LIKE '%' ||  #{id} || '%'
+	</select>
+
+	<update id="updateMapNotification" parameterType="java.lang.Integer">
+		<![CDATA[
+			UPDATE ADDRESS SET NOTIFY=1 
+			WHERE TODO_ID=#
+			
+			(SELECT * FROM TODOS 
+			LEFT JOIN ADDRESS ON TODOS.ADDR_ID=ADDRESS.ADDR_ID)
+			
+		]]>
+	</update>
+
 </mapper>
