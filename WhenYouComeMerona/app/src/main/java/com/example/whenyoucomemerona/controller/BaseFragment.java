@@ -326,4 +326,18 @@ public class BaseFragment extends Fragment {
             Toast.makeText(getContext(), "location service stoped", Toast.LENGTH_SHORT).show();
         }
     }
+
+
+
+
+
+    // 로딩 페이지
+    public void startLoading() {
+
+
+    }
+
+    public void stopLoading() {
+
+    }
 }

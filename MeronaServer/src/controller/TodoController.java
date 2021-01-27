@@ -115,7 +115,9 @@ public class TodoController {
 	@RequestMapping(value="/updateMapNotification.do", method=RequestMethod.POST)
 	@ResponseBody
 	public String updateMapNotification(@RequestParam(value="todo_ids", defaultValue="", required=false) String todo_ids) {
-		JSONArray json = new JSONArray("todo_ids");
+		JSONArray json = new JSONArray(todo_ids);
+		System.out.println("update 관련 데이터 --------------------");
+		System.out.println(todo_ids);
 		List<Integer> ids = new ArrayList<>();
 		for (int i = 0; i < json.length(); i ++ ) {
 			ids.add(json.optInt(i));

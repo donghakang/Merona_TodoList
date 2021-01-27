@@ -22,7 +22,7 @@
         android:iconifiedByDefault="false"/>
 
 
-    <com.example.whenyoucomemerona.model.ListViewMaxHeight
+    <com.example.whenyoucomemerona.lib.ListViewMaxHeight
         android:id="@+id/search_list"
         android:layout_below="@+id/location_bar"
         android:layout_width="match_parent"

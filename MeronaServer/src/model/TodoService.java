@@ -54,6 +54,11 @@ public class TodoService {
 	}
 
 	public boolean updateMapNotification(List<Integer> ids) {
-		return todoDao.updateMapNotification(ids);
+		boolean isTrue = false;
+		for (int i : ids) { 
+			if (!todoDao.updateMapNotification(i)) isTrue = false;
+		}
+		
+		return isTrue;
 	}
 }

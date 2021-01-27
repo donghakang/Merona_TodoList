@@ -43,6 +43,7 @@ if (todos != null) {
 		address.put("category_name", a.getCategory_name());
 		address.put("lat", a.getLat());
 		address.put("lng", a.getLng());
+		System.out.println("A.GETNOTIFIY" + a.isNotify());
 		address.put("notify", a.isNotify());
 		
 		item.put("address", address);

@@ -59,7 +59,11 @@ public class TodoDao {
 
 	// 지도 데이터 가져오기 ------------------------------------------------
 	public List<AddressTodo> getMyMapData(User user) {
-		return factory.openSession().selectList("mybatis.TodoMapper.getMyMapData", user);
+		List<AddressTodo> l = factory.openSession().selectList("mybatis.TodoMapper.getMyMapData", user);
+		for (AddressTodo t : l) {
+			System.out.println("**** " + t.isNotify());
+		}
+		return l;
 	}
 
 	public List<AddressTodo> getSharedMapData(User user) {
@@ -67,14 +71,9 @@ public class TodoDao {
 	}
 
 	// 지도 데이터 업데이트 (Notification)
-	public boolean updateMapNotification(List<Integer> ids) {
-		for (int id : ids) {
-			int n = factory.openSession().update("mybatis.TodoMapper.updateMapNotification", id);
-			if (n <= 0) return false;
-		}
-		
-		return true;
-		
+	public boolean updateMapNotification(int id) {
+		int n = factory.openSession().update("mybatis.TodoMapper.updateMapNotification", id);
+		return (n > 0) ? true : false;
 	}
 
 

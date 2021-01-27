@@ -200,6 +200,8 @@ public class MapFragment extends BaseFragment implements View.OnClickListener, M
 
     @Override
     public void response(String response) {
+        addressTodosArr.clear();
+        My.todos.clear();
         try {
             JSONObject j = new JSONObject(response);
             if (j.optString("result").equals("ok")) {
@@ -229,11 +231,10 @@ public class MapFragment extends BaseFragment implements View.OnClickListener, M
                     address.setLat(jsonAddress.optDouble("lat"));
                     address.setLng(jsonAddress.optDouble("lng"));
                     address.setNotify(jsonAddress.optBoolean("notify"));
-
                     AddressTodos addressTodos = new AddressTodos(todo, address);
 
                     addressTodosArr.add(addressTodos);
-
+                    My.todos.add(addressTodos);
                     updatePOI();
                 }
             } else {

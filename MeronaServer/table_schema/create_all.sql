@@ -147,9 +147,18 @@ where writer_id=1;
 update (select * from todos left join address on todos.addr_id=address.addr_id)
 set notify=1
 
-select * from address where 
-select * from address; 
 
+SELECT * FROM TODOS 
+LEFT JOIN ADDRESS ON TODOS.ADDR_ID=ADDRESS.ADDR_ID
+WHERE WRITER_ID=1
+
+update address set notify=0;
+
+update address set notify=0
+where addr_id=(select addr_id from todos where todo_id=61)
+
+select addr_id
+where 
 
 select * from todos 
 where writer_id=2;

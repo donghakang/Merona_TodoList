@@ -20,6 +20,8 @@ import android.widget.Toast;
 import com.example.whenyoucomemerona.R;
 import com.example.whenyoucomemerona.controller.BaseFragment;
 import com.example.whenyoucomemerona.controller.My;
+import com.example.whenyoucomemerona.entity.Address;
+import com.example.whenyoucomemerona.entity.AddressTodos;
 import com.example.whenyoucomemerona.entity.Todos;
 import com.example.whenyoucomemerona.view.TodosAdapter;
 
@@ -72,48 +74,55 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
         // 통신을 성공 할 시
         try {
             JSONObject j = new JSONObject(response);
-            Log.d("dddd", response);
-            // 데이터 가져오기 성공할 때,
             if (j.optString("result").equals("ok")) {
-                arr.clear();                    // 데이터를 가져오기전 정리한다.
+                arr.clear();
+                My.todos.clear();
                 JSONArray data = j.optJSONArray("data");
                 for (int i = 0; i < data.length(); i ++ ){
                     JSONObject item = data.optJSONObject(i);
-                    int todo_id = item.optInt("todo_id");
-                    String content = item.optString("content");
-                    String memo = item.optString("memo");
-                    String duedate = item.optString("duedate");
-                    String duetime = item.optString("duetime");
-                    String share_with = item.optString("share_with");
-                    int writer_id = item.optInt("writer_id");
-                    int addr_id = item.optInt("addr_id");
-                    boolean done = item.optBoolean("done");
 
                     Todos todo = new Todos();
-                    todo.setTodo_id(todo_id);
-                    todo.setContent(content);
-                    todo.setMemo(memo);
-                    todo.setDuedate(duedate);
-                    todo.setDuetime(duetime);
-                    todo.setShare_with(share_with);
-                    todo.setWriter_id(writer_id);
-                    todo.setAddr_id(addr_id);
-                    todo.setDone(done);
+                    todo.setTodo_id(item.optInt("todo_id"));
+                    todo.setContent(item.optString("content"));
+                    todo.setMemo(item.optString("memo"));
+                    todo.setDuedate(item.optString("duedate"));
+                    todo.setDuetime(item.optString("duetime"));
+                    todo.setShare_with(item.optString("share_with"));
+                    todo.setWriter_id(item.optInt("writer_id"));
+                    todo.setAddr_id(item.optInt("addr_id"));
+                    todo.setDone(item.optBoolean("done"));
+
+                    JSONObject jsonAddress = item.optJSONObject("address");
+                    Address address = new Address();
+                    address.setAddr_id(jsonAddress.optInt("addr_id"));
+                    todo.setAddr_id(jsonAddress.optInt("addr_id"));
+                    address.setAddress_name(jsonAddress.optString("address_name"));
+                    address.setRoad_address_name(jsonAddress.optString("road_address_name"));
+                    address.setPlace_name(jsonAddress.optString("place_name"));
+                    address.setCategory_name(jsonAddress.optString("category_name"));
+                    address.setLat(jsonAddress.optDouble("lat"));
+                    address.setLng(jsonAddress.optDouble("lng"));
+                    address.setNotify(jsonAddress.optBoolean("notify"));
+
+                    AddressTodos addressTodos = new AddressTodos(todo, address);
 
                     arr.add(todo);
+                    My.todos.add(addressTodos);
+
+                    refresh(arr);
+                    saveTodos();
                 }
-
-
-                refresh(arr);
-
-                saveTodos();
             } else {
-                Toast.makeText(getContext(), "리스트 불러오기 실패", Toast.LENGTH_SHORT).show();
+                // data가 없습니다.
+                Log.d("JSON TAG", "데이터가 없습니다.");
             }
-        } catch (JSONException e) {
-            Log.d("JSON ERROR", "JSON에서 에러가 있습니다.");
-            e.printStackTrace();
+        } catch (Exception e) {
+            Log.d("RESPONSE", "데이터 없습니다.");
         }
+
+
+
+
     }
 
     /* ----------------------------------------------------------------------------------------------------
@@ -149,7 +158,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
 
         params.clear();
         params.put("user_id", My.Account.getUser_id() + "");
-        request("todoList.do");
+        params.put("id", My.Account.getId());
+        request("getMapData.do");
 
 
         // Scroll Down to refresh  ------------------------------------------------
@@ -158,7 +168,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
             public void onRefresh() {
                 params.clear();
                 params.put("user_id", My.Account.getUser_id() + "");
-                request("todoList.do");
+                params.put("id", My.Account.getId());
+                request("getMapData.do");
                 pullToRefresh.setRefreshing(false);
             }
         });

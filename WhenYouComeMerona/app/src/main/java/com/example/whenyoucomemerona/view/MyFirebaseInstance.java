@@ -41,7 +41,7 @@ public class MyFirebaseInstance extends FirebaseMessagingService {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channel_id)
                 .setSound(uri)
-                .setSmallIcon(R.drawable.ic_baseline_star_24)
+                .setSmallIcon(R.mipmap.merona_logo)
                 .setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary))
                 .setAutoCancel(true)
                 .setVibrate(new long[] {1000, 1000, 1000, 1000, 1000})

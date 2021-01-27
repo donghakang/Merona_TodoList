@@ -1,4 +1,4 @@
-package com.example.whenyoucomemerona.model;
+package com.example.whenyoucomemerona.lib;
 
 import android.content.Context;
 import android.content.res.TypedArray;

@@ -26,6 +26,7 @@
 		<result column="category_name" property="category_name"/>
 		<result column="lat" property="lat"/>
 		<result column="lng" property="lng"/>
+		<result column="notify" property="notify"/>
 	</resultMap>
 	
 	<resultMap type="entity.AddressTodo" id="totalMap">
@@ -109,11 +110,7 @@
 	<update id="updateMapNotification" parameterType="java.lang.Integer">
 		<![CDATA[
 			UPDATE ADDRESS SET NOTIFY=1 
-			WHERE TODO_ID=#
-			
-			(SELECT * FROM TODOS 
-			LEFT JOIN ADDRESS ON TODOS.ADDR_ID=ADDRESS.ADDR_ID)
-			
+			WHERE ADDR_ID=(SELECT ADDR_ID FROM TODOS WHERE TODO_ID=#{id})
 		]]>
 	</update>
 

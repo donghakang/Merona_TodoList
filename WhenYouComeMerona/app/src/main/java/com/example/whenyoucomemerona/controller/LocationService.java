@@ -65,26 +65,30 @@ public class LocationService extends Service {
             ArrayList<Integer> todo_status = new ArrayList<>();
             boolean notify = false;
 
+            Log.d("dddd", My.todos.size() + "");
+
             for (AddressTodos t : My.todos) {
+                Log.d("ddddd", "t: " + t.getAddress().getAddr_id());
                 String title = "근처에 해야할 일이 있네요";
                 String message = "지도를 보고 지금 바로 해야 할 일을 끝내세!";
                 double lat2 = t.getAddress().getLat();
                 double lng2 = t.getAddress().getLng();
                 double dist = MapHelper.distance(My.Lat, My.Lng, lat2, lng2, "meter");
-                Log.d("dddd", "DISTANCE BETWEEN: " + dist + "m");
+//                Log.d("dddd", "DISTANCE BETWEEN: " + dist + "m");
 
-                if (dist < 100) {
-                    todo_status.add(t.getTodos().getTodo_id());
-                    if (!t.isNotify()) {
+                if (dist < 100 ) {
+                    if (!t.getAddress().isNotify()) {
+                        Log.d("dddddd", "current notify " + t.getAddress().getAddr_id() + " : " + t.getAddress().getAddress_name());
+                        todo_status.add(t.getTodos().getTodo_id());     // todo_status에서 투두 아이디를 넣고 나중에 업데이트 해준다.
                         notify = true;
                     }
-                    t.setNotified(true);
+                    t.getAddress().setNotify(true);
                 }
 
                 if (notify) {
-                    sendNotification(title, message, todo_status);
-
+                    sendNotification(title, message, todo_status);      // 푸쉬 알림을 보내고 상태를 업데이트한다.
                 }
+
             }
         }
     };
@@ -191,7 +195,7 @@ public class LocationService extends Service {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.d("Notification Tag", "Notification Sent");
-                        updateNotifyStatus(update_todos);
+                        updateNotifyStatus(update_todos);                               // todo_list의 status 를 바꿔준다.
                     }
                 },
                 new Response.ErrorListener() {
@@ -212,6 +216,8 @@ public class LocationService extends Service {
         MySingleton.getInstance(getApplicationContext()).addToRequestQueue(jsonObjectRequest);
     }
 
+
+
     private void updateNotifyStatus(ArrayList<Integer> todos) {
         String url = "updateMapNotification.do";
 
@@ -224,7 +230,16 @@ public class LocationService extends Service {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-
+                        try {
+                            JSONObject json = new JSONObject(response);
+                            if (json.optString("result").equals("ok")) {
+                                Log.d("NOTIFICATION TAG", "update 완료.");
+                            } else {
+                                Log.d("NOTIFICATION TAG", "update 실패.");
+                            }
+                        } catch (Exception e) {
+                            Log.d("JSON PARSING TAG", "json 가져오는데 오류가 있습니다.");
+                        }
                     }
                 },
                 new Response.ErrorListener() {
