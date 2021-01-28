@@ -95,11 +95,12 @@ public class NotificationFragment extends BaseFragment {
                 Toast.makeText(getContext(), "리스트 불러오기 실패", Toast.LENGTH_SHORT).show();
             }
 
-            LOAD_STOP();
+
         } catch (JSONException e) {
             Log.d("noti", "JSON에서 에러가 있습니다.");
             e.printStackTrace();
         }
+        LOAD_STOP();
     }
 
     private void refresh(ArrayList<Noti> noti) {

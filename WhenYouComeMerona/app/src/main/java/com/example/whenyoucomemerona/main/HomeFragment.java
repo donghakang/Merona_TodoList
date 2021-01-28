@@ -114,7 +114,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
                     My.todos.add(addressTodos);
 
                     refresh(arr);
-                    LOAD_STOP();
+
                 }
                 Log.d("dddd", "TODOS SIZE: " + My.todos.size());
             } else {
@@ -125,7 +125,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
             Log.d("RESPONSE", "데이터 없습니다.");
         }
 
-
+        LOAD_STOP();
 
 
     }

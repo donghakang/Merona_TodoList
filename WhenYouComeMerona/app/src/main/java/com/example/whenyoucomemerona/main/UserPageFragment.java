@@ -86,7 +86,7 @@ public class UserPageFragment extends BaseFragment implements View.OnClickListen
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_user_page, container, false);
-//        LOAD_START();
+        LOAD_START();
         init(v);
         return v;
     }
@@ -310,24 +310,24 @@ public class UserPageFragment extends BaseFragment implements View.OnClickListen
                     } else {
                         Toast.makeText(getContext(), "status failed", Toast.LENGTH_SHORT).show();
                     }
-//                    LOAD_STOP();        // init ends;
+
                 } catch (JSONException e) {
                     Toast.makeText(getContext(), "JSON 오류", Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
-
+                LOAD_STOP();        // init ends;
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 // error listener
                 Toast.makeText(getContext(), "통신 오류", Toast.LENGTH_SHORT).show();
+                LOAD_STOP();        // init ends;
             }
         }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<String, String>();
-                // TODO: 데이터를 집어넣는다.
                 params.put("user_id", My.Account.getUser_id() + "");
                 params.put("friend_id", user.getUser_id() + "");
                 return params;

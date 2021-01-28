@@ -273,18 +273,20 @@ public class BaseFragment extends Fragment {
         Fragment frag = new LoadingFragment();
         getActivity().getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.rl_main_activity, frag)
-                .addToBackStack(null)
+                .add(R.id.rl_main_activity, frag, "LOADING_FRAGMENT")
+                .addToBackStack("loading")
                 .commit();
-        Toast.makeText(getContext(), "ddddd", Toast.LENGTH_SHORT).show();
 
         ((MainActivity)getActivity()).findViewById(R.id.bottom_navigation).setClickable(false);
     }
 
     public void LOAD_STOP() {
-//        frag = new LoadingFr
-        getActivity().getSupportFragmentManager().popBackStack();
-        Toast.makeText(getContext(), "ddddd", Toast.LENGTH_SHORT).show();
+        Fragment frag = getActivity().getSupportFragmentManager().findFragmentByTag("LOADING_FRAGMENT");
+        if(frag != null)
+            getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .remove(frag)
+                    .commit();
 
         ((MainActivity)getActivity()).findViewById(R.id.bottom_navigation).setClickable(true);
     }

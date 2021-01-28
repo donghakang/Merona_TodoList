@@ -74,11 +74,17 @@ public class MapFragment extends BaseFragment implements View.OnClickListener, M
     ViewGroup mapViewContainer;
     CustomBalloonAdapter customBalloonAdapter;
 
-    FusedLocationProviderClient client;
 
+
+    // POI Position
     ArrayList<AddressTodos> addressTodosArr;
 
+    // GPS Mode
     int TRACKING_MODE;
+
+    // Search Menu
+    MapPOIItem searchedPOI;
+
 
     public MapFragment() {
         // Required empty public constructor
@@ -236,15 +242,19 @@ public class MapFragment extends BaseFragment implements View.OnClickListener, M
                     addressTodosArr.add(addressTodos);
                     My.todos.add(addressTodos);
                     updatePOI();
+
                 }
                 Log.d("dddd", "--TODOS SIZE: " + My.todos.size());
             } else {
                 // data가 없습니다.
                 Log.d("JSON TAG", "데이터가 없습니다.");
+                LOAD_STOP();
             }
         } catch (Exception e) {
             Log.d("RESPONSE", "데이터 없습니다.");
+            LOAD_STOP();
         }
+
     }
 
 
@@ -275,10 +285,10 @@ public class MapFragment extends BaseFragment implements View.OnClickListener, M
                 customMarker.setCustomImageAnchor(0.5f, 1.0f); // 마커 이미지중 기준이 되는 위치(앵커포인트) 지정 - 마커 이미지 좌측 상단 기준 x(0.0f ~ 1.0f), y(0.0f ~ 1.0f) 값.
 
                 mapView.addPOIItem(customMarker);
-
+                LOAD_STOP();
             }
         }
-        LOAD_STOP();
+
     }
 
 
@@ -345,11 +355,6 @@ public class MapFragment extends BaseFragment implements View.OnClickListener, M
 
             }
         });
-//        builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//            }
-//        });
 
         final AlertDialog dialog = builder.create();
         dialog.show();
@@ -360,6 +365,32 @@ public class MapFragment extends BaseFragment implements View.OnClickListener, M
                 // list 에 아이템이 클릭 될 시, map view 를 다시 옮긴다.
                 Address selectedAddress = arr.get(position);
                 mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(selectedAddress.getLat(), selectedAddress.getLng()), true);
+
+                // TODO: 검색 마커를 여기에 삽입.
+                if (searchedPOI != null) {
+                    mapView.removePOIItem(searchedPOI);
+                }
+
+
+                searchedPOI = new MapPOIItem();
+                searchedPOI.setTag(-1);
+                JSONObject item = new JSONObject();
+                try {
+                    item.put("content", selectedAddress.getPlace_name());
+                    item.put("due", selectedAddress.getAddress_name());
+                    searchedPOI.setItemName(item.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                searchedPOI.setMapPoint(MapPoint.mapPointWithGeoCoord(selectedAddress.getLat(), selectedAddress.getLng()));
+
+                searchedPOI.setMarkerType(MapPOIItem.MarkerType.CustomImage); // 마커타입을 커스텀 마커로 지정.
+                searchedPOI.setCustomImageResourceId(R.mipmap.pin); // 마커 이미지.
+                searchedPOI.setCustomImageAutoscale(false); // hdpi, xhdpi 등 안드로이드 플랫폼의 스케일을 사용할 경우 지도 라이브러리의 스케일 기능을 꺼줌.
+                searchedPOI.setCustomImageAnchor(0.5f, 1.0f); // 마커 이미지중 기준이 되는 위치(앵커포인트) 지정 - 마커 이미지 좌측 상단 기준 x(0.0f ~ 1.0f), y(0.0f ~ 1.0f) 값.
+
+
+                mapView.addPOIItem(searchedPOI);
                 dialog.cancel();
 
             }

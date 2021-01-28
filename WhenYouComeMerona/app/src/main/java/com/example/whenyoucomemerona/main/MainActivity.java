@@ -29,6 +29,8 @@ public class MainActivity extends AppCompatActivity {
     NotificationFragment notificationFragment;
     MyPageFragment myPageFragment;
 
+    Fragment currentFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,11 +43,12 @@ public class MainActivity extends AppCompatActivity {
         mapFragment = new MapFragment();
         notificationFragment = new NotificationFragment();
         myPageFragment = new MyPageFragment();
+        currentFragment = null;
 
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.body_rl, mapFragment)
+                .replace(R.id.body_rl, homeFragment)
                 .commit();
 
         // bottom navigation bar 선택
@@ -85,10 +88,7 @@ public class MainActivity extends AppCompatActivity {
     };
 
     public void onFragmentSelected(int position, Bundle bundle) {
-        Fragment currentFragment = null;
-
         switch (position) {
-
             case 1:
                 currentFragment = homeFragment;
                 break;
@@ -113,6 +113,8 @@ public class MainActivity extends AppCompatActivity {
                 .beginTransaction()
                 .replace(R.id.body_rl, currentFragment)
                 .commit();
+
+
 
 
 
