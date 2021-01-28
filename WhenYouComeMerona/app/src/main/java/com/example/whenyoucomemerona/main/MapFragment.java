@@ -94,7 +94,7 @@ public class MapFragment extends BaseFragment implements View.OnClickListener, M
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_map, container, false);
-
+        LOAD_START();
 
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 && ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -237,6 +237,7 @@ public class MapFragment extends BaseFragment implements View.OnClickListener, M
                     My.todos.add(addressTodos);
                     updatePOI();
                 }
+                Log.d("dddd", "--TODOS SIZE: " + My.todos.size());
             } else {
                 // data가 없습니다.
                 Log.d("JSON TAG", "데이터가 없습니다.");
@@ -274,9 +275,10 @@ public class MapFragment extends BaseFragment implements View.OnClickListener, M
                 customMarker.setCustomImageAnchor(0.5f, 1.0f); // 마커 이미지중 기준이 되는 위치(앵커포인트) 지정 - 마커 이미지 좌측 상단 기준 x(0.0f ~ 1.0f), y(0.0f ~ 1.0f) 값.
 
                 mapView.addPOIItem(customMarker);
-            }
 
+            }
         }
+        LOAD_STOP();
     }
 
 
@@ -304,8 +306,11 @@ public class MapFragment extends BaseFragment implements View.OnClickListener, M
 
 
     public void locate() {
+
         AlertDialog.Builder  builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
         LayoutInflater lnf = getLayoutInflater();
+
+        arr = new ArrayList<>();
 
         final View view = lnf.inflate(R.layout.dialog_location, null);
         View titleView = lnf.inflate(R.layout.add_level_title, null);
@@ -374,11 +379,13 @@ public class MapFragment extends BaseFragment implements View.OnClickListener, M
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
+                            TRACKING_MODE = 0;
+                            mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOff);
+
+                            arr.clear();
                             try {
                                 JSONObject json = new JSONObject(response);
                                 JSONArray documents = json.optJSONArray("documents");
-                                Log.d("RESPONSE", "총 " + documents.length() + "의 데이터가 발견되었습니다.");
-                                arr.clear();
                                 for (int i = 0; i < documents.length(); i ++) {
                                     JSONObject loc = documents.getJSONObject(i);
                                     Address addr = new Address();
@@ -394,7 +401,7 @@ public class MapFragment extends BaseFragment implements View.OnClickListener, M
                                 listView.setAdapter(adapter);
                                 adapter.notifyDataSetChanged();
                             } catch (Exception e) {
-                                Log.d("RESPONSE", "데이터 없습니다.");
+                                Log.d("FFFFF", "데이터 없습니다.");
                             }
                         }
                     },

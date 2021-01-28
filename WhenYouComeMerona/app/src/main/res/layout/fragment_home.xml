@@ -21,11 +21,12 @@
         android:layout_height="32dp"
         android:layout_margin="12dp">
         <TextView
-            android:id="@+id/tv_noti"
+            android:id="@+id/tv_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/logo_play"
             android:fontFamily="@font/jalnan"
+            android:clickable="true"
             android:textSize="20sp"/>
         <Button
             android:id="@+id/btn_search_friend"

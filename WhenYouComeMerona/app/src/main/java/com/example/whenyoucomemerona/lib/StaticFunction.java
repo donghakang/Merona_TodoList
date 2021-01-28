@@ -1,10 +1,17 @@
 package com.example.whenyoucomemerona.lib;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
+import com.example.whenyoucomemerona.R;
+import com.example.whenyoucomemerona.controller.BaseFragment;
+import com.example.whenyoucomemerona.main.LoadingFragment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -13,7 +20,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class StaticFunction {
-
 
 
 

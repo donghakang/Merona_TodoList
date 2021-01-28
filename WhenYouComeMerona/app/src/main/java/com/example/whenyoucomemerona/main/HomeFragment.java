@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.whenyoucomemerona.R;
@@ -23,6 +24,7 @@ import com.example.whenyoucomemerona.controller.My;
 import com.example.whenyoucomemerona.entity.Address;
 import com.example.whenyoucomemerona.entity.AddressTodos;
 import com.example.whenyoucomemerona.entity.Todos;
+import com.example.whenyoucomemerona.lib.StaticFunction;
 import com.example.whenyoucomemerona.view.TodosAdapter;
 
 import org.json.JSONArray;
@@ -43,6 +45,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
     ListView list;
     SwipeRefreshLayout pullToRefresh;
 
+    TextView logoIcon;
     Button btnSearchFriend;
     Spinner filterSpinner;
 
@@ -77,6 +80,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
             if (j.optString("result").equals("ok")) {
                 arr.clear();
                 My.todos.clear();
+
                 JSONArray data = j.optJSONArray("data");
                 for (int i = 0; i < data.length(); i ++ ){
                     JSONObject item = data.optJSONObject(i);
@@ -110,8 +114,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
                     My.todos.add(addressTodos);
 
                     refresh(arr);
-                    saveTodos();
+                    LOAD_STOP();
                 }
+                Log.d("dddd", "TODOS SIZE: " + My.todos.size());
             } else {
                 // data가 없습니다.
                 Log.d("JSON TAG", "데이터가 없습니다.");
@@ -129,27 +134,18 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
     * -------------------------------------------Create View----------------------------------------------
      ---------------------------------------------------------------------------------------------------- */
 
-    @Override
-    public void loadStart() {
-        super.loadStart();
-        list.setVisibility(View.INVISIBLE);
-    }
-
-    @Override
-    public void loadEnd() {
-        super.loadEnd();
-        list.setVisibility(View.VISIBLE);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+        LOAD_START();
 
 
         list = (ListView) view.findViewById(R.id.home_list);
         list.setItemsCanFocus(false);
+        logoIcon = view.findViewById(R.id.tv_icon);
         pullToRefresh = (SwipeRefreshLayout) view.findViewById(R.id.pullToRefresh);
         filterSpinner = (Spinner) view.findViewById(R.id.filter_spinner);
         btnSearchFriend = (Button) view.findViewById(R.id.btn_search_friend);
@@ -177,6 +173,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
         // 친구 찾기 버튼 설정 ---------------------------∂-----------------------------
         btnSearchFriend.setOnClickListener(this);
 
+        // 놀이 버튼 설정
+        logoIcon.setOnClickListener(this);
+
         // 필터 버튼 설정 ----------------------------------------------------------------
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
                 R.array.filter_spinner, android.R.layout.simple_spinner_item);
@@ -187,12 +186,15 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
 
 
 
+
+
         return view;
     }
 
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.btn_search_friend) {
+            Toast.makeText(getContext(), "click", Toast.LENGTH_SHORT).show();
             Fragment searchFragment = new SearchFragment();
             getActivity().getSupportFragmentManager()
                     .beginTransaction()
@@ -204,6 +206,19 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
                     )
                     .replace(R.id.body_rl, searchFragment)
                     .addToBackStack(null)
+                    .commit();
+        } else if (v.getId() == R.id.tv_icon) {
+            Fragment funFragment = new FunFragment();
+            getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .setCustomAnimations(
+                            R.anim.slide_in,  // enter
+                            R.anim.fade_out,  // exit
+                            R.anim.fade_in,   // popEnter
+                            R.anim.slide_out  // popExit
+                    )
+                    .replace(R.id.body_rl, funFragment)
+                    .addToBackStack("fun")
                     .commit();
         }
     }

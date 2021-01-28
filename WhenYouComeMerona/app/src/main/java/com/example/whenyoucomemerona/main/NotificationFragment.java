@@ -42,6 +42,7 @@ public class NotificationFragment extends BaseFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_notification, container, false);
+        LOAD_START();
         init(view);
         return view;
     }
@@ -89,10 +90,12 @@ public class NotificationFragment extends BaseFragment {
                 }
 
                 refresh(arr);
-                Toast.makeText(getContext(), "리스트 불러오기 성공", Toast.LENGTH_SHORT).show();
+
             } else {
                 Toast.makeText(getContext(), "리스트 불러오기 실패", Toast.LENGTH_SHORT).show();
             }
+
+            LOAD_STOP();
         } catch (JSONException e) {
             Log.d("noti", "JSON에서 에러가 있습니다.");
             e.printStackTrace();

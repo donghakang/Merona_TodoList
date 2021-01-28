@@ -86,7 +86,7 @@ public class UserPageFragment extends BaseFragment implements View.OnClickListen
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_user_page, container, false);
-        Log.d("dddd", user.toString());
+//        LOAD_START();
         init(v);
         return v;
     }
@@ -116,16 +116,15 @@ public class UserPageFragment extends BaseFragment implements View.OnClickListen
         allTodos = new ArrayList<>();
 
 
-//        // Spinner 로 연결
-//        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
-//                R.array.friend_setting, android.R.layout.simple_spinner_item);
-//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        userSetting.setAdapter(adapter);
-//
-//        userSetting.setOnItemSelectedListener(this);
+        // Spinner 로 연결
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
+                R.array.friend_setting, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        userSetting.setAdapter(adapter);
+
+        userSetting.setOnItemSelectedListener(this);
 
         btnFriend.setOnClickListener(this);
-
 
         params.clear();
         params.put("user_id", user.getUser_id() + "");
@@ -137,7 +136,6 @@ public class UserPageFragment extends BaseFragment implements View.OnClickListen
 
     @Override
     public void response(String response) {
-        Log.d("dddd", response);
         try {
             JSONObject json = new JSONObject(response);
             // 데이터 가져오기 성공할 때,
@@ -312,6 +310,7 @@ public class UserPageFragment extends BaseFragment implements View.OnClickListen
                     } else {
                         Toast.makeText(getContext(), "status failed", Toast.LENGTH_SHORT).show();
                     }
+//                    LOAD_STOP();        // init ends;
                 } catch (JSONException e) {
                     Toast.makeText(getContext(), "JSON 오류", Toast.LENGTH_SHORT).show();
                     e.printStackTrace();

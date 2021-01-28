@@ -115,14 +115,13 @@
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:fontFamily="@font/daysone_regular"
-                        android:textSize="12sp"
-                        android:text="Lv. 999"/>
+                        android:textSize="12sp"/>
                 </RelativeLayout>
                 <TextView
                     android:id="@+id/tv_level"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="나의레벨"
+                    android:text="친구레벨"
                     android:textAlignment="center"/>
             </LinearLayout>
             <LinearLayout
@@ -144,14 +143,13 @@
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:fontFamily="@font/daysone_regular"
-                        android:textSize="20sp"
-                        android:text="9999"/>
+                        android:textSize="20sp"/>
                 </RelativeLayout>
                 <TextView
                     android:id="@+id/tv_user_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="내가한일"
+                    android:text="친구한일"
                     android:textAlignment="center"/>
             </LinearLayout>
             <LinearLayout
@@ -173,8 +171,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:fontFamily="@font/daysone_regular"
-                        android:textSize="20sp"
-                        android:text="9999"/>
+                        android:textSize="20sp"/>
                 </RelativeLayout>
                 <TextView
                     android:id="@+id/tv_our_content"

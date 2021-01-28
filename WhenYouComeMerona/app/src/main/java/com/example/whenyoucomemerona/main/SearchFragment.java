@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -11,9 +12,11 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.example.whenyoucomemerona.R;
@@ -21,6 +24,7 @@ import com.example.whenyoucomemerona.controller.BaseFragment;
 import com.example.whenyoucomemerona.controller.My;
 import com.example.whenyoucomemerona.entity.User;
 import com.example.whenyoucomemerona.view.SearchFriendAdapter;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,12 +34,12 @@ import java.util.ArrayList;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
-public class SearchFragment extends BaseFragment implements View.OnClickListener, TextView.OnEditorActionListener, AdapterView.OnItemClickListener {
+public class SearchFragment extends BaseFragment implements View.OnClickListener, TextView.OnEditorActionListener, AdapterView.OnItemClickListener, SearchView.OnQueryTextListener {
 
     SearchFriendAdapter adapter;
-    EditText etSearch;
-    Button btnSearchClear;
+    SearchView etSearch;
     Button btnSearchSubmit;
+    BottomNavigationView bottomNavigation;
     ListView listView;
 
     ArrayList<User> arr;
@@ -52,45 +56,26 @@ public class SearchFragment extends BaseFragment implements View.OnClickListener
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_search, container, false);
         etSearch = view.findViewById(R.id.et_search);
-        btnSearchClear = view.findViewById(R.id.btn_search_clear);
         btnSearchSubmit = view.findViewById(R.id.btn_search_submit);
 
         listView = view.findViewById(R.id.list_friend);
         arr = new ArrayList<>();
 
         btnSearchSubmit.setOnClickListener(this);
-        btnSearchClear.setOnClickListener(this);
-
-        etSearch.setOnEditorActionListener(this);
         listView.setOnItemClickListener(this);
+        etSearch.setOnQueryTextListener(this);
+
 
         return view;
     }
 
+
+
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.btn_search_submit) {
-            Log.d("dddd", "검색 버튼");
-            String username = etSearch.getText().toString();
-            if (username.length() == 0) {
-                Toast.makeText(getContext(), "검", Toast.LENGTH_SHORT).show();
-                etSearch.requestFocus();
-            } else {
-
-                params.clear();
-                params.put("username", username);
-                request("searchFriend.do");
-
-                InputMethodManager imm = (InputMethodManager) getContext().getSystemService(INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);
-
-                arr.clear();
-                adapter = new SearchFriendAdapter(getActivity(), arr);
-                listView.setAdapter(adapter);
-                adapter.notifyDataSetChanged();
-            }
-        } else if (v.getId() == R.id.btn_search_clear) {
-            etSearch.setText("");
+            String username = etSearch.getQuery().toString();
+            search(username);
         }
     }
 
@@ -106,13 +91,13 @@ public class SearchFragment extends BaseFragment implements View.OnClickListener
                 JSONArray data = j.optJSONArray("friend");
                 for (int i = 0; i < data.length(); i ++ ){
 
-                    JSONObject userObject = data.getJSONObject(i);
-                    int user_id = userObject.getInt("user_id");
-                    String id = userObject.getString("id");
-                    String name = userObject.getString("name");
-                    String email = userObject.getString("email");
-                    String birth = userObject.getString("birth");
-                    String token = userObject.getString("token");
+                    JSONObject userObject = data.optJSONObject(i);
+                    int user_id = userObject.optInt("user_id");
+                    String id = userObject.optString("id");
+                    String name = userObject.optString("name");
+                    String email = userObject.optString("email");
+                    String birth = userObject.optString("birth");
+                    String token = userObject.optString("token");
                     if (My.Account.getUser_id() != user_id) {
                         User user = new User();
                         user.setUser_id(user_id);
@@ -128,7 +113,6 @@ public class SearchFragment extends BaseFragment implements View.OnClickListener
                     }
                 }
                 adapter.notifyDataSetChanged();
-                Toast.makeText(getContext(), "찾기 성공", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(getContext(), "찾기 실패", Toast.LENGTH_SHORT).show();
             }
@@ -142,7 +126,7 @@ public class SearchFragment extends BaseFragment implements View.OnClickListener
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         // search 버튼을 누르지 않아도, 검색이 완료되면 실행된다.
         if (v.getId() == R.id.et_search) {
-            String username = etSearch.getText().toString();
+            String username = etSearch.getQuery().toString();
             params.clear();
             params.put("username", username);
             request("searchFriend.do");
@@ -161,6 +145,9 @@ public class SearchFragment extends BaseFragment implements View.OnClickListener
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 //        Log.d("arr:- " arr.get(position).getId() + "        " + "")
         Fragment userPageFragment = new UserPageFragment(arr.get(position));
+        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);
+
         getActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .setCustomAnimations(
@@ -173,4 +160,35 @@ public class SearchFragment extends BaseFragment implements View.OnClickListener
                 .addToBackStack(null)
                 .commit();
     }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        search(query);
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        search(newText);
+        return false;
+    }
+
+
+
+    private void search(String username) {
+        if (username.length() != 0) {
+            params.clear();
+            params.put("username", username);
+            request("searchFriend.do");
+
+            adapter = new SearchFriendAdapter(getActivity(), arr);
+            listView.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
+        } else {
+            arr.clear();
+        }
+
+    }
+
+
 }

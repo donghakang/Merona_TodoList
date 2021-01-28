@@ -14,8 +14,8 @@
                 android:useLevel="false">
 
                 <size
-                    android:width="76dip"
-                    android:height="76dip" />
+                    android:width="76dp"
+                    android:height="76dp" />
 
                 <gradient
                     android:type="sweep"
@@ -30,7 +30,7 @@
 
     <item>
         <bitmap
-            android:src="@mipmap/merona"
+            android:src="@mipmap/merona_logo"
             android:gravity="center" />
     </item>
 

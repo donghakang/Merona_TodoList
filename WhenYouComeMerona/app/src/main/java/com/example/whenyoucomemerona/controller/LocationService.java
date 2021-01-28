@@ -65,12 +65,12 @@ public class LocationService extends Service {
             ArrayList<Integer> todo_status = new ArrayList<>();
             boolean notify = false;
 
-            Log.d("dddd", My.todos.size() + "");
+            Log.d("dddd", My.todos.size() + "     --------------------------");
 
             for (AddressTodos t : My.todos) {
                 Log.d("ddddd", "t: " + t.getAddress().getAddr_id());
-                String title = "근처에 해야할 일이 있네요";
-                String message = "지도를 보고 지금 바로 해야 할 일을 끝내세!";
+                String title = "주변에 해야할 일";
+                String message = "지도를 보고 지금 바로 해야 할 일을 끝내세요.";
                 double lat2 = t.getAddress().getLat();
                 double lng2 = t.getAddress().getLng();
                 double dist = MapHelper.distance(My.Lat, My.Lng, lat2, lng2, "meter");
@@ -235,7 +235,7 @@ public class LocationService extends Service {
                             if (json.optString("result").equals("ok")) {
                                 Log.d("NOTIFICATION TAG", "update 완료.");
                             } else {
-                                Log.d("NOTIFICATION TAG", "update 실패.");
+                                Log.d("NOTIFICATION TAG", "update 실패--해야할 필요 없을 듯.");
                             }
                         } catch (Exception e) {
                             Log.d("JSON PARSING TAG", "json 가져오는데 오류가 있습니다.");

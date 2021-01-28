@@ -72,6 +72,8 @@ public class MyPageFragment extends BaseFragment implements AdapterView.OnItemSe
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_my_page, container, false);
 
+        LOAD_START();
+
         init(v);
 
         return v;
@@ -220,6 +222,7 @@ public class MyPageFragment extends BaseFragment implements AdapterView.OnItemSe
             e.printStackTrace();
         }
 
+        LOAD_STOP();
     }
 
 

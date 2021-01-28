@@ -11,6 +11,8 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
@@ -21,10 +23,13 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.whenyoucomemerona.R;
 import com.example.whenyoucomemerona.entity.Address;
 import com.example.whenyoucomemerona.entity.AddressTodos;
 import com.example.whenyoucomemerona.entity.Todos;
 import com.example.whenyoucomemerona.entity.User;
+import com.example.whenyoucomemerona.main.LoadingFragment;
+import com.example.whenyoucomemerona.main.MainActivity;
 import com.example.whenyoucomemerona.model.Key;
 
 import org.json.JSONArray;
@@ -219,75 +224,6 @@ public class BaseFragment extends Fragment {
 
 
 
-    public void saveTodos() {
-        String url = "getMapData.do";
-
-        RequestQueue stringRequest = Volley.newRequestQueue(getContext());
-        StringRequest myReq = new StringRequest(Request.Method.POST, Key.getUrl() + url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            JSONObject j = new JSONObject(response);
-                            if (j.optString("result").equals("ok")) {
-                                JSONArray data = j.optJSONArray("data");
-                                for (int i = 0; i < data.length(); i ++ ){
-                                    JSONObject item = data.optJSONObject(i);
-
-                                    Todos todo = new Todos();
-                                    todo.setTodo_id(item.optInt("todo_id"));
-                                    todo.setContent(item.optString("content"));
-                                    todo.setMemo(item.optString("memo"));
-                                    todo.setDuedate(item.optString("duedate"));
-                                    todo.setDuetime(item.optString("duetime"));
-                                    todo.setShare_with(item.optString("share_with"));
-                                    todo.setWriter_id(item.optInt("writer_id"));
-                                    todo.setAddr_id(item.optInt("addr_id"));
-                                    todo.setDone(item.optBoolean("done"));
-
-                                    JSONObject jsonAddress = item.optJSONObject("address");
-                                    Address address = new Address();
-                                    address.setAddr_id(jsonAddress.optInt("addr_id"));
-                                    todo.setAddr_id(jsonAddress.optInt("addr_id"));
-                                    address.setAddress_name(jsonAddress.optString("address_name"));
-                                    address.setRoad_address_name(jsonAddress.optString("road_address_name"));
-                                    address.setPlace_name(jsonAddress.optString("place_name"));
-                                    address.setCategory_name(jsonAddress.optString("category_name"));
-                                    address.setLat(jsonAddress.optDouble("lat"));
-                                    address.setLng(jsonAddress.optDouble("lng"));
-
-                                    AddressTodos addressTodos = new AddressTodos(todo, address);
-
-                                    My.todos.add(addressTodos);
-                                }
-                            } else {
-                                // data가 없습니다.
-                                Log.d("JSON TAG", "데이터가 없습니다.");
-                            }
-                        } catch (Exception e) {
-                            Log.d("RESPONSE", "데이터 없습니다.");
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e("Response Tag", "통신 실패");
-                    }
-                }) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> par = new HashMap<String, String>();
-                par.put("user_id", My.Account.getUser_id() + "");
-                par.put("id", My.Account.getId());
-                return par;
-            }
-        };
-
-        myReq.setRetryPolicy(new DefaultRetryPolicy(3000, 0, 1f));
-        stringRequest.add(myReq);
-    }
-
 
 
     // 위치 기반을 위한 서비스
@@ -332,12 +268,24 @@ public class BaseFragment extends Fragment {
 
 
     // 로딩 페이지
-    public void startLoading() {
 
+    public void LOAD_START() {
+        Fragment frag = new LoadingFragment();
+        getActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.rl_main_activity, frag)
+                .addToBackStack(null)
+                .commit();
+        Toast.makeText(getContext(), "ddddd", Toast.LENGTH_SHORT).show();
 
+        ((MainActivity)getActivity()).findViewById(R.id.bottom_navigation).setClickable(false);
     }
 
-    public void stopLoading() {
+    public void LOAD_STOP() {
+//        frag = new LoadingFr
+        getActivity().getSupportFragmentManager().popBackStack();
+        Toast.makeText(getContext(), "ddddd", Toast.LENGTH_SHORT).show();
 
+        ((MainActivity)getActivity()).findViewById(R.id.bottom_navigation).setClickable(true);
     }
 }

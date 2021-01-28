@@ -8,7 +8,9 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.fragment.app.Fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.inputmethod.InputMethodManager;
 
 import com.example.whenyoucomemerona.R;
 import com.example.whenyoucomemerona.main.AddFragment;
@@ -27,8 +29,7 @@ public class MainActivity extends AppCompatActivity {
     NotificationFragment notificationFragment;
     MyPageFragment myPageFragment;
 
-    FragmentManager fm;
-    FragmentTransaction ft;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,10 +42,11 @@ public class MainActivity extends AppCompatActivity {
         notificationFragment = new NotificationFragment();
         myPageFragment = new MyPageFragment();
 
-        fm = getSupportFragmentManager();
-        ft = fm.beginTransaction();
 
-        getSupportFragmentManager().beginTransaction().add(R.id.body_rl, homeFragment).commit();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.body_rl, mapFragment)
+                .commit();
 
         // bottom navigation bar 선택
         bottomNavigation = findViewById(R.id.bottom_navigation);
@@ -86,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
         Fragment currentFragment = null;
 
         switch (position) {
+
             case 1:
                 currentFragment = homeFragment;
                 break;
@@ -104,7 +107,16 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.body_rl, currentFragment).commit();
+
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.body_rl, currentFragment)
+                .commit();
+
+
+
+
     }
 
 }
