@@ -1,4 +1,14 @@
 package com.example.whenyoucomemerona.view;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.opengles.GL10;
 
 import android.content.Context;
 import android.opengl.GLES20;
@@ -8,170 +18,144 @@ import android.os.SystemClock;
 import android.util.Log;
 
 import com.example.whenyoucomemerona.R;
+import com.example.whenyoucomemerona.lib.RawResourceReader;
+import com.example.whenyoucomemerona.lib.ShaderHelper;
+import com.example.whenyoucomemerona.lib.TextureHelper;
 
-import org.apache.commons.io.IOUtils;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
-
-import static java.nio.ByteBuffer.allocateDirect;
-
-public class mGLSurfaceRenderer implements GLSurfaceView.Renderer {
-
+/**
+ * This class implements our custom renderer. Note that the GL10 parameter passed in is unused for OpenGL ES 2.0
+ * renderers -- the static class GLES20 is used instead.
+ */
+public class mGLSurfaceRenderer implements GLSurfaceView.Renderer
+{
     Context ctx;
-
 
     private float[] mModelMatrix = new float[16];
     private float[] mViewMatrix = new float[16];
     private float[] mProjectionMatrix = new float[16];
     private float[] mMVPMatrix = new float[16];
-    private float[] mLightModeMatrix = new float[16];
+    private float[] mLightModelMatrix = new float[16];
 
-    ArrayList<Float> VerticesData;
-    ArrayList<Float> ColorData;
-    ArrayList<Float> NormalData;
-    private final FloatBuffer VerticesBuffer;
-    private final FloatBuffer ColorBuffer;
-    private final FloatBuffer NormalBuffer;
+    ArrayList<Float> meronaPositionData;
+    ArrayList<Float> meronaColorData;
+    ArrayList<Float> meronaNormalData;
+    ArrayList<Float> meronaTextureCoordinateData;
+
+    private final FloatBuffer mMeronaPositions;
+    private final FloatBuffer mMeronaColors;
+    private final FloatBuffer mMeronaNormals;
+    private final FloatBuffer mMeronaTextureCoordinates;
 
     private int mMVPMatrixHandle;
     private int mMVMatrixHandle;
+    private int mLightPosHandle;
+    private int mTextureUniformHandle;
     private int mPositionHandle;
+
     private int mColorHandle;
     private int mNormalHandle;
+    private int mTextureCoordinateHandle;
 
-    private final int BYTES_PER_FLOAT = 4;
 
-
-    // offset
-    private final int mPositionOffset = 0;
-    private final int mColorOffset = 3;
-
-    // data size
+    private final int mBytesPerFloat = 4;
     private final int mPositionDataSize = 3;
     private final int mColorDataSize = 4;
     private final int mNormalDataSize = 3;
+    private final int mTextureCoordinateDataSize = 2;
 
     private final float[] mLightPosInModelSpace = new float[] {0.0f, 0.0f, 0.0f, 1.0f};
     private final float[] mLightPosInWorldSpace = new float[4];
     private final float[] mLightPosInEyeSpace = new float[4];
-    private int mPerVertexProgramHandle;
-    private int mLightPosHandle;
+
+    private int mProgramHandle;
     private int mPointProgramHandle;
+    private int mTextureDataHandle;
 
-
-
-    private final int mStrideBytes = (mPositionDataSize + mColorDataSize) * BYTES_PER_FLOAT;
-    private float[] mLightModelMatrix = new float[16];
-
-
-    public mGLSurfaceRenderer(Context ctx)
+    public mGLSurfaceRenderer(final Context ctx)
     {
         this.ctx = ctx;
-        // Define points for equilateral triangles.
 
+        meronaPositionData = new ArrayList<>();
+        meronaColorData = new ArrayList<>();
+        meronaNormalData = new ArrayList<>();
+        meronaTextureCoordinateData = new ArrayList<>();
 
-        VerticesData = new ArrayList<>();
-        ColorData = new ArrayList<>();
-        NormalData = new ArrayList<>();
-        readfile("merona.obj");
+        readfile();
 
-        // initialize
-        VerticesBuffer = allocateDirect(VerticesData.size() * BYTES_PER_FLOAT)
-                .order(ByteOrder.nativeOrder())
-                .asFloatBuffer();
+        mMeronaPositions = ByteBuffer.allocateDirect(meronaPositionData.size() * mBytesPerFloat)
+                .order(ByteOrder.nativeOrder()).asFloatBuffer();
+        for (float pos : meronaPositionData) mMeronaPositions.put(pos);
+        mMeronaPositions.position(0);
 
-        ColorBuffer = allocateDirect(ColorData.size() * BYTES_PER_FLOAT)
-                .order(ByteOrder.nativeOrder())
-                .asFloatBuffer();
+        mMeronaColors = ByteBuffer.allocateDirect(meronaColorData.size() * mBytesPerFloat)
+                .order(ByteOrder.nativeOrder()).asFloatBuffer();
+        for (float color : meronaColorData) mMeronaColors.put(color);
+        mMeronaColors.position(0);
 
-        NormalBuffer = allocateDirect(NormalData.size() * BYTES_PER_FLOAT)
-                .order(ByteOrder.nativeOrder())
-                .asFloatBuffer();
+        mMeronaNormals = ByteBuffer.allocateDirect(meronaNormalData.size() * mBytesPerFloat)
+                .order(ByteOrder.nativeOrder()).asFloatBuffer();
+        for (float normal : meronaNormalData) mMeronaNormals.put(normal);
+        mMeronaNormals.position(0);
 
-        for (float vertex : VerticesData) VerticesBuffer.put(vertex);
-        for (float color : ColorData) ColorBuffer.put(color);
-        for (float normal : NormalData) NormalBuffer.put(normal);
-        VerticesBuffer.position(0);
-        ColorBuffer.position(0);
-        NormalBuffer.position(0);
+        mMeronaTextureCoordinates = ByteBuffer.allocateDirect(meronaTextureCoordinateData.size() * mBytesPerFloat)
+                .order(ByteOrder.nativeOrder()).asFloatBuffer();
+        for (float tex : meronaTextureCoordinateData) mMeronaTextureCoordinates.put(tex);
+        mMeronaTextureCoordinates.position(0);
     }
+
 
     @Override
     public void onSurfaceCreated(GL10 glUnused, EGLConfig config)
     {
-        GLES20.glClearColor(1.f, 1.f, 1.f, 1.f);
+        GLES20.glClearColor(249.0f / 255.0f, 1.0f, 163.0f / 255.0f, 1.0f);
         GLES20.glEnable(GLES20.GL_CULL_FACE);
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 
+        // Position the eye in front of the origin.
+        final float eyeX = 0.0f;
+        final float eyeY = 0.0f;
+        final float eyeZ = -0.5f;
 
-        // set up camera
-        initCamera();
+        // We are looking toward the distance
+        final float lookX = 0.0f;
+        final float lookY = 0.0f;
+        final float lookZ = -5.0f;
 
-        String vertexShaderCode = "";
-        String fragmentShaderCode = "";
-        String pixelVertexShaderCode = "";
-        String pixelFragmentShaderCode = "";
-        try {
-            InputStream vertexShaderStream = ctx.getResources().openRawResource(R.raw.vertex_shader);
-            vertexShaderCode = IOUtils.toString(vertexShaderStream, Charset.defaultCharset());
-            vertexShaderStream.close();
+        // Set our up vector. This is where our head would be pointing were we holding the camera.
+        final float upX = 0.0f;
+        final float upY = 1.0f;
+        final float upZ = 0.0f;
 
-            // Convert fragment_shader.txt to a string
-            InputStream fragmentShaderStream = ctx.getResources().openRawResource(R.raw.fragment_shader);
-            fragmentShaderCode = IOUtils.toString(fragmentShaderStream, Charset.defaultCharset());
-            fragmentShaderStream.close();
-
-            InputStream pixelVertexShaderStream = ctx.getResources().openRawResource(R.raw.pixel_vertex_shader);
-            pixelVertexShaderCode = IOUtils.toString(pixelVertexShaderStream, Charset.defaultCharset());
-            pixelVertexShaderStream.close();
-
-            InputStream pixelFragmentShaderStream = ctx.getResources().openRawResource(R.raw.pixel_fragment_shader);
-            pixelFragmentShaderCode = IOUtils.toString(pixelFragmentShaderStream, Charset.defaultCharset());
-            pixelFragmentShaderStream.close();
-
-        } catch (IOException e) {
-
-        }
+        Matrix.setLookAtM(mViewMatrix, 0, eyeX, eyeY, eyeZ, lookX, lookY, lookZ, upX, upY, upZ);
 
 
 
 
+        final String vertexShader = RawResourceReader.readTextFileFromRawResource(ctx, R.raw.pixel_vertex_shader);
+        final String fragmentShader = RawResourceReader.readTextFileFromRawResource(ctx, R.raw.pixel_fragment_shader);
+        final String pointVertexShader = RawResourceReader.readTextFileFromRawResource(ctx, R.raw.point_vertex_shader);
+        final String pointFragmentShader = RawResourceReader.readTextFileFromRawResource(ctx, R.raw.point_fragment_shader);
 
+        final int vertexShaderHandle = ShaderHelper.compileShader(GLES20.GL_VERTEX_SHADER, vertexShader);
+        final int fragmentShaderHandle = ShaderHelper.compileShader(GLES20.GL_FRAGMENT_SHADER, fragmentShader);
+        final int pointVertexShaderHandle = ShaderHelper.compileShader(GLES20.GL_VERTEX_SHADER, pointVertexShader);
+        final int pointFragmentShaderHandle = ShaderHelper.compileShader(GLES20.GL_FRAGMENT_SHADER, pointFragmentShader);
 
-        final int vertexShader = compileShader(GLES20.GL_VERTEX_SHADER, vertexShaderCode);
-        final int fragmentShader = compileShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderCode);
-        final int pixelVertexShader = compileShader(GLES20.GL_VERTEX_SHADER, pixelVertexShaderCode);
-        final int pixelFragmentShader = compileShader(GLES20.GL_FRAGMENT_SHADER, pixelFragmentShaderCode);
-
-        mPerVertexProgramHandle = createAndLinkProgram(vertexShader, fragmentShader,
-                new String[] {"a_Position",  "a_Color", "a_Normal"});
-        mPointProgramHandle = createAndLinkProgram(pixelVertexShader, pixelFragmentShader,
+        mProgramHandle = ShaderHelper.createAndLinkProgram(vertexShaderHandle, fragmentShaderHandle,
+                new String[] {"a_Position",  "a_Color", "a_Normal", "a_TexCoordinate"});
+        mPointProgramHandle = ShaderHelper.createAndLinkProgram(pointVertexShaderHandle, pointFragmentShaderHandle,
                 new String[] {"a_Position"});
 
-
-//        GLES20.glUseProgram(programHandle);
+        // TEXTURE
+        mTextureDataHandle = TextureHelper.loadTexture(ctx, R.mipmap.wood);
     }
-
-
 
     @Override
     public void onSurfaceChanged(GL10 glUnused, int width, int height)
     {
-        // Set the OpenGL viewport to the same size as the surface.
         GLES20.glViewport(0, 0, width, height);
 
-        // Create a new perspective projection matrix. The height will stay the same
-        // while the width will vary as per aspect ratio.
         final float ratio = (float) width / height;
         final float left = -ratio;
         final float right = ratio;
@@ -183,27 +167,31 @@ public class mGLSurfaceRenderer implements GLSurfaceView.Renderer {
         Matrix.frustumM(mProjectionMatrix, 0, left, right, bottom, top, near, far);
     }
 
-
-
-
     @Override
     public void onDrawFrame(GL10 glUnused)
     {
-        GLES20.glClear(GLES20.GL_DEPTH_BUFFER_BIT | GLES20.GL_COLOR_BUFFER_BIT);
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
 
-        // Do a complete rotation every 10 seconds.
+        // 10초에 한번 로테이션이 바뀐다.
         long time = SystemClock.uptimeMillis() % 10000L;
         float angleInDegrees = (360.0f / 10000.0f) * ((int) time);
 
-        GLES20.glUseProgram(mPerVertexProgramHandle);
+        // 라이팅 프로그램
+        GLES20.glUseProgram(mProgramHandle);
 
-        // Set program handles for cube drawing.
-        mMVPMatrixHandle = GLES20.glGetUniformLocation(mPerVertexProgramHandle, "u_MVPMatrix");
-        mMVMatrixHandle = GLES20.glGetUniformLocation(mPerVertexProgramHandle, "u_MVMatrix");
-        mLightPosHandle = GLES20.glGetUniformLocation(mPerVertexProgramHandle, "u_LightPos");
-        mPositionHandle = GLES20.glGetAttribLocation(mPerVertexProgramHandle, "a_Position");
-        mColorHandle = GLES20.glGetAttribLocation(mPerVertexProgramHandle, "a_Color");
-        mNormalHandle = GLES20.glGetAttribLocation(mPerVertexProgramHandle, "a_Normal");
+        mMVPMatrixHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_MVPMatrix");
+        mMVMatrixHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_MVMatrix");
+        mLightPosHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_LightPos");
+        mTextureUniformHandle = GLES20.glGetUniformLocation(mProgramHandle, "u_Texture");
+        mPositionHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_Position");
+        mColorHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_Color");
+        mNormalHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_Normal");
+        mTextureCoordinateHandle = GLES20.glGetAttribLocation(mProgramHandle, "a_TexCoordinate");
+
+        // 텍스쳐
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, mTextureDataHandle);
+        GLES20.glUniform1i(mTextureUniformHandle, 0);
 
         // Calculate position of the light. Rotate and then push into the distance.
         Matrix.setIdentityM(mLightModelMatrix, 0);
@@ -214,7 +202,7 @@ public class mGLSurfaceRenderer implements GLSurfaceView.Renderer {
         Matrix.multiplyMV(mLightPosInWorldSpace, 0, mLightModelMatrix, 0, mLightPosInModelSpace, 0);
         Matrix.multiplyMV(mLightPosInEyeSpace, 0, mViewMatrix, 0, mLightPosInWorldSpace, 0);
 
-        // Draw some cubes.
+        // Draw
         Matrix.setIdentityM(mModelMatrix, 0);
         Matrix.translateM(mModelMatrix, 0, 4.0f, 0.0f, -7.0f);
         Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 1.0f, 0.0f, 0.0f);
@@ -239,100 +227,108 @@ public class mGLSurfaceRenderer implements GLSurfaceView.Renderer {
         Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 1.0f, 1.0f, 0.0f);
         draw();
 
-        // Draw a point to indicate the light.
         GLES20.glUseProgram(mPointProgramHandle);
         drawLight();
     }
 
 
-
-
     private void draw()
     {
         // Pass in the position information
-        VerticesBuffer.position(0);
+        mMeronaPositions.position(0);
+        mMeronaColors.position(0);
+        mMeronaNormals.position(0);
+        mMeronaTextureCoordinates.position(0);
+
+
         GLES20.glVertexAttribPointer(mPositionHandle,
                 mPositionDataSize,
                 GLES20.GL_FLOAT,
                 false,
                 0,
-                VerticesBuffer);
+                mMeronaPositions);
 
-        // Pass in the color information
-        ColorBuffer.position(0);
+
         GLES20.glVertexAttribPointer(mColorHandle,
                 mColorDataSize,
                 GLES20.GL_FLOAT,
                 false,
                 0,
-                ColorBuffer);
+                mMeronaColors);
 
-        NormalBuffer.position(0);
+
         GLES20.glVertexAttribPointer(mNormalHandle,
                 mNormalDataSize,
                 GLES20.GL_FLOAT,
                 false,
                 0,
-                NormalBuffer);
+                mMeronaNormals);
+
+        GLES20.glVertexAttribPointer(mTextureCoordinateHandle,
+                mTextureCoordinateDataSize,
+                GLES20.GL_FLOAT,
+                false,
+                0,
+                mMeronaTextureCoordinates);
+
+
+
 
         GLES20.glEnableVertexAttribArray(mPositionHandle);
         GLES20.glEnableVertexAttribArray(mColorHandle);
         GLES20.glEnableVertexAttribArray(mNormalHandle);
+        GLES20.glEnableVertexAttribArray(mTextureCoordinateHandle);
 
-        // This multiplies the view matrix by the model matrix, and stores the result in the MVP matrix
-        // (which currently contains model * view).
+
         Matrix.multiplyMM(mMVPMatrix, 0, mViewMatrix, 0, mModelMatrix, 0);
-
-        // Pass in the modelview matrix.
         GLES20.glUniformMatrix4fv(mMVMatrixHandle, 1, false, mMVPMatrix, 0);
-
-        // This multiplies the modelview matrix by the projection matrix, and stores the result in the MVP matrix
-        // (which now contains model * view * projection).
         Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mMVPMatrix, 0);
-
-        // Pass in the combined matrix.
         GLES20.glUniformMatrix4fv(mMVPMatrixHandle, 1, false, mMVPMatrix, 0);
-
-        // Pass in the light position in eye space.
         GLES20.glUniform3f(mLightPosHandle, mLightPosInEyeSpace[0], mLightPosInEyeSpace[1], mLightPosInEyeSpace[2]);
 
-
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, VerticesData.size() / 3);
+        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, meronaPositionData.size()/3);
     }
 
-    private void initCamera() {
-        // Position the eye behind the origin.
-        final float eyeX = 0.0f;
-        final float eyeY = 0.0f;
-        final float eyeZ = -.5f;
 
-        // We are looking toward the distance
-        final float lookX = 0.0f;
-        final float lookY = 0.0f;
-        final float lookZ = -5.0f;
+    private void drawLight()
+    {
+        final int pointMVPMatrixHandle = GLES20.glGetUniformLocation(mPointProgramHandle, "u_MVPMatrix");
+        final int pointPositionHandle = GLES20.glGetAttribLocation(mPointProgramHandle, "a_Position");
 
-        // Set our up vector. This is where our head would be pointing were we holding the camera.
-        final float upX = 0.0f;
-        final float upY = 1.0f;
-        final float upZ = 0.0f;
+        // Pass in the position.
+        GLES20.glVertexAttrib3f(pointPositionHandle, mLightPosInModelSpace[0], mLightPosInModelSpace[1], mLightPosInModelSpace[2]);
 
-        Matrix.setLookAtM(mViewMatrix, 0, eyeX, eyeY, eyeZ, lookX, lookY, lookZ, upX, upY, upZ);
+        // Since we are not using a buffer object, disable vertex arrays for this attribute.
+        GLES20.glDisableVertexAttribArray(pointPositionHandle);
+
+        // Pass in the transformation matrix.
+        Matrix.multiplyMM(mMVPMatrix, 0, mViewMatrix, 0, mLightModelMatrix, 0);
+        Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mMVPMatrix, 0);
+        GLES20.glUniformMatrix4fv(pointMVPMatrixHandle, 1, false, mMVPMatrix, 0);
+
+        // Draw the point.
+        GLES20.glDrawArrays(GLES20.GL_POINTS, 0, 1);
     }
-
 
 
     // read file
-    private void readfile(String file) {
+    private void readfile() {
 
         List<Float[]> objPositions = new ArrayList<>();
         List<Float[]> objTextures = new ArrayList<>();
         List<Float[]> objNormals = new ArrayList<>();
         List<String> objIndices = new ArrayList<>();
 
+
+        String ll = "3//3";
+        String[] partss = ll.split("/");
+        Log.d("dddd", partss[0] + "   " +  partss[1]);
+
+
         // 파일을 읽습니다.
         Scanner scanner = null;
         try {
-            scanner = new Scanner(ctx.getAssets().open(file));
+            scanner = new Scanner(ctx.getAssets().open("merona.obj"));
 
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
@@ -377,7 +373,18 @@ public class mGLSurfaceRenderer implements GLSurfaceView.Renderer {
                             objIndices.add(parts[4]);
                         }
                         break;
+                    case "usemtl":
+                        if (parts[1].equals("merona_stick")) {
+                            objIndices.add("merona_stick");
+                        } else if (parts[1].equals("merona_bar")) {
+                            objIndices.add("merona_bar");
+                        } else if (parts[1].equals("merona_bottom")) {
+                            objIndices.add("merona_bottom");
+                        }
+                        break;
                 }
+
+
             }
             scanner.close();
         } catch (IOException e) {
@@ -385,140 +392,59 @@ public class mGLSurfaceRenderer implements GLSurfaceView.Renderer {
         }
 
 
+        float MERONA_R = 201.0f / 255.0f;
+        float MERONA_G = 1.0f;
+        float MERONA_B = 163.0f / 255.0f;
+
+        float STICK_R = 245.0f / 255.0f;
+        float STICK_G = 225.0f / 255.0f;
+        float STICK_B = 190.0f / 255.0f;
+
+        float r = MERONA_R;
+        float g = MERONA_G;
+        float b = MERONA_B;
+        float a = 1.0f;
+
+        boolean textureTrigger = true;
         for (String f : objIndices) {
-            String[] parts = f.split("/");
-            short position = Short.parseShort(parts[0]);
-            short texture = Short.parseShort(parts[1]);
-            short normals = Short.parseShort(parts[2]);
-
-            VerticesData.add(objPositions.get((short) (position - 1))[0]);
-            VerticesData.add(objPositions.get((short) (position - 1))[1]);
-            VerticesData.add(objPositions.get((short) (position - 1))[2]);
-//            objVertexData.add(objTextures.get((short)(texture-1))[0]);
-//            objVertexData.add(objTextures.get((short)(texture-1))[1]);
-            NormalData.add(objNormals.get((short)(normals-1))[0]);
-            NormalData.add(objNormals.get((short)(normals-1))[1]);
-            NormalData.add(objNormals.get((short)(normals-1))[2]);
-            ColorData.add(0.5f);
-            ColorData.add(1.0f);
-            ColorData.add(0.7f);
-            ColorData.add(1.0f);
-
-        }
-    }
-
-
-    private void drawLight()
-    {
-        final int pointMVPMatrixHandle = GLES20.glGetUniformLocation(mPointProgramHandle, "u_MVPMatrix");
-        final int pointPositionHandle = GLES20.glGetAttribLocation(mPointProgramHandle, "a_Position");
-
-        // Pass in the position.
-        GLES20.glVertexAttrib3f(pointPositionHandle, mLightPosInModelSpace[0], mLightPosInModelSpace[1], mLightPosInModelSpace[2]);
-
-        // Since we are not using a buffer object, disable vertex arrays for this attribute.
-        GLES20.glDisableVertexAttribArray(pointPositionHandle);
-
-        // Pass in the transformation matrix.
-        Matrix.multiplyMM(mMVPMatrix, 0, mViewMatrix, 0, mLightModelMatrix, 0);
-        Matrix.multiplyMM(mMVPMatrix, 0, mProjectionMatrix, 0, mMVPMatrix, 0);
-        GLES20.glUniformMatrix4fv(pointMVPMatrixHandle, 1, false, mMVPMatrix, 0);
-
-        // Draw the point.
-        GLES20.glDrawArrays(GLES20.GL_POINTS, 0, 1);
-    }
-
-
-    /**
-     * Helper function to compile a shader.
-     *
-     * @param shaderType The shader type.
-     * @param shaderSource The shader source code.
-     * @return An OpenGL handle to the shader.
-     */
-    private int compileShader(final int shaderType, final String shaderSource)
-    {
-        int shaderHandle = GLES20.glCreateShader(shaderType);
-
-        if (shaderHandle != 0)
-        {
-            // Pass in the shader source.
-            GLES20.glShaderSource(shaderHandle, shaderSource);
-
-            // Compile the shader.
-            GLES20.glCompileShader(shaderHandle);
-
-            // Get the compilation status.
-            final int[] compileStatus = new int[1];
-            GLES20.glGetShaderiv(shaderHandle, GLES20.GL_COMPILE_STATUS, compileStatus, 0);
-
-            // If the compilation failed, delete the shader.
-            if (compileStatus[0] == 0)
-            {
-                GLES20.glDeleteShader(shaderHandle);
-                shaderHandle = 0;
+            if (f.equals("merona_bar") || f.equals("merona_bottom")) {
+                r = MERONA_R;
+                g = MERONA_G;
+                b = MERONA_B;
+                textureTrigger = false;
+            } else if (f.equals("merona_stick")) {
+                r = STICK_R;
+                g = STICK_G;
+                b = STICK_B;
+                textureTrigger = true;
             }
-        }
 
-        if (shaderHandle == 0)
-        {
-            throw new RuntimeException("Error creating shader.");
-        }
+            else {
+                String[] parts = f.split("/");
+                short position = Short.parseShort(parts[0]);
+                short texture = Short.parseShort(parts[1]);
+                short normals = Short.parseShort(parts[2]);
 
-        return shaderHandle;
-    }
-
-    /**
-     * Helper function to compile and link a program.
-     *
-     * @param vertexShaderHandle An OpenGL handle to an already-compiled vertex shader.
-     * @param fragmentShaderHandle An OpenGL handle to an already-compiled fragment shader.
-     * @param attributes Attributes that need to be bound to the program.
-     * @return An OpenGL handle to the program.
-     */
-    private int createAndLinkProgram(final int vertexShaderHandle, final int fragmentShaderHandle, final String[] attributes)
-    {
-        int programHandle = GLES20.glCreateProgram();
-
-        if (programHandle != 0)
-        {
-            // Bind the vertex shader to the program.
-            GLES20.glAttachShader(programHandle, vertexShaderHandle);
-
-            // Bind the fragment shader to the program.
-            GLES20.glAttachShader(programHandle, fragmentShaderHandle);
-
-            // Bind attributes
-            if (attributes != null)
-            {
-                final int size = attributes.length;
-                for (int i = 0; i < size; i++)
-                {
-                    GLES20.glBindAttribLocation(programHandle, i, attributes[i]);
+                meronaPositionData.add(objPositions.get((short) (position - 1))[0]);
+                meronaPositionData.add(objPositions.get((short) (position - 1))[1]);
+                meronaPositionData.add(objPositions.get((short) (position - 1))[2]);
+                if (textureTrigger) {
+                    meronaTextureCoordinateData.add(objTextures.get((short)(texture-1))[0]);
+                    meronaTextureCoordinateData.add(objTextures.get((short)(texture-1))[1]);
                 }
-            }
-
-            // Link the two shaders together into a program.
-            GLES20.glLinkProgram(programHandle);
-
-            // Get the link status.
-            final int[] linkStatus = new int[1];
-            GLES20.glGetProgramiv(programHandle, GLES20.GL_LINK_STATUS, linkStatus, 0);
-
-            // If the link failed, delete the program.
-            if (linkStatus[0] == 0)
-            {
-                Log.e("Error", "Error compiling program: " + GLES20.glGetProgramInfoLog(programHandle));
-                GLES20.glDeleteProgram(programHandle);
-                programHandle = 0;
+                meronaNormalData.add(objNormals.get((short)(normals-1))[0]);
+                meronaNormalData.add(objNormals.get((short)(normals-1))[1]);
+                meronaNormalData.add(objNormals.get((short)(normals-1))[2]);
+                meronaColorData.add(r);
+                meronaColorData.add(g);
+                meronaColorData.add(b);
+                meronaColorData.add(a);
             }
         }
-
-        if (programHandle == 0)
-        {
-            throw new RuntimeException("Error creating program.");
-        }
-
-        return programHandle;
     }
+
+
+
+
 }
+

@@ -69,7 +69,7 @@ if (user != null) {
 	jsonResult.put("user", user_info);
 	jsonResult.put("data", data);
 	jsonResult.put("shared_data", shared);
-	
+	System.out.println("shared --> " + shared.toString());
 } else {
 	/*
 	* 실시

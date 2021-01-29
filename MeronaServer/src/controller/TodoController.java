@@ -104,9 +104,9 @@ public class TodoController {
 	@RequestMapping(value="/getMapData.do")
 	public String getMapData(@ModelAttribute User user, Model model) {
 		List<AddressTodo> myData = todoService.getMyMapData(user);
-//		List<Todos> sharedData = todoService.getSharedMapData(user);
+		List<AddressTodo> sharedData = todoService.getSharedMapData(user);
 		model.addAttribute("myData", myData);
-//		model.addAttribute("sharedData", sharedData);
+		model.addAttribute("sharedData", sharedData);
 		return "mapData";
 		
 	}

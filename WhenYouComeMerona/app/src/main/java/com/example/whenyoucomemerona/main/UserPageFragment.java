@@ -34,6 +34,7 @@ import com.example.whenyoucomemerona.entity.Todos;
 import com.example.whenyoucomemerona.entity.User;
 import com.example.whenyoucomemerona.lib.Level;
 import com.example.whenyoucomemerona.model.Key;
+import com.example.whenyoucomemerona.view.SimpleTodosAdapter;
 import com.example.whenyoucomemerona.view.TodosAdapter;
 
 import org.json.JSONArray;
@@ -59,7 +60,7 @@ public class UserPageFragment extends BaseFragment implements View.OnClickListen
     TextView tvLevel, tvUserContent, tvOurContent;
 
     ListView lvUserPageList;
-    TodosAdapter adapter;
+    SimpleTodosAdapter adapter;
 
     ArrayList<Todos> userTodos;
     ArrayList<Todos> sharedTodos;
@@ -233,7 +234,7 @@ public class UserPageFragment extends BaseFragment implements View.OnClickListen
         }
         Collections.sort(tmpArr);           // sort by 작성된 날들.
 
-        adapter = new TodosAdapter(getActivity(), tmpArr);
+        adapter = new SimpleTodosAdapter(getActivity(), tmpArr);
         lvUserPageList.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 

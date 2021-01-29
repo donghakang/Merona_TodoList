@@ -4,13 +4,15 @@ package com.example.whenyoucomemerona.entity;
 public class AddressTodos {
     Todos todos;
     Address address;
+    boolean isShared;
 
     public AddressTodos() {
     }
 
-    public AddressTodos(Todos todos, Address address) {
+    public AddressTodos(Todos todos, Address address, boolean isShared) {
         this.todos = todos;
         this.address = address;
+        this.isShared = isShared;
     }
 
 
@@ -30,5 +32,11 @@ public class AddressTodos {
         this.address = address;
     }
 
+    public boolean isShared() {
+        return isShared;
+    }
 
+    public void setShared(boolean shared) {
+        isShared = shared;
+    }
 }

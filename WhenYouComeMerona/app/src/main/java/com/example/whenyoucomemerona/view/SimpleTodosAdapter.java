@@ -1,11 +1,8 @@
 package com.example.whenyoucomemerona.view;
 
 import android.app.Activity;
-import androidx.appcompat.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -29,7 +27,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.whenyoucomemerona.R;
-import com.example.whenyoucomemerona.entity.AddressTodos;
 import com.example.whenyoucomemerona.entity.Todos;
 import com.example.whenyoucomemerona.main.EditFragment;
 import com.example.whenyoucomemerona.model.Key;
@@ -41,10 +38,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TodosAdapter extends ArrayAdapter {
+public class SimpleTodosAdapter extends ArrayAdapter {
 
     LayoutInflater lnf;
-    ArrayList<AddressTodos> arr;
+    ArrayList<Todos> arr;
     Activity ctx;
 
     class TodosItemHolder{
@@ -53,7 +50,7 @@ public class TodosAdapter extends ArrayAdapter {
         TextView tvDate;
     }
 
-    public TodosAdapter (Activity context, ArrayList<AddressTodos> arr) {
+    public SimpleTodosAdapter(Activity context, ArrayList<Todos> arr) {
         super(context, R.layout.fragment_home, arr);
         this.ctx = context;
         this.arr = arr;
@@ -67,7 +64,7 @@ public class TodosAdapter extends ArrayAdapter {
 
     @Nullable
     @Override
-    public AddressTodos getItem(int position) {
+    public Todos getItem(int position) {
         return arr.get(position);
     }
 
@@ -79,7 +76,7 @@ public class TodosAdapter extends ArrayAdapter {
     @NonNull
     @Override
     public View getView(final int position, @Nullable View convertView, @NonNull final ViewGroup parent) {
-        final TodosAdapter.TodosItemHolder viewHolder;
+        final SimpleTodosAdapter.TodosItemHolder viewHolder;
         if (convertView == null) {
             convertView = lnf.inflate(R.layout.todos_list, parent, false);
             viewHolder  = new TodosItemHolder();
@@ -89,15 +86,12 @@ public class TodosAdapter extends ArrayAdapter {
 
             convertView.setTag(viewHolder);
         } else {
-            viewHolder = (TodosAdapter.TodosItemHolder) convertView.getTag();
+            viewHolder = (SimpleTodosAdapter.TodosItemHolder) convertView.getTag();
         }
 
-        viewHolder.tvContent.setText(arr.get(position).getTodos().getContent());
-        viewHolder.cbIsDone.setChecked(arr.get(position).getTodos().isDone());
+        viewHolder.tvContent.setText(arr.get(position).getContent());
+        viewHolder.cbIsDone.setChecked(arr.get(position).isDone());
 
-        if (arr.get(position).isShared()) {
-            viewHolder.cbIsDone.setButtonTintList(ColorStateList.valueOf(Color.parseColor("#f44336")));
-        }
 
         viewHolder.cbIsDone.setOnClickListener(new CheckBox.OnClickListener() {
             @Override
@@ -131,7 +125,7 @@ public class TodosAdapter extends ArrayAdapter {
                      */
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Fragment editFragment = new EditFragment(getItem(position).getTodos());
+                        Fragment editFragment = new EditFragment(getItem(position));
                         ((AppCompatActivity) ctx).getSupportFragmentManager()
                                 .beginTransaction()
                                 .setCustomAnimations(
@@ -196,7 +190,7 @@ public class TodosAdapter extends ArrayAdapter {
                                     @Override
                                     protected Map<String, String> getParams() throws AuthFailureError {
                                         Map<String, String> params = new HashMap<String, String>();
-                                        params.put("todo_id", getItem(position).getTodos().getTodo_id()+"");
+                                        params.put("todo_id", getItem(position).getTodo_id()+"");
                                         return params;
                                     }
                                 };
@@ -242,8 +236,8 @@ public class TodosAdapter extends ArrayAdapter {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("todo_id", arr.get(position).getTodos().getTodo_id() + "");
-                params.put("content", arr.get(position).getTodos().getContent());
+                params.put("todo_id", arr.get(position).getTodo_id() + "");
+                params.put("content", arr.get(position).getContent());
                 params.put("done", status + "");
                 return params;
             }

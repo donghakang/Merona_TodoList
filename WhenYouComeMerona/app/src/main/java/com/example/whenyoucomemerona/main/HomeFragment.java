@@ -41,7 +41,7 @@ import java.util.TimeZone;
 public class HomeFragment extends BaseFragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     TodosAdapter adapter;
-    ArrayList<Todos> arr = new ArrayList<>();
+    ArrayList<AddressTodos> arr = new ArrayList<>();
     ListView list;
     SwipeRefreshLayout pullToRefresh;
 
@@ -65,7 +65,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
     /*
     Server 에서 Data 들을 가지고 온다.
      */
-    private void refresh(ArrayList<Todos> arr) {
+    private void refresh(ArrayList<AddressTodos> arr) {
         adapter = new TodosAdapter(getActivity(), arr);
         list.setAdapter(adapter);
         adapter.notifyDataSetChanged();
@@ -108,15 +108,47 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
                     address.setLng(jsonAddress.optDouble("lng"));
                     address.setNotify(jsonAddress.optBoolean("notify"));
 
-                    AddressTodos addressTodos = new AddressTodos(todo, address);
+                    AddressTodos addressTodos = new AddressTodos(todo, address, false);
 
-                    arr.add(todo);
+                    arr.add(addressTodos);
                     My.todos.add(addressTodos);
 
-                    refresh(arr);
-
                 }
-                Log.d("dddd", "TODOS SIZE: " + My.todos.size());
+
+                JSONArray shared = j.optJSONArray("shared");
+                for (int i = 0; i < shared.length(); i ++ ){
+                    JSONObject item = shared.optJSONObject(i);
+
+                    Todos todo = new Todos();
+                    todo.setTodo_id(item.optInt("todo_id"));
+                    todo.setContent(item.optString("content"));
+                    todo.setMemo(item.optString("memo"));
+                    todo.setDuedate(item.optString("duedate"));
+                    todo.setDuetime(item.optString("duetime"));
+                    todo.setShare_with(item.optString("share_with"));
+                    todo.setWriter_id(item.optInt("writer_id"));
+                    todo.setAddr_id(item.optInt("addr_id"));
+                    todo.setDone(item.optBoolean("done"));
+
+                    JSONObject jsonAddress = item.optJSONObject("address");
+                    Address address = new Address();
+                    address.setAddr_id(jsonAddress.optInt("addr_id"));
+                    todo.setAddr_id(jsonAddress.optInt("addr_id"));
+                    address.setAddress_name(jsonAddress.optString("address_name"));
+                    address.setRoad_address_name(jsonAddress.optString("road_address_name"));
+                    address.setPlace_name(jsonAddress.optString("place_name"));
+                    address.setCategory_name(jsonAddress.optString("category_name"));
+                    address.setLat(jsonAddress.optDouble("lat"));
+                    address.setLng(jsonAddress.optDouble("lng"));
+                    address.setNotify(jsonAddress.optBoolean("notify"));
+
+                    AddressTodos addressTodos = new AddressTodos(todo, address, true);
+
+                    arr.add(addressTodos);
+                    My.shared.add(addressTodos);
+                }
+
+                refresh(arr);
             } else {
                 // data가 없습니다.
                 Log.d("JSON TAG", "데이터가 없습니다.");
@@ -241,13 +273,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
                 break;
             case 1:
                 // 다 된일 숨기기
-                ArrayList<Todos> newArr = new ArrayList<>();
-                for (Todos t : arr) {
-                    if (!t.isDone()) {
-                        newArr.add(t);
-                    }
-                }
-                refresh(newArr);
+                refresh(arr);
                 break;
             case 2:
                 // 내가 할 일

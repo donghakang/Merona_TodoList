@@ -547,7 +547,7 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, C
         locArr = new ArrayList<>();
         searchView = view.findViewById(R.id.location_bar);
         listView = view.findViewById(R.id.search_list);
-
+        mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOff);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {

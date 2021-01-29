@@ -27,6 +27,7 @@ import com.example.whenyoucomemerona.controller.My;
 import com.example.whenyoucomemerona.entity.Todos;
 import com.example.whenyoucomemerona.entity.User;
 import com.example.whenyoucomemerona.lib.Level;
+import com.example.whenyoucomemerona.view.SimpleTodosAdapter;
 import com.example.whenyoucomemerona.view.TodosAdapter;
 
 import org.json.JSONArray;
@@ -49,7 +50,7 @@ public class MyPageFragment extends BaseFragment implements AdapterView.OnItemSe
     TextView tvLevel, tvMyContent, tvOurContent;
 
     ListView lvMyPageList;
-    TodosAdapter adapter;
+    SimpleTodosAdapter adapter;
 
 
     ArrayList<Todos> myTodos;
@@ -150,7 +151,7 @@ public class MyPageFragment extends BaseFragment implements AdapterView.OnItemSe
         }
         Collections.sort(tmpArr);           // sort by 작성된 날들.
 
-        adapter = new TodosAdapter(getActivity(), tmpArr);
+        adapter = new SimpleTodosAdapter(getActivity(), tmpArr);
         lvMyPageList.setAdapter(adapter);
         adapter.notifyDataSetChanged();
 
@@ -159,7 +160,6 @@ public class MyPageFragment extends BaseFragment implements AdapterView.OnItemSe
 
     @Override
     public void response(String response) {
-        Log.d("dddd", response);
         try {
             JSONObject json = new JSONObject(response);
             // 데이터 가져오기 성공할 때,
@@ -188,8 +188,9 @@ public class MyPageFragment extends BaseFragment implements AdapterView.OnItemSe
                 }
 
                 JSONArray sharedArr = json.optJSONArray("shared_data");
+                Log.d("DEBUGGING", sharedArr.toString() + " shared ARR LENG");
                 for (int j = 0; j < sharedArr.length(); j ++) {
-                    JSONObject d = dataArr.optJSONObject(j);
+                    JSONObject d = sharedArr.optJSONObject(j);
                     Todos tmp = new Todos();
 
                     tmp.setTodo_id(d.optInt("todo_id"));

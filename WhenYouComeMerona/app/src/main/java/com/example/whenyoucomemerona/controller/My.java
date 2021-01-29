@@ -13,4 +13,5 @@ public class My {
 
 
     public static ArrayList<AddressTodos> todos = new ArrayList<>();
+    public static ArrayList<AddressTodos> shared = new ArrayList<>();
 }

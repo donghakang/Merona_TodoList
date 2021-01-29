@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -69,6 +70,8 @@ public class MapFragment extends BaseFragment implements View.OnClickListener, M
 
     FloatingActionButton mSearchButton;
     FloatingActionButton mBtnCurrentLocation;
+    FloatingActionButton mBtnFocusPin;
+
 
     MapView mapView;
     ViewGroup mapViewContainer;
@@ -84,6 +87,9 @@ public class MapFragment extends BaseFragment implements View.OnClickListener, M
 
     // Search Menu
     MapPOIItem searchedPOI;
+
+    // PIN focus
+    int PIN_NUMBER;
 
 
     public MapFragment() {
@@ -141,9 +147,11 @@ public class MapFragment extends BaseFragment implements View.OnClickListener, M
     private void init(View v) {
         mSearchButton = v.findViewById(R.id.location_search_activate);
         mBtnCurrentLocation = v.findViewById(R.id.current_location);
+        mBtnFocusPin = v.findViewById(R.id.location_focus_pin);
 
         addressTodosArr = new ArrayList<>();
         TRACKING_MODE = 1;
+        PIN_NUMBER = 0;
 
         // 지도
         mapView = new MapView(getActivity());
@@ -164,6 +172,7 @@ public class MapFragment extends BaseFragment implements View.OnClickListener, M
         mapView.setMapViewEventListener(this);
         mSearchButton.setOnClickListener(this);
         mBtnCurrentLocation.setOnClickListener(this);
+        mBtnFocusPin.setOnClickListener(this);
 
         getMapViewData();
     }
@@ -175,8 +184,8 @@ public class MapFragment extends BaseFragment implements View.OnClickListener, M
                 locate();
                 break;
             case R.id.current_location:
+                mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(My.Lat, My.Lng), true);
                 TRACKING_MODE ++;
-
                 switch (TRACKING_MODE % 3) {
                     case 0:
                         mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOff);
@@ -187,11 +196,19 @@ public class MapFragment extends BaseFragment implements View.OnClickListener, M
                     case 2:
                         mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithHeading);
                         break;
-
                 }
-//                getCurrentLocation(client, mapView);
                 mapView.setZoomLevel(2, true);
                 break;
+            case R.id.location_focus_pin:
+                TRACKING_MODE = 0;
+                mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOff);
+
+                PIN_NUMBER ++;
+                AddressTodos curr_todo = addressTodosArr.get(PIN_NUMBER % addressTodosArr.size());
+                Address curr_address = curr_todo.getAddress();
+
+                mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(curr_address.getLat(), curr_address.getLng()), true);
+
         }
     }
 
@@ -208,6 +225,7 @@ public class MapFragment extends BaseFragment implements View.OnClickListener, M
     public void response(String response) {
         addressTodosArr.clear();
         My.todos.clear();
+        My.shared.clear();
         try {
             JSONObject j = new JSONObject(response);
             if (j.optString("result").equals("ok")) {
@@ -237,13 +255,47 @@ public class MapFragment extends BaseFragment implements View.OnClickListener, M
                     address.setLat(jsonAddress.optDouble("lat"));
                     address.setLng(jsonAddress.optDouble("lng"));
                     address.setNotify(jsonAddress.optBoolean("notify"));
-                    AddressTodos addressTodos = new AddressTodos(todo, address);
+                    AddressTodos addressTodos = new AddressTodos(todo, address, false);
 
                     addressTodosArr.add(addressTodos);
                     My.todos.add(addressTodos);
-                    updatePOI();
-
                 }
+
+
+                JSONArray shared = j.optJSONArray("shared");
+                for (int i = 0; i < shared.length(); i ++ ){
+                    JSONObject item = shared.optJSONObject(i);
+
+                    Todos todo = new Todos();
+                    todo.setTodo_id(item.optInt("todo_id"));
+                    todo.setContent(item.optString("content"));
+                    todo.setMemo(item.optString("memo"));
+                    todo.setDuedate(item.optString("duedate"));
+                    todo.setDuetime(item.optString("duetime"));
+                    todo.setShare_with(item.optString("share_with"));
+                    todo.setWriter_id(item.optInt("writer_id"));
+                    todo.setAddr_id(item.optInt("addr_id"));
+                    todo.setDone(item.optBoolean("done"));
+
+                    JSONObject jsonAddress = item.optJSONObject("address");
+                    Address address = new Address();
+                    address.setAddr_id(jsonAddress.optInt("addr_id"));
+                    todo.setAddr_id(jsonAddress.optInt("addr_id"));
+                    address.setAddress_name(jsonAddress.optString("address_name"));
+                    address.setRoad_address_name(jsonAddress.optString("road_address_name"));
+                    address.setPlace_name(jsonAddress.optString("place_name"));
+                    address.setCategory_name(jsonAddress.optString("category_name"));
+                    address.setLat(jsonAddress.optDouble("lat"));
+                    address.setLng(jsonAddress.optDouble("lng"));
+                    address.setNotify(jsonAddress.optBoolean("notify"));
+
+                    AddressTodos addressTodos = new AddressTodos(todo, address, true);
+
+                    addressTodosArr.add(addressTodos);
+                    My.shared.add(addressTodos);
+                }
+                updatePOI();
+                LOAD_STOP();
                 Log.d("dddd", "--TODOS SIZE: " + My.todos.size());
             } else {
                 // data가 없습니다.
@@ -285,7 +337,7 @@ public class MapFragment extends BaseFragment implements View.OnClickListener, M
                 customMarker.setCustomImageAnchor(0.5f, 1.0f); // 마커 이미지중 기준이 되는 위치(앵커포인트) 지정 - 마커 이미지 좌측 상단 기준 x(0.0f ~ 1.0f), y(0.0f ~ 1.0f) 값.
 
                 mapView.addPOIItem(customMarker);
-                LOAD_STOP();
+
             }
         }
 
