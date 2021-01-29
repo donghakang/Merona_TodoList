@@ -37,11 +37,10 @@
 
     <string-array name="filter_spinner">
         <item>등록 순</item>
-        <item>다 된 일 숨기기</item>
-        <item>내가 할 일</item>
-        <item>공유 된 일</item>
         <item>시간 순</item>
-        <item>중요도</item>
+        <item>중요도 순</item>
+        <item>나만 할 일</item>
+        <item>공유된 일</item>
     </string-array>
 
     <string-array name="my_page_setting">

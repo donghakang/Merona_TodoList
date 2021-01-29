@@ -1,5 +1,6 @@
 package com.example.whenyoucomemerona.main;
 
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -35,15 +37,19 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.TimeZone;
 
-public class HomeFragment extends BaseFragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
+public class HomeFragment extends BaseFragment implements View.OnClickListener, AdapterView.OnItemSelectedListener, CompoundButton.OnCheckedChangeListener {
 
     TodosAdapter adapter;
-    ArrayList<AddressTodos> arr = new ArrayList<>();
+    ArrayList<AddressTodos> arr;
+    ArrayList<AddressTodos> filtered;
     ListView list;
     SwipeRefreshLayout pullToRefresh;
+    SwitchCompat switchDone;
 
     TextView logoIcon;
     Button btnSearchFriend;
@@ -147,7 +153,12 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
                     arr.add(addressTodos);
                     My.shared.add(addressTodos);
                 }
-
+                Collections.sort(arr, new Comparator<AddressTodos>() {
+                    @Override
+                    public int compare(AddressTodos o1, AddressTodos o2) {
+                        return o1.getTodos().getTodo_id() - o2.getTodos().getTodo_id();
+                    }
+                });
                 refresh(arr);
             } else {
                 // data가 없습니다.
@@ -174,6 +185,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         LOAD_START();
 
+        arr = new ArrayList<>();
+        filtered = new ArrayList<>();
 
         list = (ListView) view.findViewById(R.id.home_list);
         list.setItemsCanFocus(false);
@@ -181,7 +194,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
         pullToRefresh = (SwipeRefreshLayout) view.findViewById(R.id.pullToRefresh);
         filterSpinner = (Spinner) view.findViewById(R.id.filter_spinner);
         btnSearchFriend = (Button) view.findViewById(R.id.btn_search_friend);
-
+        switchDone = view.findViewById(R.id.switch_done);
+        switchDone.setChecked(true);            //  항상 전체를 보여준다
         searchFragment = new SearchFragment();
 
         params.clear();
@@ -216,6 +230,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
 
         filterSpinner.setOnItemSelectedListener(this);
 
+        // 다된 일 필터 설정 ------------------------------------------------------------
+        switchDone.setOnCheckedChangeListener(this);
 
 
 
@@ -269,30 +285,52 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
         switch (position) {
             case 0:
                 // 등록 순
+                Collections.sort(arr, new Comparator<AddressTodos>() {
+                    @Override
+                    public int compare(AddressTodos o1, AddressTodos o2) {
+                        return o1.getTodos().getTodo_id() - o2.getTodos().getTodo_id();
+                    }
+
+                });
                 refresh(arr);
                 break;
             case 1:
-                // 다 된일 숨기기
-                refresh(arr);
-                break;
-            case 2:
-                // 내가 할 일
-                refresh(arr);
-                break;
-            case 3:
-                // 공유 된 일
-                refresh(arr);
-                break;
-            case 4:
                 // 시간 순
                 refresh(arr);
                 break;
+            case 2:
+                // 중요도 순
+                refresh(arr);
+                break;
+            case 3:
+                // 나만 할 일
+                refresh(arr);
+                break;
+            case 4:
+                // 공유 된 일
+                refresh(arr);
+                break;
             case 5:
-                // 중요도
                 refresh(arr);
                 break;
             default:
+                Log.d("dddd", "yeah ?");
                 break;
+        }
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if (isChecked) {
+            refresh(arr);
+        } else {
+            filtered.clear();
+            for (AddressTodos t : arr) {
+                if (!t.getTodos().isDone()) {
+                    filtered.add(t);
+                }
+            }
+            refresh(filtered);
         }
     }
 }

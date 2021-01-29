@@ -75,11 +75,13 @@ public class FriendListFragment extends BaseFragment implements AdapterView.OnIt
     private void init(View v) {
         btnPrevious = v.findViewById(R.id.btn_previous);
         tvId = v.findViewById(R.id.tv_menubar_id);
+        tvId.setText(this.currentUser.getId());
         searchFriend = v.findViewById(R.id.search_friend);
         listFriend = v.findViewById(R.id.list_friend);
 
         arr = new ArrayList<>();
 
+        Log.d("dddd", "FRiNED LIST -->>> " + currentUser);
         params.clear();
         params.put("user_id", currentUser.getUser_id()+"");
         params.put("id", currentUser.getId());
@@ -92,14 +94,14 @@ public class FriendListFragment extends BaseFragment implements AdapterView.OnIt
         btnPrevious.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Fragment myPageFragment = new MyPageFragment();
+                Fragment userPageFragment = new UserPageFragment(currentUser);
                 getActivity().getSupportFragmentManager()
                     .beginTransaction()
                     .setCustomAnimations(
                             R.anim.slide_back1,  // popExit
                             R.anim.slide_back2
                     )
-                    .replace(R.id.body_rl, myPageFragment)
+                    .replace(R.id.body_rl, userPageFragment)
                     .addToBackStack(null)
                     .commit();
             }

@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".main.HomeFragment">
 
 
@@ -32,9 +33,19 @@
             android:id="@+id/btn_search_friend"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:layout_toStartOf="@+id/filter_spinner"
+            android:layout_toStartOf="@+id/switch_done"
             android:layout_marginEnd="8dp"
             android:background="@drawable/baseline_search_24"/>
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/switch_done"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:layout_toStartOf="@+id/filter_spinner"
+            android:thumb="@drawable/switch_thumb"
+            app:track="@drawable/switch_track_selector"/>
 
         <Spinner
             android:id="@+id/filter_spinner"

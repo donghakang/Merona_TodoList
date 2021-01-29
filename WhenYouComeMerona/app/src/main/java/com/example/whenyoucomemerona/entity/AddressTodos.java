@@ -1,7 +1,7 @@
 package com.example.whenyoucomemerona.entity;
 
 
-public class AddressTodos {
+public class AddressTodos implements Comparable{
     Todos todos;
     Address address;
     boolean isShared;
@@ -38,5 +38,12 @@ public class AddressTodos {
 
     public void setShared(boolean shared) {
         isShared = shared;
+    }
+
+    @Override
+    public int compareTo(Object t) {
+        int compareTodoId = ((AddressTodos)t).getTodos().getTodo_id();
+        /* For Ascending order*/
+        return this.getTodos().getTodo_id() - compareTodoId;
     }
 }

@@ -539,7 +539,8 @@ public class UserPageFragment extends BaseFragment implements View.OnClickListen
 
     // 친구 리스트 불러오기 페이지로 이동 --------------------------------------------------------------------
     private void getFriendList() {
-        Fragment friendListFragment = new FriendListFragment(My.Account);
+        Log.d("dddd", "FRIEND LIST --> "  + user);
+        Fragment friendListFragment = new FriendListFragment(user);
         getActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .setCustomAnimations(
