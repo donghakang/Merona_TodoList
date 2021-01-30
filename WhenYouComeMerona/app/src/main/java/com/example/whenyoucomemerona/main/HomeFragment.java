@@ -100,6 +100,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
                     todo.setShare_with(item.optString("share_with"));
                     todo.setWriter_id(item.optInt("writer_id"));
                     todo.setAddr_id(item.optInt("addr_id"));
+                    todo.setImportance(item.optDouble("importance"));
                     todo.setDone(item.optBoolean("done"));
 
                     JSONObject jsonAddress = item.optJSONObject("address");
@@ -134,6 +135,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
                     todo.setShare_with(item.optString("share_with"));
                     todo.setWriter_id(item.optInt("writer_id"));
                     todo.setAddr_id(item.optInt("addr_id"));
+                    todo.setImportance(item.optDouble("importance"));
                     todo.setDone(item.optBoolean("done"));
 
                     JSONObject jsonAddress = item.optJSONObject("address");
@@ -208,6 +210,9 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
         pullToRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                filterSpinner.setSelection(0);
+                filterSpinner.setSelected(false);
+
                 params.clear();
                 params.put("user_id", My.Account.getUser_id() + "");
                 params.put("id", My.Account.getId());
@@ -295,11 +300,77 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
                 refresh(arr);
                 break;
             case 1:
+                // TODO: 시간순으로 정렬
                 // 시간 순
+
+                Collections.sort(arr, new Comparator<AddressTodos>() {
+                    @Override
+                    public int compare(AddressTodos o1, AddressTodos o2) {
+                        SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd");
+                        SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm");
+                        String date1 = o1.getTodos().getDuedate();
+                        String date2 = o2.getTodos().getDuedate();
+                        Date o1Date = null;
+                        Date o2Date = null;
+
+                        String time1 = o1.getTodos().getDuetime();
+                        String time2 = o2.getTodos().getDuetime();
+                        Date o1Time = null;
+                        Date o2Time = null;
+
+                        if (date1.isEmpty() && date2.isEmpty()) return 0;
+                        if (date1.isEmpty()) return 1;
+                        if (date2.isEmpty()) return -1;
+
+
+                        try {
+                            o1Date = sdf1.parse(date1);
+                            o2Date = sdf1.parse(date2);
+                        }  catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+
+                        int resultDate = o1Date.compareTo(o2Date);
+                        if (resultDate > 0) return 1;
+                        else if (resultDate < 0) return -1;
+                        else {
+                            // 시간 정렬
+                            if (time1.isEmpty() && time2.isEmpty()) return 0;
+                            if (time1.isEmpty()) return 1;
+                            if (time2.isEmpty()) return -1;
+
+                            try {
+                                o1Time = sdf2.parse(time1);
+                                o2Time = sdf2.parse(time2);
+                            }  catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+
+                            int resultTime = o1Time.compareTo(o2Time);
+                            if (resultTime > 0) return 1;
+                            else if (resultTime < 0) return -1;
+                            else return 0;
+
+                        }
+                    }
+                });
                 refresh(arr);
                 break;
             case 2:
                 // 중요도 순
+                Collections.sort(arr, new Comparator<AddressTodos>() {
+                    @Override
+                    public int compare(AddressTodos o1, AddressTodos o2) {
+                        double diff = o1.getTodos().getImportance() - o2.getTodos().getImportance();
+                        Log.d("ddddd", "Before sorting: " +diff+ "      " + o1.getTodos().getImportance() + "   " + o2.getTodos().getImportance());
+                        if (Double.isNaN(o1.getTodos().getImportance()) && Double.isNaN(o2.getTodos().getImportance())) return 0;
+                        if (Double.isNaN(o1.getTodos().getImportance())) return 1;
+                        if (Double.isNaN(o2.getTodos().getImportance())) return -1;
+                        if (diff > 0.0) return -1;
+                        if (diff < 0.0) return 1;
+                        return 0;
+                    }
+                });
                 refresh(arr);
                 break;
             case 3:
@@ -314,7 +385,6 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
                 refresh(arr);
                 break;
             default:
-                Log.d("dddd", "yeah ?");
                 break;
         }
     }

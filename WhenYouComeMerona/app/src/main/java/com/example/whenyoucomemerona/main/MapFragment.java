@@ -242,6 +242,7 @@ public class MapFragment extends BaseFragment implements View.OnClickListener, M
                     todo.setShare_with(item.optString("share_with"));
                     todo.setWriter_id(item.optInt("writer_id"));
                     todo.setAddr_id(item.optInt("addr_id"));
+                    todo.setImportance(item.optDouble("importance"));
                     todo.setDone(item.optBoolean("done"));
 
                     JSONObject jsonAddress = item.optJSONObject("address");
@@ -275,6 +276,7 @@ public class MapFragment extends BaseFragment implements View.OnClickListener, M
                     todo.setShare_with(item.optString("share_with"));
                     todo.setWriter_id(item.optInt("writer_id"));
                     todo.setAddr_id(item.optInt("addr_id"));
+                    todo.setImportance(item.optDouble("importance"));
                     todo.setDone(item.optBoolean("done"));
 
                     JSONObject jsonAddress = item.optJSONObject("address");
