@@ -375,14 +375,11 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
                 break;
             case 3:
                 // 나만 할 일
-                refresh(arr);
+                refresh(My.todos);
                 break;
             case 4:
                 // 공유 된 일
-                refresh(arr);
-                break;
-            case 5:
-                refresh(arr);
+                refresh(My.shared);
                 break;
             default:
                 break;
