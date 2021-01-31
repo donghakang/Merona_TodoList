@@ -37,8 +37,11 @@ public class TodoService {
 		return todoDao.updateByCheckbox(todo);
 	}
 
-	public boolean editItem(Todos todo) {
-		return todoDao.editItem(todo);
+	public boolean editItem(Todos todo, Address addr) {
+		boolean n = todoDao.editItem(todo); 
+		boolean m = todoDao.editAddress(addr);
+			
+		return n && m;
 	}
 
 	public boolean deleteItem(Todos todo) {

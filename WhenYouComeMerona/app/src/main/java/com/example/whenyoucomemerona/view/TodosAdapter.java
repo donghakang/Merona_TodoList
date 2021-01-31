@@ -131,7 +131,7 @@ public class TodosAdapter extends ArrayAdapter {
                      */
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Fragment editFragment = new EditFragment(getItem(position).getTodos());
+                        Fragment editFragment = new EditFragment(getItem(position));
                         ((AppCompatActivity) ctx).getSupportFragmentManager()
                                 .beginTransaction()
                                 .setCustomAnimations(

@@ -77,10 +77,17 @@ public class TodoController {
 	}
 	
 	// 수정하기 ------------------------------------------------
+//	@RequestMapping(value="/editItem.do", method=RequestMethod.POST)
+//	@ResponseBody
+//	public String editItem(@ModelAttribute Todos todo) {
+//		return JSONController.jsonTemplate(todoService.editItem(todo));
+//	}
+	
 	@RequestMapping(value="/editItem.do", method=RequestMethod.POST)
 	@ResponseBody
-	public String editItem(@ModelAttribute Todos todo) {
-		return JSONController.jsonTemplate(todoService.editItem(todo));
+	public String editItem(@ModelAttribute Todos todo, @ModelAttribute Address addr) {	
+		System.out.println(todo.toString() + "\n" + addr.toString());
+		return JSONController.jsonTemplate(todoService.editItem(todo, addr));
 	}
 	
 	// 삭제하기 ------------------------------------------------

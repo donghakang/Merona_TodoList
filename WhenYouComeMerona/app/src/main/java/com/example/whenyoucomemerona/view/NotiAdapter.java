@@ -93,31 +93,15 @@ public class NotiAdapter extends ArrayAdapter {
             viewHolder = (NotiHolder) convertView.getTag();
         }
 
-
-
-
         notification = arr.get(position);
-        type = notification.getType();
+        getUserData(notification);
 
-        user = new User();
-        friend = new User();
-
-
-
-
-        getUserData();
+        return convertView;
+    }
 
 
 
-
-
-
-
-
-
-
-/**
-
+    private void getUserData(final Noti noti) {
         RequestQueue stringRequest = Volley.newRequestQueue(getContext());
         String url = "getUserPage.do";
 
@@ -125,7 +109,6 @@ public class NotiAdapter extends ArrayAdapter {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.d("dddd", response);
                         try {
                             JSONObject json = new JSONObject(response);
                             // 데이터 가져오기 성공할 때,
@@ -139,87 +122,7 @@ public class NotiAdapter extends ArrayAdapter {
                                 user.setBirth(user_data.optString("birth"));
                                 user.setToken(user_data.optString("token"));
 
-
-
-                                // Friend Data.
-                                RequestQueue stringRequest = Volley.newRequestQueue(getContext());
-                                String url = "getUserPage.do";
-
-                                StringRequest myReq = new StringRequest(Request.Method.POST, Key.getUrl() + url,
-                                        new Response.Listener<String>() {
-                                            @Override
-                                            public void onResponse(String response) {
-                                                Log.d("dddd", response);
-                                                try {
-                                                    JSONObject json = new JSONObject(response);
-                                                    // 데이터 가져오기 성공할 때,
-                                                    if (json.optString("result").equals("ok")) {
-
-                                                        JSONObject user_data = json.optJSONObject("data");
-                                                        friend.setUser_id(user_data.optInt("user_id"));
-                                                        friend.setId(user_data.optString("id"));
-                                                        friend.setName(user_data.optString("name"));
-                                                        friend.setEmail(user_data.optString("email"));
-                                                        friend.setBirth(user_data.optString("birth"));
-                                                        friend.setToken(user_data.optString("token"));
-
-                                                        // Setup the view.
-                                                        String msg = "";
-
-                                                        switch (type) {
-                                                            // TODO: 아이디 이름을 변경한다.
-                                                            case 0:
-                                                                msg = notification.getWelcomeMsg();
-                                                                break;
-                                                            case 1:
-                                                                msg = notification.getFriendReqMsg();
-                                                                Log.d("dddd", user.getId() + "      test");
-                                                                viewHolder.tvMessage.setText(Html.fromHtml("<b>" + user.getId() + "</b>" + msg + "<font color='#d3d3d3'>  " + time + "</font>"));
-                                                                break;
-                                                            case 2:
-                                                                msg = notification.getTodoReqMsg();
-                                                                break;
-                                                            case 3:
-                                                                msg = notification.getLocationMsg();
-                                                                break;
-                                                            default:
-                                                                break;
-                                                        }
-
-
-
-
-                                                    } else {
-                                                        Log.d("Result Tag", "User 가 없습니다.");
-                                                    }
-                                                } catch (JSONException e) {
-                                                    Toast.makeText(getContext(), "JSON 오류", Toast.LENGTH_SHORT).show();
-                                                    Log.e("JSON Tag", "JSON 형식에 오류가 있습니다");
-                                                    e.printStackTrace();
-                                                }
-                                            }
-                                        },
-                                        new Response.ErrorListener() {
-                                            @Override
-                                            public void onErrorResponse(VolleyError error) {
-                                                Log.e("Response Tag", "response 를 받지 못했습니다.");
-                                            }
-                                        }) {
-
-                                    @Override
-                                    protected Map<String, String> getParams() throws AuthFailureError {
-                                        Map<String, String> params = new HashMap<String, String>();
-                                        params.put("user_id", notification.getFriend_id() + "");
-                                        return params;
-                                    }
-                                };
-
-                                myReq.setRetryPolicy(new DefaultRetryPolicy(3000, 0, 1f));
-                                stringRequest.add(myReq);
-
-
-                            } else {
-                                Log.d("Result Tag", "User 가 없습니다.");
+                                getFriendData(noti);
                             }
                         } catch (JSONException e) {
                             Toast.makeText(getContext(), "JSON 오류", Toast.LENGTH_SHORT).show();
@@ -231,41 +134,16 @@ public class NotiAdapter extends ArrayAdapter {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.e("Response Tag", "response 를 받지 못했습니다.");
+                        // 통신이 안되는 메시지를 띄운다.
+                        Log.e("Error Tag", "통신 실패");
+                        System.exit(0);
                     }
-                }) {
-
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("user_id", notification.getUser_id() + "");
-                return params;
-            }
-        };
-
-        myReq.setRetryPolicy(new DefaultRetryPolicy(3000, 0, 1f));
-        stringRequest.add(myReq);
-
-**/
-
-
-
-        return convertView;
-    }
-
-
-
-    private void getUserData() {
-        RequestQueue stringRequest = Volley.newRequestQueue(getContext());
-        String url = "getUserPage.do";
-
-        StringRequest myReq = new StringRequest(Request.Method.POST, Key.getUrl() + url,
-                userSuccessListener, userErrorListener
+                }
         ) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("user_id", notification.getUser_id() + "");
+                params.put("user_id", noti.getUser_id() + "");
                 return params;
             }
         };
@@ -275,55 +153,52 @@ public class NotiAdapter extends ArrayAdapter {
     }
 
 
-    Response.ErrorListener userErrorListener = new Response.ErrorListener() {
-        @Override
-        public void onErrorResponse(VolleyError error) {
-            // 통신이 안되는 메시지를 띄운다.
-            Log.e("Error Tag", "통신 실패");
-            System.exit(0);
-        }
-    };
-
-    Response.Listener<String> userSuccessListener = new Response.Listener<String>() {
-        @Override
-        public void onResponse(String response) {
-            try {
-                JSONObject json = new JSONObject(response);
-                // 데이터 가져오기 성공할 때,
-                if (json.optString("result").equals("ok")) {
-
-                    JSONObject user_data = json.optJSONObject("data");
-                    user.setUser_id(user_data.optInt("user_id"));
-                    user.setId(user_data.optString("id"));
-                    user.setName(user_data.optString("name"));
-                    user.setEmail(user_data.optString("email"));
-                    user.setBirth(user_data.optString("birth"));
-                    user.setToken(user_data.optString("token"));
-
-                    getFriendData();
-                }
-            } catch (JSONException e) {
-                Toast.makeText(getContext(), "JSON 오류", Toast.LENGTH_SHORT).show();
-                Log.e("JSON Tag", "JSON 형식에 오류가 있습니다");
-                e.printStackTrace();
-            }
-        }
-    };
 
 
 
-
-    private void getFriendData() {
+    private void getFriendData(final Noti noti) {
         RequestQueue stringRequest = Volley.newRequestQueue(getContext());
         String url = "getUserPage.do";
 
         StringRequest myReq = new StringRequest(Request.Method.POST, Key.getUrl() + url,
-                friendSuccessListener, friendErrorListener
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject json = new JSONObject(response);
+                            // 데이터 가져오기 성공할 때,
+                            if (json.optString("result").equals("ok")) {
+
+                                JSONObject user_data = json.optJSONObject("data");
+                                friend.setUser_id(user_data.optInt("user_id"));
+                                friend.setId(user_data.optString("id"));
+                                friend.setName(user_data.optString("name"));
+                                friend.setEmail(user_data.optString("email"));
+                                friend.setBirth(user_data.optString("birth"));
+                                friend.setToken(user_data.optString("token"));
+
+                                setupView(noti);
+                            }
+                        } catch (JSONException e) {
+                            Toast.makeText(getContext(), "JSON 오류", Toast.LENGTH_SHORT).show();
+                            Log.e("JSON Tag", "JSON 형식에 오류가 있습니다");
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // 통신이 안되는 메시지를 띄운다.
+                        Log.e("Error Tag", "통신 실패");
+                        System.exit(0);
+                    }
+                }
         ) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("user_id", notification.getFriend_id() + "");
+                params.put("user_id", noti.getFriend_id() + "");
                 return params;
             }
         };
@@ -333,49 +208,11 @@ public class NotiAdapter extends ArrayAdapter {
     }
 
 
-    Response.ErrorListener friendErrorListener = new Response.ErrorListener() {
-        @Override
-        public void onErrorResponse(VolleyError error) {
-            // 통신이 안되는 메시지를 띄운다.
-            Log.e("Error Tag", "통신 실패");
-            System.exit(0);
-        }
-    };
 
-    Response.Listener<String> friendSuccessListener = new Response.Listener<String>() {
-        @Override
-        public void onResponse(String response) {
-            try {
-                JSONObject json = new JSONObject(response);
-                // 데이터 가져오기 성공할 때,
-                if (json.optString("result").equals("ok")) {
-
-                    JSONObject user_data = json.optJSONObject("data");
-                    friend.setUser_id(user_data.optInt("user_id"));
-                    friend.setId(user_data.optString("id"));
-                    friend.setName(user_data.optString("name"));
-                    friend.setEmail(user_data.optString("email"));
-                    friend.setBirth(user_data.optString("birth"));
-                    friend.setToken(user_data.optString("token"));
-
-                    setupView();
-                }
-            } catch (JSONException e) {
-                Toast.makeText(getContext(), "JSON 오류", Toast.LENGTH_SHORT).show();
-                Log.e("JSON Tag", "JSON 형식에 오류가 있습니다");
-                e.printStackTrace();
-            }
-        }
-    };
-
-
-
-    //
-
-    private void setupView() {
+    private void setupView(Noti noti) {
         String msg = "";
-        String time = notification.getTimeDiff();
-        switch (type) {
+        String time = noti.getTimeDiff();
+        switch (noti.getType()) {
             // TODO: 아이디 이름을 변경한다.
             case 0:
                 msg = notification.getWelcomeMsg();
@@ -383,11 +220,11 @@ public class NotiAdapter extends ArrayAdapter {
                 break;
             case 1:
                 msg = notification.getFriendReqMsg();
-                Log.d("dddd", user.getId() + "      test");
                 viewHolder.tvMessage.setText(Html.fromHtml("<b>" + user.getId() + "</b>" + msg + "<font color='#d3d3d3'>  " + time + "</font>"));
                 break;
             case 2:
                 msg = notification.getTodoReqMsg();
+                viewHolder.tvMessage.setText(Html.fromHtml("<b>" + user.getId() + "</b>" + msg + "<font color='#d3d3d3'>  " + time + "</font>"));
                 break;
             case 3:
                 msg = notification.getLocationMsg();

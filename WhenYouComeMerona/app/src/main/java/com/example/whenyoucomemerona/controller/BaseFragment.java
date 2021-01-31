@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -31,6 +32,7 @@ import com.example.whenyoucomemerona.entity.User;
 import com.example.whenyoucomemerona.main.LoadingFragment;
 import com.example.whenyoucomemerona.main.MainActivity;
 import com.example.whenyoucomemerona.model.Key;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -171,7 +173,6 @@ public class BaseFragment extends Fragment {
 
 
 
-    // Noti Table에 업데이트 시킨다
     public void updateNotification(final int type, final User user, final User friend) {
         String url = "insertNoti.do";
 
@@ -180,8 +181,6 @@ public class BaseFragment extends Fragment {
         sdf.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
         Date today = Calendar.getInstance().getTime();
         final String pushDate = sdf.format(today);
-
-        Log.d("dddd", "FINAL: " + friend.getUser_id());
 
         RequestQueue stringRequest = Volley.newRequestQueue(getContext());
         StringRequest myReq = new StringRequest(Request.Method.POST, Key.getUrl() + url,
@@ -192,9 +191,9 @@ public class BaseFragment extends Fragment {
                             JSONObject j = new JSONObject(response);
                             // 데이터 가져오기 성공할 때,
                             if (j.optString("result").equals("ok")) {
-                                Toast.makeText(getContext(), "삽입하기 성공", Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(getContext(), "삽입하기 성공", Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(getContext(), "삽입하기 실패", Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(getContext(), "삽입하기 실패", Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -226,9 +225,8 @@ public class BaseFragment extends Fragment {
 
 
 
+
     // 위치 기반을 위한 서비스
-
-
     private boolean isLocationServiceActivated() {
         ActivityManager acm = (ActivityManager) getActivity().getSystemService(Context.ACTIVITY_SERVICE);
         if (acm != null) {
@@ -264,23 +262,39 @@ public class BaseFragment extends Fragment {
     }
 
 
-
+    // 키보드를 숨긴다.
+    public void hideKeyboard(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        View view = activity.getCurrentFocus();
+        if (view != null) {
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
 
 
     // 로딩 페이지
-
     public void LOAD_START() {
+        BottomNavigationView mBottomMenu = getActivity().findViewById(R.id.bottom_navigation);
+        for (int i = 0; i < mBottomMenu.getMenu().size(); i++) {
+            mBottomMenu.getMenu().getItem(i).setEnabled(false);
+        }
+
         Fragment frag = new LoadingFragment();
+
         getActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.rl_main_activity, frag, "LOADING_FRAGMENT")
                 .addToBackStack("loading")
                 .commit();
 
-        ((MainActivity)getActivity()).findViewById(R.id.bottom_navigation).setClickable(false);
+
     }
 
     public void LOAD_STOP() {
+        BottomNavigationView mBottomMenu = getActivity().findViewById(R.id.bottom_navigation);
+        for (int i = 0; i < mBottomMenu.getMenu().size(); i++) {
+            mBottomMenu.getMenu().getItem(i).setEnabled(true);
+        }
         Fragment frag = getActivity().getSupportFragmentManager().findFragmentByTag("LOADING_FRAGMENT");
         if(frag != null)
             getActivity().getSupportFragmentManager()
@@ -288,6 +302,6 @@ public class BaseFragment extends Fragment {
                     .remove(frag)
                     .commit();
 
-        ((MainActivity)getActivity()).findViewById(R.id.bottom_navigation).setClickable(true);
+
     }
 }

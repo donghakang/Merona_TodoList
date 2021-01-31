@@ -1,6 +1,9 @@
 package com.example.whenyoucomemerona.controller;
 
+import android.app.Activity;
 import android.util.Log;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -112,5 +115,14 @@ public class BaseActivity extends AppCompatActivity {
         stringRequest.add(myReq);
     }
 
+
+    public static void hideKeyboard(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        View view = activity.getCurrentFocus();
+        if (view != null) {
+//            view = new View(activity);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
 
 }

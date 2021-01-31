@@ -14,6 +14,17 @@
 		]]>
 	</select>
 	
+	<select id="getMyFriendList" parameterType="map" resultType="user">
+
+			SELECT USERS.* FROM (
+			SELECT USER_ID AS "UID" FROM FRIEND WHERE FRIEND_ID=#{i}
+			UNION
+			SELECT FRIEND_ID AS "UID" FROM FRIEND WHERE USER_ID=#{i}) 
+			LEFT JOIN USERS ON "UID"=USER_ID
+			WHERE LOWER(ID) LIKE '%' ||  #{search} || '%'
+
+	</select>
+	
 	<insert id="requestFriend" parameterType="relationship">
 		<![CDATA[
 			INSERT INTO REQUEST(USER_ID, FRIEND_ID)

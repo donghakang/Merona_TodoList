@@ -35,6 +35,14 @@ public class FriendController {
 		model.addAttribute("list", friends);
 		return "searchFriend";
 	}
+
+	@RequestMapping(value="/getMyFriendList.do", method=RequestMethod.POST) 
+	public String getFriendList(@ModelAttribute User user, 
+			@RequestParam(value="username", defaultValue="", required=false) String username, Model model) {
+		List<User> friends = friendService.getMyFriendList(user, username);
+		model.addAttribute("list", friends);
+		return "searchFriend";
+	}
 	
 	
 	// 친구 신청 -------------------------------------------------------------------

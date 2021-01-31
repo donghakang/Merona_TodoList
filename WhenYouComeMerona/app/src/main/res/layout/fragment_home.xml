@@ -7,15 +7,6 @@
     tools:context=".main.HomeFragment">
 
 
-    <ProgressBar
-        android:id="@+id/progress"
-        android:layout_width="140dp"
-        android:layout_height="140dp"
-        android:layout_centerInParent="true"
-        android:visibility="invisible"
-        android:indeterminateDrawable="@drawable/progressbar"/>
-
-
     <RelativeLayout
         android:id="@+id/rl_menubar"
         android:layout_width="match_parent"
@@ -26,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/logo_play"
-            android:fontFamily="@font/jalnan"
+            android:fontFamily="@font/jalnan_regular"
             android:clickable="true"
             android:textSize="20sp"/>
         <Button
@@ -56,11 +47,54 @@
     </RelativeLayout>
 
 
+
+    <RelativeLayout
+        android:id="@+id/empty_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rl_menubar"
+        android:layout_centerHorizontal="true"
+        android:visibility="invisible">
+
+        <View
+            android:id="@+id/empty_status_img"
+            android:background="@mipmap/empty"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:layout_centerHorizontal="true"
+            />
+        <TextView
+            android:id="@+id/empty_status_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/empty_status_img"
+            android:fontFamily="@font/jalnan_regular"
+            android:text="한 일이 없네요... 지금 바로 해야 할 일을 끝내세요!"/>
+
+        <TextView
+            android:id="@+id/empty_click_suggest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/empty_arrow"
+            android:layout_centerHorizontal="true"
+            android:fontFamily="@font/jalnan_regular"
+            android:text="누르고 해야할 일을 추가하세요!"/>
+
+        <View
+            android:id="@+id/empty_arrow"
+            android:layout_alignParentBottom="true"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerHorizontal="true"
+            android:background="@mipmap/arrow"/>
+    </RelativeLayout>
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/pullToRefresh"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/rl_menubar">
+
         <ListView
             android:id="@+id/home_list"
             android:layout_width="match_parent"

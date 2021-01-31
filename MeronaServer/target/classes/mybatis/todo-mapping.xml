@@ -66,9 +66,25 @@
 		]]>
 	</update>
 	
+
+	
 	<update id="editItem" parameterType="todos">
 		<![CDATA[
-			UPDATE TODOS SET CONTENT=#{content}, DONE=#{done} WHERE TODO_ID=#{todo_id}
+			UPDATE TODOS SET CONTENT=#{content}, MEMO=#{memo}, DUEDATE=#{duedate}, DUETIME=#{duetime}, SHARE_WITH=#{share_with}, IMPORTANCE=#{importance}, DONE=#{done}
+			WHERE TODO_ID=#{todo_id}
+		]]>
+	</update>
+	
+	<update id="editAddress" parameterType="address">
+		<![CDATA[
+			UPDATE ADDRESS SET ADDRESS_NAME=#{address_name},
+							PLACE_NAME=#{place_name},
+							ROAD_ADDRESS_NAME=#{road_address_name},
+							CATEGORY_NAME=#{category_name},
+							LAT=#{lat},
+							LNG=#{lng}
+			WHERE ADDR_ID=#{addr_id}
+						
 		]]>
 	</update>
 	

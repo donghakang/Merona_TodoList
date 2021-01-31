@@ -2,7 +2,9 @@ package model;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,6 +72,15 @@ public class FriendDao {
 	public List<User> getFriendList(User user) {
 		return factory.openSession().selectList("mybatis.FriendMapper.getFriendList", user);
 	}
+
+	public List<User> getMyFriendList(User user, String username) {
+		Map<String, String> map = new HashMap<String, String>();
+        map.put("i", user.getUser_id() + "");
+        map.put("search", username);
+		return factory.openSession().selectList("mybatis.FriendMapper.getMyFriendList", map);
+		
+	}
+
 
 }
 

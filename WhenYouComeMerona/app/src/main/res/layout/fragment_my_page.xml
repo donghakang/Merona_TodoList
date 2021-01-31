@@ -5,14 +5,6 @@
     android:layout_height="match_parent"
     tools:context=".main.MyPageFragment">
 
-    <ProgressBar
-        android:id="@+id/progress"
-        android:layout_width="140dp"
-        android:layout_height="140dp"
-        android:layout_centerInParent="true"
-        android:visibility="invisible"
-        android:indeterminateDrawable="@drawable/progressbar"/>
-
     <RelativeLayout
         android:id="@+id/my_page"
         android:layout_width="match_parent"
@@ -201,6 +193,28 @@
             android:layout_below="@id/my_line2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+            <RelativeLayout
+                android:id="@+id/empty_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:visibility="invisible">
+                <View
+                    android:id="@+id/empty_status_img"
+                    android:background="@mipmap/empty"
+                    android:layout_width="160dp"
+                    android:layout_height="160dp"
+                    android:layout_centerHorizontal="true"
+                    />
+                <TextView
+                    android:id="@+id/empty_status_tag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/empty_status_img"
+                    android:fontFamily="@font/jalnan_regular"
+                    android:text="한 일이 없네요... 지금 바로 해야 할 일을 끝내세요!"/>
+
+            </RelativeLayout>
             <ListView
                 android:id="@+id/lv_my_page_list"
                 android:layout_width="match_parent"

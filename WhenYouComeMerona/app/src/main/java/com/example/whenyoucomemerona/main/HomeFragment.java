@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,6 +58,8 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
 
     SearchFragment searchFragment;
 
+    RelativeLayout emptyPage;
+
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -72,9 +75,18 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
     Server 에서 Data 들을 가지고 온다.
      */
     private void refresh(ArrayList<AddressTodos> arr) {
+
         adapter = new TodosAdapter(getActivity(), arr);
         list.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+//        if (arr.size() < 1) {
+//            emptyPage.setVisibility(View.VISIBLE);
+//            list.setVisibility(View.INVISIBLE);
+//        } else {
+//            emptyPage.setVisibility(View.INVISIBLE);
+//            list.setVisibility(View.VISIBLE);
+//        }
+
     }
 
 
@@ -172,6 +184,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
 
         LOAD_STOP();
 
+        checkEmpty(arr);
 
     }
 
@@ -187,6 +200,7 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         LOAD_START();
 
+
         arr = new ArrayList<>();
         filtered = new ArrayList<>();
 
@@ -197,8 +211,11 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
         filterSpinner = (Spinner) view.findViewById(R.id.filter_spinner);
         btnSearchFriend = (Button) view.findViewById(R.id.btn_search_friend);
         switchDone = view.findViewById(R.id.switch_done);
+        emptyPage = view.findViewById(R.id.empty_status);
         switchDone.setChecked(true);            //  항상 전체를 보여준다
         searchFragment = new SearchFragment();
+
+        emptyPage.setVisibility(View.INVISIBLE);
 
         params.clear();
         params.put("user_id", My.Account.getUser_id() + "");
@@ -376,14 +393,18 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
             case 3:
                 // 나만 할 일
                 refresh(My.todos);
+                checkEmpty(My.todos);
                 break;
             case 4:
                 // 공유 된 일
                 refresh(My.shared);
+                checkEmpty(My.shared);
                 break;
             default:
                 break;
         }
+
+
     }
 
     @Override
@@ -398,6 +419,17 @@ public class HomeFragment extends BaseFragment implements View.OnClickListener, 
                 }
             }
             refresh(filtered);
+        }
+    }
+
+
+    private void checkEmpty(ArrayList<AddressTodos> arr) {
+        if (arr.size() < 1) {
+            emptyPage.setVisibility(View.VISIBLE);
+            list.setVisibility(View.INVISIBLE);
+        } else {
+            emptyPage.setVisibility(View.INVISIBLE);
+            list.setVisibility(View.VISIBLE);
         }
     }
 }

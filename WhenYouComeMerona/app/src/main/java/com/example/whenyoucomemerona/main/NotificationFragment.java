@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -16,6 +17,7 @@ import com.example.whenyoucomemerona.controller.BaseFragment;
 import com.example.whenyoucomemerona.controller.My;
 import com.example.whenyoucomemerona.entity.Noti;
 import com.example.whenyoucomemerona.view.NotiAdapter;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -89,17 +91,47 @@ public class NotificationFragment extends BaseFragment {
                     arr.add(noti);
                 }
 
-                refresh(arr);
-
             } else {
                 Toast.makeText(getContext(), "리스트 불러오기 실패", Toast.LENGTH_SHORT).show();
             }
+            refresh(arr);
+            setup();
 
 
         } catch (JSONException e) {
-            Log.d("noti", "JSON에서 에러가 있습니다.");
+            Log.e("NOTIFICATION TAG", "JSON에서 에러가 있습니다.");
             e.printStackTrace();
         }
+
+    }
+
+    private void setup() {
+        lvNotification.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Noti noti = arr.get(position);
+
+                switch (noti.getType()) {
+                    case 0:
+                        ((BottomNavigationView)getActivity().findViewById(R.id.bottom_navigation)).setSelectedItemId(R.id.page_1);
+                        break;
+                    case 1:
+                        hideKeyboard(getActivity());
+                        Fragment userPage = new UserPageFragment(noti.getUser_id());
+                        getActivity().getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.body_rl, userPage)
+                                .commit();
+                        break;
+                    case 2:
+                        ((BottomNavigationView)getActivity().findViewById(R.id.bottom_navigation)).setSelectedItemId(R.id.page_1);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+
         LOAD_STOP();
     }
 

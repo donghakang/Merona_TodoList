@@ -98,5 +98,12 @@ public class FriendService {
 		// TODO Auto-generated method 
 		return friendDao.getFriendList(user);
 	}
+
+
+	public List<User> getMyFriendList(User user, String username) {
+		// TODO Auto-generated method stub
+		return friendDao.getMyFriendList(user, username);
+	}
+
 	
 }

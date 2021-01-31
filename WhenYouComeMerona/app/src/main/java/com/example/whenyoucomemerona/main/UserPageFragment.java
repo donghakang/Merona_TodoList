@@ -75,6 +75,10 @@ public class UserPageFragment extends BaseFragment implements View.OnClickListen
     public UserPageFragment(User user) {
         this.user = user;
     }
+    public UserPageFragment(int user_id) {
+        this.user = new User();
+        this.user.setUser_id(user_id);
+    }
 
 
     @Override
@@ -127,11 +131,7 @@ public class UserPageFragment extends BaseFragment implements View.OnClickListen
 
         btnFriend.setOnClickListener(this);
 
-        params.clear();
-        params.put("user_id", user.getUser_id() + "");
-        params.put("id", user.getId());
-        request("getUserData.do");
-
+         request("getUserData.do");
     }
 
 
@@ -458,10 +458,10 @@ public class UserPageFragment extends BaseFragment implements View.OnClickListen
                     JSONObject j = new JSONObject(response);
                     // 데이터 가져오기 성공할 때,
                     if (j.optString("result").equals("ok")) {
-                        Toast.makeText(getContext(), "친구 신청 취소 성공", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "친구와 할 일을 공유하세요", Toast.LENGTH_SHORT).show();
                         checkStatus();
                     } else {
-                        Toast.makeText(getContext(), "친구 신청 취소 실패", Toast.LENGTH_SHORT).show();
+                        Log.e("FRIEND CANCEL TAG", "친구 신청 취소 실패");
                     }
                 } catch (JSONException e) {
                     Toast.makeText(getContext(), "JSON 오류", Toast.LENGTH_SHORT).show();

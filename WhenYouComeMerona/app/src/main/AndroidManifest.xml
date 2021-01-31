@@ -13,20 +13,26 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:screenOrientation="portrait"
         android:windowSoftInputMode="adjustNothing">
         <activity android:name=".main.RegisterActivity1"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize">
         </activity>
         <activity android:name=".main.RegisterActivity2"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize">
         </activity>
-        <activity android:name=".main.RegisterActivity" />
+        <activity android:name=".main.RegisterActivity"
+            android:screenOrientation="portrait"/>
+
         <activity android:name=".main.LoginActivity"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".main.MainActivity" />
-        <activity android:name=".main.SplashActivity">
+        <activity android:name=".main.MainActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".main.SplashActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

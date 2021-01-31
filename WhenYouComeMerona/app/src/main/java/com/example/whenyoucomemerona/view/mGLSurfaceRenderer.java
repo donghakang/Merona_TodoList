@@ -5,6 +5,7 @@ import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -203,6 +204,7 @@ public class mGLSurfaceRenderer implements GLSurfaceView.Renderer
         Matrix.multiplyMV(mLightPosInEyeSpace, 0, mViewMatrix, 0, mLightPosInWorldSpace, 0);
 
         // Draw
+
         Matrix.setIdentityM(mModelMatrix, 0);
         Matrix.translateM(mModelMatrix, 0, 4.0f, 0.0f, -7.0f);
         Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 1.0f, 0.0f, 0.0f);
@@ -210,7 +212,7 @@ public class mGLSurfaceRenderer implements GLSurfaceView.Renderer
 
         Matrix.setIdentityM(mModelMatrix, 0);
         Matrix.translateM(mModelMatrix, 0, -4.0f, 0.0f, -7.0f);
-        Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 0.0f, 1.0f, 0.0f);
+        Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 0.3f, 1.0f, 0.0f);
         draw();
 
         Matrix.setIdentityM(mModelMatrix, 0);
@@ -220,11 +222,13 @@ public class mGLSurfaceRenderer implements GLSurfaceView.Renderer
 
         Matrix.setIdentityM(mModelMatrix, 0);
         Matrix.translateM(mModelMatrix, 0, 0.0f, -4.0f, -7.0f);
+        Matrix.rotateM(mModelMatrix, 0, angleInDegrees, .3f, .5f, .7f);
         draw();
 
+        // --> Center
         Matrix.setIdentityM(mModelMatrix, 0);
         Matrix.translateM(mModelMatrix, 0, 0.0f, 0.0f, -5.0f);
-        Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 1.0f, 1.0f, 0.0f);
+        Matrix.rotateM(mModelMatrix, 0, angleInDegrees, 0.2f, 1.0f, 0.4f);
         draw();
 
         GLES20.glUseProgram(mPointProgramHandle);

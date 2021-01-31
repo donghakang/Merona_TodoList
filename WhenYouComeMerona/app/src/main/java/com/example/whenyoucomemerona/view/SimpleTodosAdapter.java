@@ -102,127 +102,127 @@ public class SimpleTodosAdapter extends ArrayAdapter {
             }
         });
 
-        convertView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                Toast.makeText(getContext(),getItem(position).getContent() + "  " + position,  Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        convertView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
-
-                View titleView = lnf.inflate(R.layout.add_level_title, null);
-                TextView title = titleView.findViewById(R.id.dialog_title);
-                title.setText("수정/삭제");
-                builder.setCustomTitle(titleView);
-
-                builder.setPositiveButton("수정하기", new DialogInterface.OnClickListener() {
-                    /**
-                     * 수정하기 버튼을 누른다.
-                     */
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Fragment editFragment = new EditFragment(getItem(position));
-                        ((AppCompatActivity) ctx).getSupportFragmentManager()
-                                .beginTransaction()
-                                .setCustomAnimations(
-                                        R.anim.slide_in,  // enter
-                                        R.anim.fade_out,  // exit
-                                        R.anim.fade_in,   // popEnter
-                                        R.anim.slide_out  // popExit
-                                )
-                                .replace(R.id.body_rl, editFragment)
-                                .addToBackStack(null)
-                                .commit();
-                    }
-                });
-
-
-                builder.setNegativeButton("삭제하기", new DialogInterface.OnClickListener() {
-                    /**
-                     * 삭제하기 버튼을 누른다.
-                     */
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        AlertDialog.Builder deleteBox = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
-                        View titleView = lnf.inflate(R.layout.add_level_title, null);
-                        TextView title = titleView.findViewById(R.id.dialog_title);
-                        title.setText("삭제하기");
-                        deleteBox.setCustomTitle(titleView);
-                        deleteBox.setMessage("정말로 삭제하시겠습니까?");
-                        deleteBox.setPositiveButton("예", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                RequestQueue stringRequest = Volley.newRequestQueue(getContext());
-                                String url = "deleteItem.do";
-
-                                StringRequest myReq = new StringRequest(Request.Method.POST, Key.getUrl() + url,
-                                new Response.Listener<String>() {
-                                    @Override
-                                    public void onResponse(String response) {
-                                        // 통신을 성공 할 시
-                                        try {
-                                            JSONObject j = new JSONObject(response);
-                                            // 데이터 가져오기 성공할 때,
-                                            Log.d("eeeee", response);
-                                            if (j.optString("result").equals("ok")) {
-                                                remove(getItem(position));
-                                                notifyDataSetChanged();
-                                                Toast.makeText(getContext(), "삭제 성공", Toast.LENGTH_SHORT).show();
-                                            } else {
-                                                Toast.makeText(getContext(), "삭제 실패", Toast.LENGTH_SHORT).show();
-                                            }
-                                        } catch (JSONException e) {
-                                            Log.d("eeeee", "JSON에서 에러가 있습니다.");
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                }, new Response.ErrorListener() {
-                                    @Override
-                                    public void onErrorResponse(VolleyError error) {
-                                        // 통신을 실패할 시
-                                        Toast.makeText(getContext(), "통신이 불가능 합니다.", Toast.LENGTH_SHORT).show();
-                                    }
-                                }) {
-                                    @Override
-                                    protected Map<String, String> getParams() throws AuthFailureError {
-                                        Map<String, String> params = new HashMap<String, String>();
-                                        params.put("todo_id", getItem(position).getTodo_id()+"");
-                                        return params;
-                                    }
-                                };
-
-                                myReq.setRetryPolicy(new DefaultRetryPolicy(3000, 0, 1f));
-                                stringRequest.add(myReq);
-
-                                // TODO: Adapter에서 HomeFragment getTodoList와 연결해야함.
-
-
-                            }
-                        });
-
-                        deleteBox.setNegativeButton("아니오", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {    }
-                        });
-
-                        deleteBox.create().show();
-                    }
-
-                });
-
-                builder.setNeutralButton("취소하기", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {  }
-                });
-
-                builder.create().show();
-                return true;
-            }
-        });
+//        convertView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+////                Toast.makeText(getContext(),getItem(position).getContent() + "  " + position,  Toast.LENGTH_SHORT).show();
+//            }
+//        });
+//
+//        convertView.setOnLongClickListener(new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View v) {
+////                final AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
+////
+////                View titleView = lnf.inflate(R.layout.add_level_title, null);
+////                TextView title = titleView.findViewById(R.id.dialog_title);
+////                title.setText("수정/삭제");
+////                builder.setCustomTitle(titleView);
+////
+////                builder.setPositiveButton("수정하기", new DialogInterface.OnClickListener() {
+////                    /**
+////                     * 수정하기 버튼을 누른다.
+////                     */
+////                    @Override
+////                    public void onClick(DialogInterface dialog, int which) {
+////                        Fragment editFragment = new EditFragment(getItem(position));
+////                        ((AppCompatActivity) ctx).getSupportFragmentManager()
+////                                .beginTransaction()
+////                                .setCustomAnimations(
+////                                        R.anim.slide_in,  // enter
+////                                        R.anim.fade_out,  // exit
+////                                        R.anim.fade_in,   // popEnter
+////                                        R.anim.slide_out  // popExit
+////                                )
+////                                .replace(R.id.body_rl, editFragment)
+////                                .addToBackStack(null)
+////                                .commit();
+////                    }
+////                });
+////
+////
+////                builder.setNegativeButton("삭제하기", new DialogInterface.OnClickListener() {
+////                    /**
+////                     * 삭제하기 버튼을 누른다.
+////                     */
+////                    @Override
+////                    public void onClick(DialogInterface dialog, int which) {
+////                        AlertDialog.Builder deleteBox = new AlertDialog.Builder(getContext(), R.style.AlertDialogTheme);
+////                        View titleView = lnf.inflate(R.layout.add_level_title, null);
+////                        TextView title = titleView.findViewById(R.id.dialog_title);
+////                        title.setText("삭제하기");
+////                        deleteBox.setCustomTitle(titleView);
+////                        deleteBox.setMessage("정말로 삭제하시겠습니까?");
+////                        deleteBox.setPositiveButton("예", new DialogInterface.OnClickListener() {
+////                            @Override
+////                            public void onClick(DialogInterface dialog, int which) {
+////                                RequestQueue stringRequest = Volley.newRequestQueue(getContext());
+////                                String url = "deleteItem.do";
+////
+////                                StringRequest myReq = new StringRequest(Request.Method.POST, Key.getUrl() + url,
+////                                new Response.Listener<String>() {
+////                                    @Override
+////                                    public void onResponse(String response) {
+////                                        // 통신을 성공 할 시
+////                                        try {
+////                                            JSONObject j = new JSONObject(response);
+////                                            // 데이터 가져오기 성공할 때,
+////                                            Log.d("eeeee", response);
+////                                            if (j.optString("result").equals("ok")) {
+////                                                remove(getItem(position));
+////                                                notifyDataSetChanged();
+////                                                Toast.makeText(getContext(), "삭제 성공", Toast.LENGTH_SHORT).show();
+////                                            } else {
+////                                                Toast.makeText(getContext(), "삭제 실패", Toast.LENGTH_SHORT).show();
+////                                            }
+////                                        } catch (JSONException e) {
+////                                            Log.d("eeeee", "JSON에서 에러가 있습니다.");
+////                                            e.printStackTrace();
+////                                        }
+////                                    }
+////                                }, new Response.ErrorListener() {
+////                                    @Override
+////                                    public void onErrorResponse(VolleyError error) {
+////                                        // 통신을 실패할 시
+////                                        Toast.makeText(getContext(), "통신이 불가능 합니다.", Toast.LENGTH_SHORT).show();
+////                                    }
+////                                }) {
+////                                    @Override
+////                                    protected Map<String, String> getParams() throws AuthFailureError {
+////                                        Map<String, String> params = new HashMap<String, String>();
+////                                        params.put("todo_id", getItem(position).getTodo_id()+"");
+////                                        return params;
+////                                    }
+////                                };
+////
+////                                myReq.setRetryPolicy(new DefaultRetryPolicy(3000, 0, 1f));
+////                                stringRequest.add(myReq);
+////
+////                                // TODO: Adapter에서 HomeFragment getTodoList와 연결해야함.
+////
+////
+////                            }
+////                        });
+////
+////                        deleteBox.setNegativeButton("아니오", new DialogInterface.OnClickListener() {
+////                            @Override
+////                            public void onClick(DialogInterface dialog, int which) {    }
+////                        });
+////
+////                        deleteBox.create().show();
+////                    }
+////
+////                });
+////
+////                builder.setNeutralButton("취소하기", new DialogInterface.OnClickListener() {
+////                    @Override
+////                    public void onClick(DialogInterface dialog, int which) {  }
+////                });
+////
+////                builder.create().show();
+////                return true;
+////            }
+//        });
         return convertView;
     }
 

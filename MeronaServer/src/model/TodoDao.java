@@ -50,6 +50,11 @@ public class TodoDao {
 		int n = factory.openSession().update("mybatis.TodoMapper.editItem", todo);
 		return (n > 0) ? true : false;
 	}
+	
+	public boolean editAddress(Address addr) {
+		int n = factory.openSession().update("mybatis.TodoMapper.editAddress", addr);
+		return (n > 0) ? true : false;
+	}
 
 	// 삭제하기 ------------------------------------------------
 	public boolean deleteItem(Todos todo) {

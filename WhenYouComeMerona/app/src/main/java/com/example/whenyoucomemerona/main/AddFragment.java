@@ -1,5 +1,6 @@
 package com.example.whenyoucomemerona.main;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import android.content.DialogInterface;
 import android.net.Uri;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -42,6 +44,7 @@ import com.example.whenyoucomemerona.entity.User;
 import com.example.whenyoucomemerona.model.Key;
 import com.example.whenyoucomemerona.view.SearchFriendAdapter;
 import com.example.whenyoucomemerona.view.SearchLocationAdapter;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
@@ -52,6 +55,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -128,7 +132,20 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, C
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                insertItem();
+                // 제목은 있어야합니다.
+                if (etContent.length() == 0) {
+                    Toast.makeText(getContext(), "해야 할 일을 알려주세요", Toast.LENGTH_SHORT).show();
+                    etContent.requestFocus();
+                }
+                // 만약 시간은 설정 되었지만, 날짜가 설정이 되어있지 않다면
+                else if (etDate.length() == 0 && etTime.length() > 0) {
+                    Toast.makeText(getContext(), "시간을 설정하려면 날짜도 설정하세요", Toast.LENGTH_SHORT).show();
+                    switchDate.setChecked(true);
+                    etDate.requestFocus();
+                } else {
+                    insertItem();
+                }
+
             }
         });
         return view;
@@ -153,7 +170,6 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, C
 
         params.put("done", "false");
 
-        Log.d("done", "false");
         request("insertItem.do");
     }
 
@@ -165,14 +181,35 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, C
             JSONObject j = new JSONObject(response);
             // 데이터 가져오기 성공할 때,
             if (j.optString("result").equals("ok")) {
-                Toast.makeText(getContext(), "삽입하기 성공", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "등록 되었습니다.", Toast.LENGTH_SHORT).show();
+
+
+                if (final_share_list != null) {
+                    //TODO: 만약 공유가 되어있다면 알림을 보낸다.
+                    for (User sharedTo : final_share_list) {
+                        sendNotification(sharedTo.getToken(), "메로나 사주세요!", "새로운 일이 공유됐습니다. 지금 바로 확인하세요.");
+                    }
+
+                    for (User sharedTo : final_share_list) {
+                        updateNotification(2, My.Account, sharedTo);
+                    }
+                }
+
+
+//                // 홈 화면으로 이동한다.
+                ((BottomNavigationView)getActivity().findViewById(R.id.bottom_navigation)).setSelectedItemId(R.id.page_1);
+
             } else {
-                Toast.makeText(getContext(), "삽입하기 실패", Toast.LENGTH_SHORT).show();
+                Log.e("JSON TAG", "새로운 아이템 등록에 실패했습니다.");
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
+
+
+
+
 
     // EDIT TEXT 가 눌러질 경우
     @Override
@@ -327,6 +364,8 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, C
     // 공유 설정 ----------------------------------------------------------------
     SearchFriendAdapter adapter;
     ArrayList<User> arr;
+    ArrayList<User> tmp;
+    ArrayList<User> final_share_list;
     ListView shareSearchList;
     EditText etSearch;
     Button btnSearchClear;
@@ -347,6 +386,8 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, C
         shareSearchList = view.findViewById(R.id.share_search_list);
         chipGroup = view.findViewById(R.id.quick_add_chips);
         arr = new ArrayList<>();
+        tmp = new ArrayList<>();
+        Log.d("dddd", tmp.size() + "  tmp.... ");
 
         btnSearchClear.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -385,6 +426,8 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, C
                     // 버튼을 눌렀는데, 취소를 누를시 다시 버튼을 꺼버린다.
                     switchShare.setChecked(false);
                 }
+                tmp.clear();
+                final_share_list.clear();
             }
         });
         builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
@@ -411,6 +454,9 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, C
                     json.put(chip.getText().toString());
                 }
                 finalShare = json.toString();
+
+                final_share_list = sortUserByName(tmp, json);
+
             }
         });
 
@@ -419,7 +465,7 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, C
     }
 
     private void searchShareList(final String username) {
-        String url = "searchFriend.do";
+        String url = "getMyFriendList.do";
         RequestQueue stringRequest = Volley.newRequestQueue(getContext());
         StringRequest myReq = new StringRequest(Request.Method.POST, Key.getUrl() + url, new Response.Listener<String>() {
             @Override
@@ -454,17 +500,15 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, C
                                 // 자신일 경우
                             }
 
-                            InputMethodManager imm = (InputMethodManager) getContext().getSystemService(INPUT_METHOD_SERVICE);
-                            imm.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);
+                            hideKeyboard(getActivity());
 
                             adapter = new SearchFriendAdapter(getActivity(), arr);
                             shareSearchList.setAdapter(adapter);
                             adapter.notifyDataSetChanged();
                         }
-                        adapter.notifyDataSetChanged();
-                        Toast.makeText(getContext(), "찾기 성공", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getContext(), "찾기 성공", Toast.LENGTH_SHORT).show();
                     } else {
-                        Toast.makeText(getContext(), "찾기 실패", Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(getContext(), "찾기 실패", Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
                     Log.d("eeeee", "JSON에서 에러가 있습니다.");
@@ -482,6 +526,7 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, C
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> params = new HashMap<String, String>();
+                params.put("user_id", My.Account.getUser_id() +"");
                 params.put("username", username);
                 return params;
             }
@@ -497,6 +542,7 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, C
         User shareUser = arr.get(position);
         boolean isInChipGroup = false;
 
+        tmp.add(shareUser);
         final Chip chip = new Chip(getContext());
         chip.setChipIconVisible(true);
         chip.setCloseIconVisible(true);
@@ -518,8 +564,22 @@ public class AddFragment extends BaseFragment implements View.OnClickListener, C
         if (!isInChipGroup) {
             chipGroup.addView(chip, chipGroup.getChildCount() - 1);
         }
+    }
 
-        Log.d("dddd", chipGroup.getChildCount() + "" );
+
+    private ArrayList<User> sortUserByName(ArrayList<User> users, JSONArray ids) {
+        ArrayList<User> tmp = new ArrayList<>();
+
+        for (User u : users) {
+            for (int i = 0; i < ids.length(); i ++) {
+                String username = ids.optString(i);
+                if (u.getId().equals(username)) {
+                    tmp.add(u);
+                }
+            }
+        }
+
+        return tmp;
     }
 
 

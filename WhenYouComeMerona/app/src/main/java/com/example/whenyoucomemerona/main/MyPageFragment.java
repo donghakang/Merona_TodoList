@@ -52,6 +52,7 @@ public class MyPageFragment extends BaseFragment implements AdapterView.OnItemSe
     ListView lvMyPageList;
     SimpleTodosAdapter adapter;
 
+    RelativeLayout emptyPage;
 
     ArrayList<Todos> myTodos;
     ArrayList<Todos> sharedTodos;
@@ -91,6 +92,7 @@ public class MyPageFragment extends BaseFragment implements AdapterView.OnItemSe
         myEmail = v.findViewById(R.id.my_email);
         mySetting = v.findViewById(R.id.my_setting);
         btnFriendList = v.findViewById(R.id.btn_friend_list);
+        emptyPage = v.findViewById(R.id.empty_status);
 
 
         pgLevel = v.findViewById(R.id.pg_level);
@@ -151,6 +153,13 @@ public class MyPageFragment extends BaseFragment implements AdapterView.OnItemSe
         }
         Collections.sort(tmpArr);           // sort by 작성된 날들.
 
+        if (tmpArr.size() < 1) {
+            emptyPage.setVisibility(View.VISIBLE);
+            lvMyPageList.setVisibility(View.INVISIBLE);
+        } else {
+            emptyPage.setVisibility(View.INVISIBLE);
+            lvMyPageList.setVisibility(View.VISIBLE);
+        }
         adapter = new SimpleTodosAdapter(getActivity(), tmpArr);
         lvMyPageList.setAdapter(adapter);
         adapter.notifyDataSetChanged();

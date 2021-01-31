@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 
 import com.example.whenyoucomemerona.R;
+import com.example.whenyoucomemerona.controller.BaseActivity;
 import com.example.whenyoucomemerona.main.AddFragment;
 import com.example.whenyoucomemerona.main.HomeFragment;
 import com.example.whenyoucomemerona.main.MapFragment;
@@ -20,7 +21,7 @@ import com.example.whenyoucomemerona.main.MyPageFragment;
 import com.example.whenyoucomemerona.main.NotificationFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
     BottomNavigationView bottomNavigation;
 
     AddFragment addFragment;
@@ -88,35 +89,35 @@ public class MainActivity extends AppCompatActivity {
     };
 
     public void onFragmentSelected(int position, Bundle bundle) {
+        hideKeyboard(this);
         switch (position) {
             case 1:
+                homeFragment = new HomeFragment();
                 currentFragment = homeFragment;
                 break;
             case 2:
+                mapFragment = new MapFragment();
                 currentFragment = mapFragment;
                 break;
             case 3:
+                addFragment = new AddFragment();
                 currentFragment = addFragment;
                 break;
             case 4:
+                notificationFragment = new NotificationFragment();
                 currentFragment = notificationFragment;
                 break;
             case 5:
+                myPageFragment = new MyPageFragment();
                 currentFragment = myPageFragment;
                 break;
 
         }
 
-
-
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.body_rl, currentFragment)
                 .commit();
-
-
-
-
 
 
     }
