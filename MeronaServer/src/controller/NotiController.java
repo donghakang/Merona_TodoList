@@ -32,7 +32,11 @@ public class NotiController {
 	@RequestMapping(value="/getNotiList.do", method=RequestMethod.POST)
 	public String getNotiList(@ModelAttribute User user, Model model) {
 		List<Noti> noti = notiService.getNotiList(user);
+		List<User> users = notiService.getUserList(noti);
+		List<User> friends = notiService.getFriendList(noti);
 		model.addAttribute("noti", noti);
+		model.addAttribute("users", users);
+		model.addAttribute("friends", friends);
 		return "notiList";
 	}
 

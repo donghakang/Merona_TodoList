@@ -27,6 +27,17 @@ public class NotiService {
 	public List<Noti> getNotiList(User user) {
 		return notiDao.getNotiList(user);
 	}
+
+
+	public List<User> getUserList(List<Noti> noti) {
+		return notiDao.getUserList(noti);
+	}
+
+
+	public List<User> getFriendList(List<Noti> noti) {
+		// TODO Auto-generated method stub
+		return notiDao.getFriendList(noti);
+	}
 	
 	
 }

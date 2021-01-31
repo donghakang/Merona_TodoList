@@ -16,6 +16,7 @@ import com.example.whenyoucomemerona.R;
 import com.example.whenyoucomemerona.controller.BaseFragment;
 import com.example.whenyoucomemerona.controller.My;
 import com.example.whenyoucomemerona.entity.Noti;
+import com.example.whenyoucomemerona.entity.User;
 import com.example.whenyoucomemerona.view.NotiAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -76,17 +77,39 @@ public class NotificationFragment extends BaseFragment {
                 for (int i = 0; i < data.length(); i ++ ){
                     JSONObject item = data.optJSONObject(i);
                     int noti_id = item.optInt("noti_id");
-                    int user_id = item.optInt("user_id");
-                    int friend_id = item.optInt("friend_id");
+
+
+                    JSONObject user_ = item.optJSONObject("user");
+                    User user = new User();
+                    user.setUser_id(user_.optInt("user_id"));
+                    user.setId(user_.optString("id"));
+                    user.setName(user_.optString("name"));
+                    user.setEmail(user_.optString("email"));
+                    user.setBirth(user_.optString("birth"));
+                    user.setToken(user_.optString("token"));
+
+
+                    JSONObject friend_ = item.optJSONObject("friend");
+                    User friend = new User();
+                    friend.setUser_id(friend_.optInt("user_id"));
+                    friend.setId(friend_.optString("id"));
+                    friend.setName(friend_.optString("name"));
+                    friend.setEmail(friend_.optString("email"));
+                    friend.setBirth(friend_.optString("birth"));
+                    friend.setToken(friend_.optString("token"));
+
+
                     int type = item.optInt("type");
                     String pushDate = item.optString("pushDate");;
 
                     Noti noti = new Noti();
                     noti.setNoti_id(noti_id);
-                    noti.setUser_id(user_id);
-                    noti.setFriend_id(friend_id);
+                    noti.setUser_id(user.getUser_id());
+                    noti.setFriend_id(friend.getUser_id());
                     noti.setType(type);
                     noti.setPushDate(pushDate);
+                    noti.setUser(user);
+                    noti.setFriend(friend);
 
                     arr.add(noti);
                 }
@@ -117,7 +140,7 @@ public class NotificationFragment extends BaseFragment {
                         break;
                     case 1:
                         hideKeyboard(getActivity());
-                        Fragment userPage = new UserPageFragment(noti.getUser_id());
+                        Fragment userPage = new UserPageFragment(noti.getUser());
                         getActivity().getSupportFragmentManager()
                                 .beginTransaction()
                                 .replace(R.id.body_rl, userPage)

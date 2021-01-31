@@ -26,4 +26,17 @@
 		]]>
 	</delete>
 	
+	<select id="getUserList" parameterType="noti" resultType="user">
+		<![CDATA[
+			SELECT * FROM USERS
+			WHERE USER_ID=#{user_id} 	
+		]]>
+	</select>
+	
+	<select id="getFriendList" parameterType="noti" resultType="user">
+		<![CDATA[
+			SELECT * FROM USERS
+			WHERE USER_ID=#{friend_id} 	
+		]]>
+	</select>
 </mapper>

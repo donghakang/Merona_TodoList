@@ -21,6 +21,10 @@ public class Noti {
     private int type;
     private String pushDate;
 
+
+    private User user;
+    private User friend;
+
     public Noti() {
     }
 
@@ -64,8 +68,21 @@ public class Noti {
         this.pushDate = pushDate;
     }
 
+    public User getUser() {
+        return user;
+    }
 
+    public void setUser(User user) {
+        this.user = user;
+    }
 
+    public User getFriend() {
+        return friend;
+    }
+
+    public void setFriend(User friend) {
+        this.friend = friend;
+    }
 
     // Static function
     public String getWelcomeMsg() {

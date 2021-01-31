@@ -1,5 +1,6 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -28,6 +29,26 @@ public class NotiDao {
 	// 리스트 불러오기 ---------------------------------------------------
 	public List<Noti> getNotiList(User user) {
 		return factory.openSession().selectList("mybatis.NotiMapper.getNotiList", user);
+	}
+
+
+	public List<User> getUserList(List<Noti> noti) {
+		List<User> users = new ArrayList<>();
+		for (Noti n : noti) {
+			User u = factory.openSession().selectOne("mybatis.NotiMapper.getUserList", n);
+			users.add(u);
+		}
+		return users;
+	}
+
+
+	public List<User> getFriendList(List<Noti> noti) {
+		List<User> users = new ArrayList<>();
+		for (Noti n : noti) {
+			User u = factory.openSession().selectOne("mybatis.NotiMapper.getFriendList", n);
+			users.add(u);
+		}
+		return users;
 	}
 
 
