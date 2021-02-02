@@ -74,10 +74,8 @@ public class UserPageFragment extends BaseFragment implements View.OnClickListen
 
     public UserPageFragment(User user) {
         this.user = user;
-    }
-    public UserPageFragment(int user_id) {
-        this.user = new User();
-        this.user.setUser_id(user_id);
+        Log.d("ddddd", user.toString());
+
     }
 
 
@@ -131,6 +129,8 @@ public class UserPageFragment extends BaseFragment implements View.OnClickListen
 
         btnFriend.setOnClickListener(this);
 
+        params.clear();
+        params.put("user_id", this.user.getUser_id() + "");
          request("getUserData.do");
     }
 

@@ -15,6 +15,7 @@ create sequence user_seq increment by 1 start with 1;
 
 select * from users;
 
+
 -- todo --------------------------------------------------------------------------
 
 create table todos (
@@ -163,8 +164,9 @@ where
 select * from todos 
 where writer_id=2;
 
-
-
+SELECT * FROM NOTI
+WHERE FRIEND_ID=47
+order by noti_id desc;
 
 SELECT USERS.* FROM (
 			SELECT USER_ID AS "UID" FROM FRIEND WHERE FRIEND_ID=1

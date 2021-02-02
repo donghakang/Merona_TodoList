@@ -94,6 +94,7 @@ public class NotiAdapter extends ArrayAdapter {
         }
 
         notification = arr.get(position);
+        
 
         setupView(notification);
 

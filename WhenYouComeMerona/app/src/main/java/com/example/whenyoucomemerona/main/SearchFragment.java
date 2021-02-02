@@ -143,7 +143,7 @@ public class SearchFragment extends BaseFragment implements View.OnClickListener
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//        Log.d("arr:- " arr.get(position).getId() + "        " + "")
+        Log.d("dddd", "arr__: " + arr.get(position).toString() + "        " + "");
         Fragment userPageFragment = new UserPageFragment(arr.get(position));
         InputMethodManager imm = (InputMethodManager) getContext().getSystemService(INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(etSearch.getWindowToken(), 0);

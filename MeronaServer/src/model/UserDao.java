@@ -32,6 +32,7 @@ public class UserDao {
  
 	// 회원가입 ----------------------------------------------------------------------------------
 	public boolean register(User user) {
+		System.out.println("---___---user : " + user.toString());
 		int n = factory.openSession().insert("mybatis.LoginMapper.registerUser",user);
 		return (n > 0)?true:false;
 	}

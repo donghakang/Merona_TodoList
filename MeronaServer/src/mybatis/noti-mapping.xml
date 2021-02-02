@@ -9,6 +9,7 @@
 		<![CDATA[
 			SELECT * FROM NOTI
 			WHERE FRIEND_ID=#{user_id} 	
+			ORDER BY NOTI_ID DESC
 		]]>
 	</select>
 

@@ -109,7 +109,7 @@ public class mGLSurfaceRenderer implements GLSurfaceView.Renderer
     @Override
     public void onSurfaceCreated(GL10 glUnused, EGLConfig config)
     {
-        GLES20.glClearColor(249.0f / 255.0f, 1.0f, 163.0f / 255.0f, 1.0f);
+        GLES20.glClearColor(1.0f, 254.0f/255.0f, 240.0f / 255.0f, 1.0f);
         GLES20.glEnable(GLES20.GL_CULL_FACE);
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
 

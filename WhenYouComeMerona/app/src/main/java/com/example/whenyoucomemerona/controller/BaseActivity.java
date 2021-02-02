@@ -33,22 +33,6 @@ public class BaseActivity extends AppCompatActivity {
     public Map<String, String> params = new HashMap<String, String>();
 
 
-    public Response.ErrorListener errorListener = new Response.ErrorListener() {
-        @Override
-        public void onErrorResponse(VolleyError error) {
-            Toast.makeText(getApplicationContext(), "통신이 불가능 합니다.", Toast.LENGTH_SHORT).show();
-        }
-    };
-
-    public Response.Listener<String> successListener = new Response.Listener<String>() {
-        @Override
-        public void onResponse(String response) {
-            response(response);
-        }
-    };
-
-    public void response(String response) { }
-
     public void request(String url) {
         RequestQueue stringRequest = Volley.newRequestQueue(this);
         StringRequest myReq = new StringRequest(Request.Method.POST, Key.getUrl() + url,
@@ -62,6 +46,22 @@ public class BaseActivity extends AppCompatActivity {
         myReq.setRetryPolicy(new DefaultRetryPolicy(3000, 0, 1f));
         stringRequest.add(myReq);
     }
+
+    public void response(String response) { }
+
+    public Response.Listener<String> successListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            response(response);
+        }
+    };
+
+    public Response.ErrorListener errorListener = new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            Toast.makeText(getApplicationContext(), "통신이 불가능 합니다.", Toast.LENGTH_SHORT).show();
+        }
+    };
 
 
 
