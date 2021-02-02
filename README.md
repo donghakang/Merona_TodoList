@@ -33,20 +33,8 @@ For more resources Contact: dkang0602@gmail.com
 
 Screenshot
 ---
-<img src="./img/screenshot1.png" width="20%">
-<img src="./img/screenshot2.png" width="20%">
-<img src="./img/screenshot3.png" width="20%">
-<img src="./img/screenshot12.png" width="20%">
 
-<img src="./img/screenshot4.png" width="20%">
-<img src="./img/screenshot5.png" width="20%">
-<img src="./img/screenshot6.png" width="20%">
-<img src="./img/screenshot7.png" width="20%">
-<img src="./img/screenshot8.png" width="20%">
-<img src="./img/screenshot9.png" width="20%">
-<img src="./img/screenshot10.png" width="20%">
-<img src="./img/screenshot11.png" width="20%">
-
+![Login Page](./img/screenshot1.png) ![Register Page](./img/screenshot2.png) ![Empty Page](./img/screenshot3.png) ![Notification Page](./img/screenshot4.png) ![Map Page](./img/screenshot5.png) ![Map Search Page](./img/screenshot6.png) ![My Page](./img/screenshot7.png) ![Friend List Page](./img/screenshot8.png) ![Notice Page](./img/screenshot9.png) ![Add Page](./img/screenshot10.png) ![Fun Page](./img/screenshot11.png)
 
 Link
 ---
