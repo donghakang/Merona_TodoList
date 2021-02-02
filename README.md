@@ -40,5 +40,6 @@ Link
 ---
 
 <a href="https://www.notion.so/f000834936594e8c8219b7a9fb36659a?v=91d4b67c606a439b92def70e14cf7cb7">타임라인 :hourglass_flowing_sand:</a>
+<br>
 <a href="https://docs.google.com/presentation/d/e/2PACX-1vRKU6d9BuWP5ZnL-We3lp79Sc5VY4OvDuzjTXt4fqa_gi9x1XFxhYAi2JMTMLdSAODKNQiTIz8xFxPj/pub?start=false&loop=false&delayms=3000">PPT :eye_speech_bubble:</a>
 
